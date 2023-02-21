@@ -10,36 +10,35 @@ use serde_json::value::{self, Map, Value as Json};
 use std::error::Error;
 use std::fs::{canonicalize, create_dir_all, File};
 use std::io::{Read, Write};
+use walkdir::WalkDir;
 
 fn main() -> Result<(), Box<dyn Error>> {
     env_logger::init();
-
+    let templates_path = "src/template/";
     let json_file_path = canonicalize("./idl.json").unwrap();
     let file = File::open(json_file_path).unwrap();
     let idl: IDL = serde_json::from_reader(file).expect("error while reading json");
 
     let mut handlebars = Handlebars::new();
 
-    create_dir_all("output/anchor_workspace/programs/empty/src")?;
-
-    handlebars
-        .register_template_file("template", "src/template/lib.rs.hbs")
-        .unwrap();
-    let mut output_lib_file = File::create("output/anchor_workspace/programs/empty/src/lib.rs")?;
-    handlebars.render_to_write("template", &idl, &mut output_lib_file)?;
-
-    handlebars
-        .register_template_file("template", "src/template/programs_Cargo.toml.hbs")
-        .unwrap();
-    let mut output_program_cargo_file = File::create("output/anchor_workspace/programs/empty/Cargo.toml")?;
-    handlebars.render_to_write("template", &idl, &mut output_program_cargo_file)?;
-
-    handlebars
-        .register_template_file("template", "src/template/Xargo.toml.hbs")
-        .unwrap();
-    let mut output_program_cargo_file = File::create("output/anchor_workspace/programs/empty/Xargo.toml")?;
-    handlebars.render_to_write("template", &idl, &mut output_program_cargo_file)?;
-
+    for entry in WalkDir::new(templates_path) {
+        let entry = entry.unwrap();
+        let path = format!("{}", entry.path().display());
+        let rel_path = path.get(templates_path.len()..path.len()).unwrap();
+        println!("{}", rel_path);
+        if path.split(".").last().unwrap() == "hbs" {
+            handlebars
+                .register_template_file("template", (*path).to_string())
+                .unwrap();
+            let mut output_lib_file = File::create(format!(
+                "output/{}",
+                rel_path.get(0..rel_path.len() - 4).unwrap()
+            ))?;
+            handlebars.render_to_write("template", &idl, &mut output_lib_file)?;
+        } else {
+            create_dir_all(format!("output/{}", rel_path))?;
+        };
+    }
 
     println!("project generated!");
     Ok(())
