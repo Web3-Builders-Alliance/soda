@@ -20,13 +20,28 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut handlebars = Handlebars::new();
 
-    handlebars
-        .register_template_file("template", "src/render_file/template.hbs")
-        .unwrap();
     create_dir_all("output/anchor_workspace/programs/empty/src")?;
-    let mut output_file = File::create("output/anchor_workspace/programs/empty/src/lib.rs")?;
-    handlebars.render_to_write("template", &idl, &mut output_file)?;
-    println!("output/anchor_workspace/programs/empty/src/lib.rs");
+
+    handlebars
+        .register_template_file("template", "src/template/lib.rs.hbs")
+        .unwrap();
+    let mut output_lib_file = File::create("output/anchor_workspace/programs/empty/src/lib.rs")?;
+    handlebars.render_to_write("template", &idl, &mut output_lib_file)?;
+
+    handlebars
+        .register_template_file("template", "src/template/programs_Cargo.toml.hbs")
+        .unwrap();
+    let mut output_program_cargo_file = File::create("output/anchor_workspace/programs/empty/Cargo.toml")?;
+    handlebars.render_to_write("template", &idl, &mut output_program_cargo_file)?;
+
+    handlebars
+        .register_template_file("template", "src/template/Xargo.toml.hbs")
+        .unwrap();
+    let mut output_program_cargo_file = File::create("output/anchor_workspace/programs/empty/Xargo.toml")?;
+    handlebars.render_to_write("template", &idl, &mut output_program_cargo_file)?;
+
+
+    println!("project generated!");
     Ok(())
 }
 
