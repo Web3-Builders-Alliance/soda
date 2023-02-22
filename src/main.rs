@@ -109,7 +109,7 @@ pub struct InstructionAccount {
 pub struct InstructionArgs {
     name: String,
     #[serde(rename = "type")]
-    _type: InstructionType,
+    type_: InstructionType,
 }
 
 #[derive(Deserialize, Serialize)]
