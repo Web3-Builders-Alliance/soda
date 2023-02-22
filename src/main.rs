@@ -21,26 +21,28 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut handlebars = Handlebars::new();
 
+    println!("Creating...");
     for entry in WalkDir::new(templates_path) {
         let entry = entry.unwrap();
         let path = format!("{}", entry.path().display());
         let rel_path = path.get(templates_path.len()..path.len()).unwrap();
-        println!("{}", rel_path);
         if path.split(".").last().unwrap() == "hbs" {
+            let file_path =
+                handlebars.render_template(rel_path.get(0..rel_path.len() - 4).unwrap(), &idl).unwrap();
             handlebars
                 .register_template_file("template", (*path).to_string())
                 .unwrap();
-            let mut output_lib_file = File::create(format!(
-                "output/{}",
-                rel_path.get(0..rel_path.len() - 4).unwrap()
-            ))?;
+            let mut output_lib_file = File::create(format!("output/{}", file_path))?;
             handlebars.render_to_write("template", &idl, &mut output_lib_file)?;
+            println!("{}", file_path);
         } else {
-            create_dir_all(format!("output/{}", rel_path))?;
+            let dir_path = handlebars.render_template(rel_path, &idl).unwrap();
+            create_dir_all(format!("output/{}", dir_path))?;
+            println!("{}", dir_path);
         };
     }
 
-    println!("project generated!");
+    println!("Project Generated!");
     Ok(())
 }
 
