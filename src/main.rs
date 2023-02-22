@@ -27,8 +27,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         let path = format!("{}", entry.path().display());
         let rel_path = path.get(templates_path.len()..path.len()).unwrap();
         if path.split(".").last().unwrap() == "hbs" {
-            let file_path =
-                handlebars.render_template(rel_path.get(0..rel_path.len() - 4).unwrap(), &idl).unwrap();
+            let file_path = handlebars
+                .render_template(rel_path.get(0..rel_path.len() - 4).unwrap(), &idl)
+                .unwrap();
             handlebars
                 .register_template_file("template", (*path).to_string())
                 .unwrap();
