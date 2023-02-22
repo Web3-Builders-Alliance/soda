@@ -1,15 +1,8 @@
-#![allow(unused_imports, dead_code, non_snake_case, non_camel_case_types)]
-use env_logger;
+#![allow(non_snake_case, non_camel_case_types)]
 use handlebars::Handlebars;
-use handlebars::{to_json, Context, Helper, JsonRender, Output, RenderContext, RenderError};
-use serde;
-use serde::{Deserialize, Serialize};
 use serde_derive::{self, Deserialize, Serialize};
-use serde_json::json;
-use serde_json::value::{self, Map, Value as Json};
 use std::error::Error;
 use std::fs::{canonicalize, create_dir_all, File};
-use std::io::{Read, Write};
 use walkdir::WalkDir;
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -26,7 +19,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         let entry = entry.unwrap();
         let path = format!("{}", entry.path().display());
         let rel_path = path.get(templates_path.len()..path.len()).unwrap();
-        if path.split(".").last().unwrap() == "hbs" {
+        if path.split('.').last().unwrap() == "hbs" {
             let file_path = handlebars
                 .render_template(rel_path.get(0..rel_path.len() - 4).unwrap(), &idl)
                 .unwrap();
