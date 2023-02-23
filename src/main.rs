@@ -121,7 +121,7 @@ pub struct Kind {
 pub struct Field {
     name: String,
     #[serde(rename = "type")]
-    type_: String,
+    type_: InstructionType,
     index: bool,
 }
 
@@ -151,14 +151,28 @@ pub enum InstructionType {
 }
 
 #[derive(Deserialize, Serialize)]
+#[serde(untagged)]
 pub enum InstructionTypeVec {
-    Ok(String),
+    String(String),
     defined(Defined),
+    vec(Vec_)
 }
 
 #[derive(Deserialize, Serialize)]
 pub struct Defined {
     defined: String,
+}
+
+#[derive(Deserialize, Serialize)]
+pub struct Vec_ {
+    vec: VecEnum,
+}
+
+#[derive(Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum VecEnum {
+    String(String),
+    defined(Defined),
 }
 
 #[derive(Deserialize, Serialize)]
