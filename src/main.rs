@@ -142,9 +142,12 @@ pub struct Seed {
 }
 
 #[derive(Deserialize, Serialize)]
+#[serde(untagged)]
 pub enum InstructionType {
-    Ok(String),
+    String(String),
     vec(InstructionTypeVec),
+    defined(Defined),
+    option(OptionType)
 }
 
 #[derive(Deserialize, Serialize)]
@@ -156,6 +159,11 @@ pub enum InstructionTypeVec {
 #[derive(Deserialize, Serialize)]
 pub struct Defined {
     defined: String,
+}
+
+#[derive(Deserialize, Serialize)]
+pub struct OptionType {
+    option: String,
 }
 
 #[derive(Deserialize, Serialize)]
