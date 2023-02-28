@@ -4,9 +4,22 @@ use serde_derive::{self, Deserialize, Serialize};
 use std::error::Error;
 use std::fs::{canonicalize, create_dir_all, File};
 use walkdir::WalkDir;
+use clap::Parser;
+
+/// Simple program to greet a person
+
+#[derive(Parser)]
+#[command(author, version, about, long_about = None)]
+struct Cli {
+    paths: Vec<String>,
+}
 
 fn main() -> Result<(), Box<dyn Error>> {
     env_logger::init();
+    let cli = Cli::parse();
+
+    println!("name: {:?}", cli.paths);
+
     let templates_path = "src/template/";
     let json_file_path = canonicalize("./idl.json").unwrap();
     let file = File::open(json_file_path).unwrap();

@@ -12,3 +12,4 @@ handlebars = "4.3.6"
 env_logger = "0.10"
 serde_derive = "1.0.152"
 walkdir = "2.3.2"
+clap = { version = "4.1.8", features = ["derive"] }
