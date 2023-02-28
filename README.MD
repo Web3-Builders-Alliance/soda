@@ -1,6 +1,6 @@
 # soda
 
-This is a cli tool that can read an IDL and outputs the files needed for a basic Solana program and client code.
+This is a cli tool that can read an IDL and outputs the files needed for a Solana program and client code.
 
 This is template based so you can create your custom building blocks.
 
