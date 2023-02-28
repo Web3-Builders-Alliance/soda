@@ -8,7 +8,7 @@ Do you prefer a different client? the program code in other language? write a te
 
 #### Usage
 
-`soda`: from ./idl.json generates code from default template
+`soda`: from ./idl.json generates code using default template
 
 `soda <path>` from idl file or url in `<path>` generate project using default template
 
