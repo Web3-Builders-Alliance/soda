@@ -4,21 +4,41 @@ use serde_derive::{self, Deserialize, Serialize};
 use std::error::Error;
 use std::fs::{canonicalize, create_dir_all, File};
 use walkdir::WalkDir;
+use clap::Parser;
+
+const IDL_DEFAULT_PATH: &str = "./idl.json";
+const TEMPLATE_DEFAULT_PATH: &str = "src/template/";
+
+#[derive(Parser)]
+#[command(author, version, about, long_about = None)]
+struct Cli {
+    paths: Vec<String>,
+}
 
 fn main() -> Result<(), Box<dyn Error>> {
     env_logger::init();
-    let templates_path = "src/template/";
-    let json_file_path = canonicalize("./idl.json").unwrap();
+    let mut template_path = TEMPLATE_DEFAULT_PATH;
+    let mut idl_path = IDL_DEFAULT_PATH;
+    let cli = Cli::parse();
+    if cli.paths.len()>0{
+         idl_path= &cli.paths[0];
+
+    }
+    if cli.paths.len()>1{
+        template_path = &cli.paths[1];
+    }
+
+    let json_file_path = canonicalize(idl_path).unwrap();
     let file = File::open(json_file_path).unwrap();
     let idl: IDL = serde_json::from_reader(file).expect("error while reading json");
 
     let mut handlebars = Handlebars::new();
 
-    println!("Creating...");
-    for entry in WalkDir::new(templates_path) {
+    println!("Creating project frol idl {} and template {}", idl_path, template_path);
+    for entry in WalkDir::new(template_path) {
         let entry = entry.unwrap();
         let path = format!("{}", entry.path().display());
-        let rel_path = path.get(templates_path.len()..path.len()).unwrap();
+        let rel_path = path.get(template_path.len()..path.len()).unwrap();
         if path.split('.').last().unwrap() == "hbs" {
             let file_path = handlebars
                 .render_template(rel_path.get(0..rel_path.len() - 4).unwrap(), &idl)
@@ -40,7 +60,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct IDL {
     version: String,
     name: String,
@@ -55,41 +75,41 @@ pub struct IDL {
     errors: Vec<ErrorDesc>,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Instruction {
     name: String,
     accounts: Vec<InstructionAccount>,
     args: Vec<InstructionArgs>,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Accounts {
     name: String,
     #[serde(rename = "type")]
     type_: Type,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Types {
     name: String,
     #[serde(rename = "type")]
     type_: Kind,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Event {
     name: String,
     fields: Vec<Field>,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct ErrorDesc {
     code: u64,
     name: String,
     msg: String,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct InstructionAccount {
     name: String,
     isMut: bool,
@@ -98,26 +118,26 @@ pub struct InstructionAccount {
     pda: PDA,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct InstructionArgs {
     name: String,
     #[serde(rename = "type")]
     type_: InstructionType,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Type {
     kind: String,
     fields: Vec<TypeFields>,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Kind {
     kind: String,
     variants: Vec<Name>,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Field {
     name: String,
     #[serde(rename = "type")]
@@ -125,12 +145,12 @@ pub struct Field {
     index: bool,
 }
 
-#[derive(Deserialize, Serialize, Default)]
+#[derive(Deserialize, Serialize, Default, Debug)]
 pub struct PDA {
     seeds: Vec<Seed>,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Seed {
     kind: String,
     #[serde(rename = "type")]
@@ -141,7 +161,7 @@ pub struct Seed {
     path: String,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 #[serde(untagged)]
 pub enum InstructionType {
     String(String),
@@ -150,7 +170,7 @@ pub enum InstructionType {
     option(OptionType)
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 #[serde(untagged)]
 pub enum InstructionTypeVec {
     String(String),
@@ -158,34 +178,34 @@ pub enum InstructionTypeVec {
     vec(Vec_)
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Defined {
     defined: String,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Vec_ {
     vec: VecEnum,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 #[serde(untagged)]
 pub enum VecEnum {
     String(String),
     defined(Defined),
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct OptionType {
     option: String,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Name {
     name: String,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct TypeFields {
     name: String,
     #[serde(rename = "type")]
