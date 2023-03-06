@@ -5,13 +5,30 @@ declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 #[program]
 pub mod {{name}} {
     use super::*;
-{{#each instructions}}
+
+    {{#each instructions}}
     pub fn {{this.name}}(ctx: Context<{{this.name}}>) -> Result<()> {
         Ok(())
     }
-{{/each}}
+
+    {{/each}}
 
 }
 
+{{#each instructions}}
 #[derive(Accounts)]
-pub struct Initialize {}
+pub struct {{this.name}}<'info> {
+    {{#each this.accounts}}
+    #[account(mut)]
+    pub {{this.name}}: AccountInfo<'info>,
+    {{/each}}
+}
+
+{{/each}}
+
+{{#each accounts}}
+#[account]
+pub struct {{this.name}} {
+}
+
+{{/each}}
