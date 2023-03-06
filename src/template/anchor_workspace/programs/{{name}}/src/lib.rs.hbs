@@ -5,10 +5,12 @@ declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 #[program]
 pub mod {{name}} {
     use super::*;
-
-    pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
+{{#each instructions}}
+    pub fn {{this.name}}(ctx: Context<{{this.name}}>) -> Result<()> {
         Ok(())
     }
+{{/each}}
+
 }
 
 #[derive(Accounts)]
