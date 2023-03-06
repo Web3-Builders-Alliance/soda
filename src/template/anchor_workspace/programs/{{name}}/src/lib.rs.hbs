@@ -6,15 +6,16 @@ declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 pub mod {{name}} {
     use super::*;
 
+    // Instructions
     {{#each instructions}}
     pub fn {{this.name}}(ctx: Context<{{this.name}}>) -> Result<()> {
         Ok(())
     }
 
     {{/each}}
-
 }
 
+// Context
 {{#each instructions}}
 #[derive(Accounts)]
 pub struct {{this.name}}<'info> {
@@ -26,6 +27,7 @@ pub struct {{this.name}}<'info> {
 
 {{/each}}
 
+// Accounts
 {{#each accounts}}
 #[account]
 pub struct {{this.name}} {
@@ -36,6 +38,7 @@ pub struct {{this.name}} {
 
 {{/each}}
 
+// Additional structures
 {{#each types}}
 #[derive(Debug, Clone, AnchorSerialize, AnchorDeserialize)]
 pub struct {{this.name}} {
@@ -46,6 +49,7 @@ pub struct {{this.name}} {
 
 {{/each}}
 
+// Events
 {{#each events}}
 #[event]
 pub struct {{this.name}} {
@@ -55,3 +59,14 @@ pub struct {{this.name}} {
 }
 
 {{/each}}
+
+
+// Errors
+#[error_code]
+pub enum ErrorCode {
+    {{#each errors}}
+    #[msg("{{this.msg}}")]
+    {{this.name}},
+
+    {{/each}}
+}
