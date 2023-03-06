@@ -26,7 +26,6 @@ pub struct {{this.name}}<'info> {
 }
 
 {{/each}}
-
 // Accounts
 {{#each accounts}}
 #[account]
@@ -37,7 +36,6 @@ pub struct {{this.name}} {
 }
 
 {{/each}}
-
 // Additional structures
 {{#each types}}
 #[derive(Debug, Clone, AnchorSerialize, AnchorDeserialize)]
@@ -48,7 +46,6 @@ pub struct {{this.name}} {
 }
 
 {{/each}}
-
 // Events
 {{#each events}}
 #[event]
@@ -59,14 +56,11 @@ pub struct {{this.name}} {
 }
 
 {{/each}}
-
-
 // Errors
 #[error_code]
 pub enum ErrorCode {
     {{#each errors}}
     #[msg("{{this.msg}}")]
     {{this.name}},
-
     {{/each}}
 }
