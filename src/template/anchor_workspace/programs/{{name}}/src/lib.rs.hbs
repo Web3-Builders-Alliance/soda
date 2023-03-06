@@ -35,3 +35,23 @@ pub struct {{this.name}} {
 }
 
 {{/each}}
+
+{{#each types}}
+#[derive(Debug, Clone, AnchorSerialize, AnchorDeserialize)]
+pub struct {{this.name}} {
+    {{#each this.type.fields}}
+    pub {{this.name}}: {{this.type}},
+    {{/each}}
+}
+
+{{/each}}
+
+{{#each events}}
+#[event]
+pub struct {{this.name}} {
+    {{#each this.fields}}
+    pub {{this.name}}: {{this.type}},
+    {{/each}}
+}
+
+{{/each}}
