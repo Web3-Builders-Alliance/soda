@@ -29,6 +29,9 @@ pub struct {{this.name}}<'info> {
 {{#each accounts}}
 #[account]
 pub struct {{this.name}} {
+    {{#each this.type.fields}}
+    pub {{this.name}}: {{this.type}},
+    {{/each}}
 }
 
 {{/each}}
