@@ -34,7 +34,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut handlebars = Handlebars::new();
 
-    println!("Creating project frol idl {} and template {}", idl_path, template_path);
+    println!("Creating project from idl {} and template {}", idl_path, template_path);
     for entry in WalkDir::new(template_path) {
         let entry = entry.unwrap();
         let path = format!("{}", entry.path().display());
