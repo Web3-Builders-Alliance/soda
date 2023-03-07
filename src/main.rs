@@ -26,7 +26,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     if cli.paths.len() > 1 {
         template_path = &cli.paths[1];
     }
-
+    
     let json_file_path = canonicalize(idl_path).unwrap();
     let file = File::open(json_file_path).unwrap();
     let idl: IDL = serde_json::from_reader(file).expect("error while reading json");
