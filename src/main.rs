@@ -67,7 +67,8 @@ fn main() -> Result<(), Box<dyn Error>> {
                 },
                 InstructionType::defined(content)=>content.defined,
                 InstructionType::option(content)=> content.option,
-            }
+            }.replace("publicKey", "Pubkey")
+            .replace("string", "String")
         )
     ;
 

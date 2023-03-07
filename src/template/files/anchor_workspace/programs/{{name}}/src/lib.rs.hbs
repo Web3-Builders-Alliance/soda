@@ -31,7 +31,7 @@ pub struct {{pascalcase this.name}}<'info> {
 #[account]
 pub struct {{this.name}} {
     {{#each this.type.fields}}
-    pub {{this.name}}: {{{type_from_account_field this.type}}},
+    pub {{snakecase this.name}}: {{{type_from_account_field this.type}}},
     {{/each}}
 }
 
@@ -51,7 +51,7 @@ pub struct {{this.name}} {
 #[event]
 pub struct {{this.name}} {
     {{#each this.fields}}
-    pub {{this.name}}: {{this.type}},
+    pub {{snakecase this.name}}: {{{type_from_account_field this.type}}},
     {{/each}}
 }
 
