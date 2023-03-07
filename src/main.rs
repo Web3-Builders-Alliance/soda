@@ -50,8 +50,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     );
 
-    handlebars_helper!(type_from_account_field: |account_field_type:  InstructionType|html_escape(
-            &match account_field_type {
+    handlebars_helper!(type_from_account_field: |account_field_type:  InstructionType|
+            match account_field_type {
                 InstructionType::String(name)=>name,
                 InstructionType::vec(content)=>{
                     format!("Vec{}{}{}", "<", match content {
@@ -69,7 +69,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 InstructionType::option(content)=> content.option,
             }
         )
-    );
+    ;
 
     let mut handlebars = Handlebars::new();
 
