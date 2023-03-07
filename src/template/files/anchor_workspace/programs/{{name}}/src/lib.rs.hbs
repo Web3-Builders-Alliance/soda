@@ -18,7 +18,7 @@ pub mod {{name}} {
 // Context
 {{#each instructions}}
 #[derive(Accounts)]
-pub struct {{this.name}}<'info> {
+pub struct {{pascalcase this.name}}<'info> {
     {{#each this.accounts}}
     #[account(mut)]
     pub {{this.name}}: AccountInfo<'info>,

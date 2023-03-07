@@ -20,7 +20,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut template_path = TEMPLATE_DEFAULT_PATH;
     let mut idl_path = IDL_DEFAULT_PATH;
     let cli = Cli::parse();
-    if cli.paths.len() > 0 {
+    if !cli.paths.is_empty() {
         idl_path = &cli.paths[0];
     }
     if cli.paths.len() > 1 {
@@ -41,9 +41,19 @@ fn main() -> Result<(), Box<dyn Error>> {
         )
     );
 
+    handlebars_helper!(pascalcase: |name: String|{
+            let mut passcalcaseChars: Vec<char> = name.chars().collect();
+            let first: Vec<char> = passcalcaseChars[0].to_uppercase().to_string().chars().collect();
+            passcalcaseChars[0] = *first.first().unwrap();
+            let passcalcase: String = passcalcaseChars.into_iter().collect();
+            passcalcase
+        }
+    );
+
     let mut handlebars = Handlebars::new();
 
     handlebars.register_helper("snakecase", Box::new(snakecase));
+    handlebars.register_helper("pascalcase", Box::new(pascalcase));
 
     println!(
         "Creating project from idl {} and template {}",
@@ -53,7 +63,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         match entry {
             Ok(val) => {
                 let path = format!("{}", val.path().to_string_lossy());
-                if path.split('.').collect::<Vec<&str>>().len() > 1 {
+                if path.split('.').count() > 1 {
                     let helper_name = path
                         .get(0..path.len() - 5)
                         .unwrap()
