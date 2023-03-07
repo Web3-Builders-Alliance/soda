@@ -1,10 +1,10 @@
 #![allow(non_snake_case, non_camel_case_types)]
+use clap::Parser;
 use handlebars::Handlebars;
 use serde_derive::{self, Deserialize, Serialize};
 use std::error::Error;
 use std::fs::{canonicalize, create_dir_all, File};
 use walkdir::WalkDir;
-use clap::Parser;
 
 const IDL_DEFAULT_PATH: &str = "./idl.json";
 const TEMPLATE_DEFAULT_PATH: &str = "src/template/";
@@ -20,11 +20,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut template_path = TEMPLATE_DEFAULT_PATH;
     let mut idl_path = IDL_DEFAULT_PATH;
     let cli = Cli::parse();
-    if cli.paths.len()>0{
-         idl_path= &cli.paths[0];
-
+    if cli.paths.len() > 0 {
+        idl_path = &cli.paths[0];
     }
-    if cli.paths.len()>1{
+    if cli.paths.len() > 1 {
         template_path = &cli.paths[1];
     }
     
@@ -34,8 +33,28 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut handlebars = Handlebars::new();
 
-    println!("Creating project from idl {} and template {}", idl_path, template_path);
-    for entry in WalkDir::new(template_path) {
+    println!(
+        "Creating project from idl {} and template {}",
+        idl_path, template_path
+    );
+    for entry in WalkDir::new(format!("{}/helpers/", template_path)) {
+        match entry {
+            Ok(val) => {
+                let path = format!("{}", val.path().to_string_lossy());
+                if path.split('.').collect::<Vec<&str>>().len() > 1 {
+                    let helper_name = path
+                        .get(0..path.len() - 5)
+                        .unwrap()
+                        .split('/')
+                        .last()
+                        .unwrap();
+                    handlebars.register_script_helper_file(helper_name, (*path).to_string())?;
+                }
+            }
+            Err(err) => println!("{}", err),
+        }
+    }
+    for entry in WalkDir::new(format!("{}/files/", template_path)) {
         let entry = entry.unwrap();
         let path = format!("{}", entry.path().display());
         let rel_path = path.get(template_path.len()..path.len()).unwrap();
@@ -168,7 +187,7 @@ pub enum InstructionType {
     String(String),
     vec(InstructionTypeVec),
     defined(Defined),
-    option(OptionType)
+    option(OptionType),
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -176,7 +195,7 @@ pub enum InstructionType {
 pub enum InstructionTypeVec {
     String(String),
     defined(Defined),
-    vec(Vec_)
+    vec(Vec_),
 }
 
 #[derive(Deserialize, Serialize, Debug)]
