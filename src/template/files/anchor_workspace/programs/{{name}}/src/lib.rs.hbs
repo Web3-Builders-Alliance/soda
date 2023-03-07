@@ -8,7 +8,7 @@ pub mod {{name}} {
 
     // Instructions
     {{#each instructions}}
-    pub fn {{this.name}}(ctx: Context<{{this.name}}>) -> Result<()> {
+    pub fn {{snakecase this.name}}(ctx: Context<{{this.name}}>) -> Result<()> {
         Ok(())
     }
 

@@ -1,6 +1,6 @@
 #![allow(non_snake_case, non_camel_case_types)]
 use clap::Parser;
-use handlebars::Handlebars;
+use handlebars::{handlebars_helper, Handlebars};
 use serde_derive::{self, Deserialize, Serialize};
 use std::error::Error;
 use std::fs::{canonicalize, create_dir_all, File};
@@ -26,12 +26,24 @@ fn main() -> Result<(), Box<dyn Error>> {
     if cli.paths.len() > 1 {
         template_path = &cli.paths[1];
     }
-    
+
     let json_file_path = canonicalize(idl_path).unwrap();
     let file = File::open(json_file_path).unwrap();
     let idl: IDL = serde_json::from_reader(file).expect("error while reading json");
 
+    handlebars_helper!(snakecase: |name: String| name.chars().fold(
+            "".to_string(),
+            |acc, letter| if letter.is_uppercase(){
+                format!("{}_{}",acc,letter.to_lowercase())
+            }else{
+                format!("{}{}",acc,letter)
+            }
+        )
+    );
+
     let mut handlebars = Handlebars::new();
+
+    handlebars.register_helper("snakecase", Box::new(snakecase));
 
     println!(
         "Creating project from idl {} and template {}",
