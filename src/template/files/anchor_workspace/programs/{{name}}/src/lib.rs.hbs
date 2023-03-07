@@ -31,7 +31,7 @@ pub struct {{pascalcase this.name}}<'info> {
 #[account]
 pub struct {{this.name}} {
     {{#each this.type.fields}}
-    pub {{this.name}}: {{type_from_account_field this.type}},
+    pub {{this.name}}: {{{type_from_account_field this.type}}},
     {{/each}}
 }
 
@@ -60,7 +60,7 @@ pub struct {{this.name}} {
 #[error_code]
 pub enum ErrorCode {
     {{#each errors}}
-    #[msg("{{this.msg}}")]
+    #[msg("{{{this.msg}}}")]
     {{this.name}},
     {{/each}}
 }
