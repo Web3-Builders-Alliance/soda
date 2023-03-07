@@ -1,6 +1,6 @@
 #![allow(non_snake_case, non_camel_case_types)]
 use clap::Parser;
-use handlebars::{handlebars_helper, Handlebars};
+use handlebars::{handlebars_helper, html_escape, Handlebars};
 use serde_derive::{self, Deserialize, Serialize};
 use std::error::Error;
 use std::fs::{canonicalize, create_dir_all, File};
@@ -50,10 +50,32 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     );
 
+    handlebars_helper!(type_from_account_field: |account_field_type:  InstructionType|html_escape(
+            &match account_field_type {
+                InstructionType::String(name)=>name,
+                InstructionType::vec(content)=>{
+                    format!("Vec{}{}{}", "<", match content {
+                        InstructionTypeVec::String(name)=>name,
+                        InstructionTypeVec::defined(content)=>content.defined,
+                        InstructionTypeVec::vec(content)=>{
+                            match content.vec {
+                                VecEnum::String(name)=>name,
+                                VecEnum::defined(content)=>{content.defined},
+                            }
+                        },
+                    },">")
+                },
+                InstructionType::defined(content)=>content.defined,
+                InstructionType::option(content)=> content.option,
+            }
+        )
+    );
+
     let mut handlebars = Handlebars::new();
 
     handlebars.register_helper("snakecase", Box::new(snakecase));
     handlebars.register_helper("pascalcase", Box::new(pascalcase));
+    handlebars.register_helper("type_from_account_field", Box::new(type_from_account_field));
 
     println!(
         "Creating project from idl {} and template {}",
