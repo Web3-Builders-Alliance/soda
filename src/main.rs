@@ -72,11 +72,14 @@ fn main() -> Result<(), Box<dyn Error>> {
         )
     ;
 
+    handlebars_helper!(debug_idl: |idl: IDL|serde_json::to_string(&idl).unwrap());
+
     let mut handlebars = Handlebars::new();
 
     handlebars.register_helper("snakecase", Box::new(snakecase));
     handlebars.register_helper("pascalcase", Box::new(pascalcase));
     handlebars.register_helper("type_from_account_field", Box::new(type_from_account_field));
+    handlebars.register_helper("debug_idl", Box::new(debug_idl));
 
     println!(
         "Creating project from idl {} and template {}",
@@ -137,6 +140,8 @@ pub struct IDL {
     events: Vec<Event>,
     #[serde(default)]
     errors: Vec<ErrorDesc>,
+    #[serde(default)]
+    metadata: Metadata,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -275,4 +280,9 @@ pub struct TypeFields {
     name: String,
     #[serde(rename = "type")]
     type_: InstructionType,
+}
+
+#[derive(Deserialize, Serialize, Debug, Default)]
+pub struct Metadata {
+    address: String
 }
