@@ -51,26 +51,25 @@ fn main() -> Result<(), Box<dyn Error>> {
     );
 
     handlebars_helper!(type_from_account_field: |account_field_type:  InstructionType|
-            match account_field_type {
-                InstructionType::String(name)=>name,
-                InstructionType::vec(content)=>{
-                    format!("Vec{}{}{}", "<", match content {
-                        InstructionTypeVec::String(name)=>name,
-                        InstructionTypeVec::defined(content)=>content.defined,
-                        InstructionTypeVec::vec(content)=>{
-                            match content.vec {
-                                VecEnum::String(name)=>name,
-                                VecEnum::defined(content)=>{content.defined},
-                            }
-                        },
-                    },">")
-                },
-                InstructionType::defined(content)=>content.defined,
-                InstructionType::option(content)=> content.option,
-            }.replace("publicKey", "Pubkey")
-            .replace("string", "String")
-        )
-    ;
+        match account_field_type {
+            InstructionType::String(name)=>name,
+            InstructionType::vec(content)=>{
+                format!("Vec{}{}{}", "<", match content {
+                    InstructionTypeVec::String(name)=>name,
+                    InstructionTypeVec::defined(content)=>content.defined,
+                    InstructionTypeVec::vec(content)=>{
+                        match content.vec {
+                            VecEnum::String(name)=>name,
+                            VecEnum::defined(content)=>{content.defined},
+                        }
+                    },
+                },">")
+            },
+            InstructionType::defined(content)=>content.defined,
+            InstructionType::option(content)=> content.option,
+        }.replace("publicKey", "Pubkey")
+        .replace("string", "String")
+    );
 
     handlebars_helper!(debug_idl: |idl: IDL|serde_json::to_string(&idl).unwrap());
 
@@ -102,13 +101,56 @@ fn main() -> Result<(), Box<dyn Error>> {
             Err(err) => println!("{}", err),
         }
     }
-    for entry in WalkDir::new(format!("{}/files/", template_path)) {
-        let entry = entry.unwrap();
-        let path = format!("{}", entry.path().display());
+    let paths = WalkDir::new(format!("{}/files/", template_path));
+    let paths_strings = paths.into_iter().fold(vec![], |mut acc, mut path| {
+        acc.push(format!("{}", path.unwrap().path().display()));
+        acc
+    });
+
+    // Verificar paths con each
+    let paths_template = paths_strings.iter().fold(vec![], |mut acc, mut path| {
         let rel_path = path.get(template_path.len()..path.len()).unwrap();
+        if path.contains("{{#each") {
+            let breaks: Vec<(usize, &str)> = path.match_indices("{{#each").collect();
+            println!("{:#?}", breaks);
+            if breaks.len() % 2 == 0 {
+                let resultant: Vec<(usize,&(usize,&str))> =
+                    breaks
+                        .iter()
+                        .enumerate().collect();
+                let mut arr = [].to_vec();
+                for(index, (break_index, _)) in resultant {
+                            if index % 2 == 0 && breaks.len() > index + 1 {
+                                let (close_index, _) = breaks[index + 1];
+                                let (rest, last_part) = path.split_at(close_index + 9);
+                                let (prev_part, exp) = rest.split_at(*break_index);
+                                println!("{} - {} - {} - {}", path, prev_part, exp, last_part);
+                                let expresion_whithout_last: String =
+                                    exp.get(0..exp.len() - 9).unwrap().to_string();
+                                println!("{} - {}", exp, expresion_whithout_last);
+                                let expresion =
+                                    format!("{},{}", expresion_whithout_last, "{{/each}}");
+
+                                let new_paths = handlebars.render_template(&expresion, &idl);
+                                let new_paths_unwrapped = String::from(new_paths.unwrap());
+
+
+                                arr.append(&mut new_paths_unwrapped.split(",").collect());
+                            }
+                        };
+
+            }
+            acc
+        } else {
+            acc.push((path, rel_path));
+            acc
+        }
+    });
+
+    for (path, template_path) in paths_template {
         if path.split('.').last().unwrap() == "hbs" {
             let file_path = handlebars
-                .render_template(rel_path.get(0..rel_path.len() - 4).unwrap(), &idl)
+                .render_template(template_path.get(0..template_path.len() - 4).unwrap(), &idl)
                 .unwrap();
             handlebars
                 .register_template_file("template", (*path).to_string())
@@ -117,7 +159,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             handlebars.render_to_write("template", &idl, &mut output_lib_file)?;
             println!("{}", file_path);
         } else {
-            let dir_path = handlebars.render_template(rel_path, &idl).unwrap();
+            let dir_path = handlebars.render_template(template_path, &idl).unwrap();
             create_dir_all(format!("output/{}", dir_path))?;
             println!("{}", dir_path);
         };
@@ -284,5 +326,5 @@ pub struct TypeFields {
 
 #[derive(Deserialize, Serialize, Debug, Default)]
 pub struct Metadata {
-    address: String
+    address: String,
 }
