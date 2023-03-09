@@ -105,7 +105,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     for entry in WalkDir::new(format!("{}/files/", template_path)) {
         let entry = entry.unwrap();
         let path = format!("{}", entry.path().display());
-        let rel_path = path.get(template_path.len()..path.len()).unwrap();
+        let rel_path = path.get(template_path.len()+6..path.len()).unwrap();
         if path.split('.').last().unwrap() == "hbs" {
             let file_path = handlebars
                 .render_template(rel_path.get(0..rel_path.len() - 4).unwrap(), &idl)
@@ -113,12 +113,12 @@ fn main() -> Result<(), Box<dyn Error>> {
             handlebars
                 .register_template_file("template", (*path).to_string())
                 .unwrap();
-            let mut output_lib_file = File::create(format!("output/{}", file_path))?;
+            let mut output_lib_file = File::create(format!("{}/{}", &idl.name, file_path))?;
             handlebars.render_to_write("template", &idl, &mut output_lib_file)?;
             println!("{}", file_path);
         } else {
             let dir_path = handlebars.render_template(rel_path, &idl).unwrap();
-            create_dir_all(format!("output/{}", dir_path))?;
+            create_dir_all(format!("{}/{}", &idl.name, dir_path))?;
             println!("{}", dir_path);
         };
     }
