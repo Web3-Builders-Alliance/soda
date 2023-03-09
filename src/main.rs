@@ -1,6 +1,6 @@
 #![allow(non_snake_case, non_camel_case_types)]
 use clap::Parser;
-use handlebars::{handlebars_helper, html_escape, Handlebars};
+use handlebars::{handlebars_helper, Handlebars};
 use serde_derive::{self, Deserialize, Serialize};
 use std::error::Error;
 use std::fs::{canonicalize, create_dir_all, File};
