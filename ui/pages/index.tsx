@@ -1,4 +1,4 @@
-import { Section } from "@/components/section";
+import { Section } from "@/components/Section";
 import Head from "next/head";
 import { useState } from "react";
 
@@ -53,7 +53,7 @@ export default function Home() {
           </button>
         </div>
       )}
-      <main className="bg-gray-800">
+      <main className="bg-gray-800 py-5">
         {[
           { name: instructions, item: instructions, setItem: setInstructions },
           { name: types, item: types, setItem: setTypes },

@@ -1,4 +1,5 @@
 import { FC } from "react";
+import { NewItem } from "../NewItem";
 
 export const Section: FC<any> = ({content, setContent}) => {
 
@@ -7,6 +8,7 @@ export const Section: FC<any> = ({content, setContent}) => {
       {content?.map((item:any)=>(
         <div key={item.name}>{item.name}</div>
       ))}
+      <NewItem />
     </section>
   );
 };
