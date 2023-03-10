@@ -5,7 +5,7 @@ import { Card } from "../Card";
 export const Section: FC<any> = ({ name, content, setContent, initExpanded= false }) => {
   const [expanded, setExpanded] = useState(initExpanded);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newIntructionName, setNewIntructionName] = useState<string>("Instruction Name");
+  const [newIntructionName, setNewIntructionName] = useState<string>("instruction_name");
   const [editingItem, setEditingItem] = useState(0);
 
   useEffect(()=>console.log(isModalOpen),[isModalOpen])
