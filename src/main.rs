@@ -147,7 +147,9 @@ pub struct IDL {
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Instruction {
     name: String,
+    #[serde(default)]
     accounts: Vec<InstructionAccount>,
+    #[serde(default)]
     args: Vec<InstructionArgs>,
 }
 

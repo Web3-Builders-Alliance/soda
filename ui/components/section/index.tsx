@@ -1,8 +1,14 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { NewItem } from "../NewItem";
+import { Card } from "../Card";
 
-export const Section: FC<any> = ({ name, content, setContent }) => {
-  const [expanded, setExpanded] = useState(true);
+export const Section: FC<any> = ({ name, content, setContent, initExpanded= false }) => {
+  const [expanded, setExpanded] = useState(initExpanded);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newIntructionName, setNewIntructionName] = useState<string>("instruction");
+  const [editingItem, setEditingItem] = useState(0);
+
+  useEffect(()=>console.log(isModalOpen),[isModalOpen])
   return (
     <section className={`flex p-5 m-5 border border-gray-900 bg-gray-700 relative`}>
       <div
@@ -10,11 +16,23 @@ export const Section: FC<any> = ({ name, content, setContent }) => {
       >
         {name}
       </div>
-      <div className={`transition-all duration-500 ease-in-out overflow-x-auto overflow-y-hidden ${expanded ? "h-64" : " h-4"}`}>
-      {content?.map((item: any) => (
-        <div key={item.name}>{item.name}</div>
+      <div className={`mini-scrollbar flex transition-all duration-500 ease-in-out overflow-x-auto overflow-y-hidden ${expanded ? "h-64" : " overflow-x-hidden h-4"}`}>
+      {content.map((item: { name: string; }, index:number) => (
+        <Card
+          key={item.name}
+          name={item.name}
+          onClick={()=>{
+            setEditingItem(index)
+            setIsModalOpen(true)
+          }}
+        />
       ))}
-      <NewItem />
+      <NewItem
+        onClick={()=>{
+          setEditingItem((content?.length ?? 0) + 1)
+          setIsModalOpen(true)}
+        }
+      />
       </div>
       <button
         type="button"
@@ -25,6 +43,34 @@ export const Section: FC<any> = ({ name, content, setContent }) => {
       >
         {expanded ? "-" : "+"}
       </button>
+      {isModalOpen && (
+        <div className="p-5 text-red text-center bg-white w-full absolute top-40">
+                <input
+            placeholder="Instruction's Name"
+            value={newIntructionName}
+            onChange={(e) => setNewIntructionName(e.target.value)}
+            className="p-5 mb-5 text-center bg-gray-800 text-white"
+          />
+          <button
+            className="p-2 m-2 mx-auto bg-purple-900 text-white mt-5"
+            onClick={() => setIsModalOpen(false)}
+          >
+            Cancel
+          </button>
+          <button
+            className="p-2 m-2 mx-auto bg-purple-900 text-white mt-5"
+            onClick={() => {
+              setIsModalOpen(false)
+              setContent([
+                ...content,
+                {name:newIntructionName}
+              ])
+            }}
+          >
+            Save
+          </button>
+        </div>
+      )}
     </section>
   );
 };
