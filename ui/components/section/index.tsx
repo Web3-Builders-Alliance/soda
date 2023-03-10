@@ -5,7 +5,7 @@ import { Card } from "../Card";
 export const Section: FC<any> = ({ name, content, setContent, initExpanded= false }) => {
   const [expanded, setExpanded] = useState(initExpanded);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newIntructionName, setNewIntructionName] = useState<string>("instruction");
+  const [newIntructionName, setNewIntructionName] = useState<string>("instruction_name");
   const [editingItem, setEditingItem] = useState(0);
 
   useEffect(()=>console.log(isModalOpen),[isModalOpen])
@@ -44,21 +44,22 @@ export const Section: FC<any> = ({ name, content, setContent, initExpanded= fals
         {expanded ? "-" : "+"}
       </button>
       {isModalOpen && (
-        <div className="p-5 text-red text-center bg-white w-full absolute top-40">
+        <div className="flex flex-col p-5 text-red text-center bg-purple-900 absolute left-5 top-5 right-5 bottom-5">
                 <input
             placeholder="Instruction's Name"
             value={newIntructionName}
             onChange={(e) => setNewIntructionName(e.target.value)}
             className="p-5 mb-5 text-center bg-gray-800 text-white"
           />
+          <div>
           <button
-            className="p-2 m-2 mx-auto bg-purple-900 text-white mt-5"
+            className="p-2 m-2 mx-auto bg-red-900 text-white mt-5"
             onClick={() => setIsModalOpen(false)}
           >
             Cancel
           </button>
           <button
-            className="p-2 m-2 mx-auto bg-purple-900 text-white mt-5"
+            className="p-2 m-2 mx-auto bg-green-900 text-white mt-5"
             onClick={() => {
               setIsModalOpen(false)
               setContent([
@@ -69,6 +70,7 @@ export const Section: FC<any> = ({ name, content, setContent, initExpanded= fals
           >
             Save
           </button>
+          </div>
         </div>
       )}
     </section>
