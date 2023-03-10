@@ -61,13 +61,13 @@ export default function Home() {
             className="p-5 mb-5 text-center bg-gray-800 text-white"
           />
         {[
-          { name: instructions, item: instructions, setItem: setInstructions },
-          { name: types, item: types, setItem: setTypes },
-          { name: accounts, item: accounts, setItem: setAccounts },
-          { name: events, item: events, setItem: setEvents },
-          { name: errors, item: errors, setItem: setErrors },
+          { name: "Instructions", item: instructions, setItem: setInstructions },
+          { name: "Types", item: types, setItem: setTypes },
+          { name: "Accounts", item: accounts, setItem: setAccounts },
+          { name: "Events", item: events, setItem: setEvents },
+          { name: "Errors", item: errors, setItem: setErrors },
         ].map(({ item, setItem, name }) => (
-          <Section key={name} content={item} setContent={setItem} />
+          <Section key={name} name={name} content={item} setContent={setItem} />
         ))}
         <button type="button"
           className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-white font-semibold"
