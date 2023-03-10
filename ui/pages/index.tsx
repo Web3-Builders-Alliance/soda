@@ -1,29 +1,30 @@
-import Head from 'next/head'
-import { useState } from 'react';
+import { Section } from "@/components/section";
+import Head from "next/head";
+import { useState } from "react";
 
 type Err = {
-  message?: String,
+  message?: String;
 };
 
 export default function Home() {
-  const [error, setError] = useState<Err|false>();
+  const [error, setError] = useState<Err | false>();
   const [name, setName] = useState<string>("name");
-  const [instructions, setInstructions] = useState<any>( [],);
-  const [types, setTypes] = useState<any>([],);
-  const [accounts, setAccounts] = useState<any>([],);
-  const [events, setEvents] = useState<any>([],);
-  const [errors, setErrors] = useState<any>([],);
+  const [instructions, setInstructions] = useState<any>([]);
+  const [types, setTypes] = useState<any>([]);
+  const [accounts, setAccounts] = useState<any>([]);
+  const [events, setEvents] = useState<any>([]);
+  const [errors, setErrors] = useState<any>([]);
 
   const exportData = () => {
     const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
       JSON.stringify({
-        "version": "0.1.0",
+        version: "0.1.0",
         name,
         instructions,
         accounts,
         types,
         events,
-        errors
+        errors,
       })
     )}`;
     const link = document.createElement("a");
@@ -52,11 +53,20 @@ export default function Home() {
           </button>
         </div>
       )}
-      <main className="bg-blue-900">
-      <button type="button" onClick={exportData}>
-        Download IDL
-      </button>
+      <main className="bg-gray-800">
+        {[
+          { name: instructions, item: instructions, setItem: setInstructions },
+          { name: types, item: types, setItem: setTypes },
+          { name: accounts, item: accounts, setItem: setAccounts },
+          { name: events, item: events, setItem: setEvents },
+          { name: errors, item: errors, setItem: setErrors },
+        ].map(({ item, setItem, name }) => (
+          <Section key={name} content={item} setContent={setItem} />
+        ))}
+        <button type="button" onClick={exportData}>
+          Download IDL
+        </button>
       </main>
     </>
-  )
+  );
 }
