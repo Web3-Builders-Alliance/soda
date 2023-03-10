@@ -9,9 +9,13 @@ type Err = {
 export default function Home() {
   const [error, setError] = useState<Err | false>();
   const [name, setName] = useState<string>("Project's Name");
-  const [instructions, setInstructions] = useState<any>([]);
-  const [types, setTypes] = useState<any>([]);
+  const [instructions, setInstructions] = useState<any>([
+    {
+      name: "initialize",
+    },
+  ]);
   const [accounts, setAccounts] = useState<any>([]);
+  const [types, setTypes] = useState<any>([]);
   const [events, setEvents] = useState<any>([]);
   const [errors, setErrors] = useState<any>([]);
 
@@ -54,22 +58,54 @@ export default function Home() {
         </div>
       )}
       <main className="bg-gray-800 py-5 flex flex-col justify-center">
-      <input
-            placeholder="Project's Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="p-5 mb-5 text-center bg-gray-800 text-white"
-          />
+        <input
+          placeholder="Project's Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="p-5 mb-5 text-center bg-gray-800 text-white"
+        />
         {[
-          { name: "Instructions", item: instructions, setItem: setInstructions },
-          { name: "Types", item: types, setItem: setTypes },
-          { name: "Accounts", item: accounts, setItem: setAccounts },
-          { name: "Events", item: events, setItem: setEvents },
-          { name: "Errors", item: errors, setItem: setErrors },
-        ].map(({ item, setItem, name }) => (
-          <Section key={name} name={name} content={item} setContent={setItem} />
+          {
+            name: "Instructions",
+            item: instructions,
+            setItem: setInstructions,
+            initExpanded: true,
+          },
+          {
+            name: "Accounts",
+            item: accounts,
+            setItem: setAccounts,
+            initExpanded: false,
+          },
+          {
+            name: "Types",
+            item: types,
+            setItem: setTypes,
+            initExpanded: false,
+          },
+          {
+            name: "Events",
+            item: events,
+            setItem: setEvents,
+            initExpanded: false,
+          },
+          {
+            name: "Errors",
+            item: errors,
+            setItem: setErrors,
+            initExpanded: false,
+          },
+        ].map(({ item, setItem, name, initExpanded }) => (
+          <Section
+            key={name}
+            name={name}
+            content={item}
+            setContent={setItem}
+            initExpanded={initExpanded}
+          />
         ))}
-        <button type="button"
+        <button
+          type="button"
           className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-white font-semibold"
           onClick={exportData}
         >
