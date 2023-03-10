@@ -8,7 +8,7 @@ type Err = {
 
 export default function Home() {
   const [error, setError] = useState<Err | false>();
-  const [name, setName] = useState<string>("name");
+  const [name, setName] = useState<string>("Project's Name");
   const [instructions, setInstructions] = useState<any>([]);
   const [types, setTypes] = useState<any>([]);
   const [accounts, setAccounts] = useState<any>([]);
@@ -53,7 +53,13 @@ export default function Home() {
           </button>
         </div>
       )}
-      <main className="bg-gray-800 py-5">
+      <main className="bg-gray-800 py-5 flex flex-col justify-center">
+      <input
+            placeholder="Project's Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="p-5 mb-5 text-center bg-gray-800 text-white"
+          />
         {[
           { name: instructions, item: instructions, setItem: setInstructions },
           { name: types, item: types, setItem: setTypes },
@@ -63,7 +69,10 @@ export default function Home() {
         ].map(({ item, setItem, name }) => (
           <Section key={name} content={item} setContent={setItem} />
         ))}
-        <button type="button" onClick={exportData}>
+        <button type="button"
+          className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-white font-semibold"
+          onClick={exportData}
+        >
           Download IDL
         </button>
       </main>
