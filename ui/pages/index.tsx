@@ -1,12 +1,18 @@
 import { Section } from "@/components/Section";
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { invoke } from "@tauri-apps/api/tauri"
 
 type Err = {
   message?: String;
 };
 
 export default function Home() {
+  useEffect(() => {
+    invoke('greet', { name: 'World' })
+    .then(console.log)
+    .catch(console.error)
+  }, []);
   const [error, setError] = useState<Err | false>();
   const [name, setName] = useState<string>("Project's Name");
   const [instructions, setInstructions] = useState<any>([
