@@ -21,13 +21,10 @@ fn main() {
 }
 
 #[tauri::command]
-fn greet(name: &str) -> String {
+fn greet(idl: &str) -> String {
   let mut template_path = TEMPLATE_DEFAULT_PATH;
-  let mut idl_path = IDL_DEFAULT_PATH;
 
-  let json_file_path = canonicalize(idl_path).unwrap();
-  let file = File::open(json_file_path).unwrap();
-  let idl: IDL = serde_json::from_reader(file).expect("error while reading json");
+  let idl: IDL = serde_json::from_str(idl).expect("error while reading json");
 
   handlebars_helper!(snakecase: |name: String| name.chars().fold(
           "".to_string(),
@@ -79,10 +76,6 @@ fn greet(name: &str) -> String {
   handlebars.register_helper("type_from_account_field", Box::new(type_from_account_field));
   handlebars.register_helper("debug_idl", Box::new(debug_idl));
 
-  println!(
-      "Creating project from idl {} and template {}",
-      idl_path, template_path
-  );
   for entry in WalkDir::new(format!("{}/helpers/", template_path)) {
       match entry {
           Ok(val) => {
@@ -121,8 +114,7 @@ fn greet(name: &str) -> String {
       };
   }
 
-  println!("Project Generated!");
-   format!("Hello, {}!", name)
+   format!("Project Generated!")
 }
 
 

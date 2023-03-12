@@ -8,11 +8,6 @@ type Err = {
 };
 
 export default function Home() {
-  useEffect(() => {
-    invoke('greet', { name: 'World' })
-    .then(console.log)
-    .catch(console.error)
-  }, []);
   const [error, setError] = useState<Err | false>();
   const [name, setName] = useState<string>("Project's Name");
   const [instructions, setInstructions] = useState<any>([
@@ -26,7 +21,7 @@ export default function Home() {
   const [errors, setErrors] = useState<any>([]);
 
   const exportData = () => {
-    const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
+    const idl = 
       JSON.stringify({
         version: "0.1.0",
         name,
@@ -35,13 +30,11 @@ export default function Home() {
         types,
         events,
         errors,
-      })
-    )}`;
-    const link = document.createElement("a");
-    link.href = jsonString;
-    link.download = "idl.json";
+      });
 
-    link.click();
+      invoke('greet', { idl })
+      .then(console.log)
+      .catch(console.error)
   };
 
   return (
