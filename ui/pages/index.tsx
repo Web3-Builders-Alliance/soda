@@ -1,7 +1,7 @@
 import { Section } from "@/components/Section";
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import { invoke } from "@tauri-apps/api/tauri"
+import { invoke } from "@tauri-apps/api/tauri";
 
 type Err = {
   message?: String;
@@ -21,20 +21,17 @@ export default function Home() {
   const [errors, setErrors] = useState<any>([]);
 
   const exportData = () => {
-    const idl = 
-      JSON.stringify({
-        version: "0.1.0",
-        name,
-        instructions,
-        accounts,
-        types,
-        events,
-        errors,
-      });
+    const idl = JSON.stringify({
+      version: "0.1.0",
+      name,
+      instructions,
+      accounts,
+      types,
+      events,
+      errors,
+    });
 
-      invoke('greet', { idl })
-      .then(console.log)
-      .catch(console.error)
+    invoke("greet", { idl }).then(console.log).catch(console.error);
   };
 
   return (
@@ -108,7 +105,7 @@ export default function Home() {
           className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200  "
           onClick={exportData}
         >
-          Download IDL
+          Create Project
         </button>
       </main>
     </>
