@@ -56,12 +56,12 @@ export default function Home() {
           </button>
         </div>
       )}
-      <main className="bg-gray-800 py-5 flex flex-col justify-center">
+      <main className="bg-neutral-900 py-5 flex flex-col justify-center min-h-screen">
         <input
           placeholder="Project's Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="p-5 mb-5 text-center bg-gray-800 text-white"
+          className="p-5 mb-5 m-5 bg-black text-white text-center text-base font-mono rounded-md ring-2 ring-neutral-700"
         />
         {[
           {
@@ -105,7 +105,7 @@ export default function Home() {
         ))}
         <button
           type="button"
-          className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-white font-semibold"
+          className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200  "
           onClick={exportData}
         >
           Download IDL
