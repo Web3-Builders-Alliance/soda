@@ -31,7 +31,7 @@ export default function Home() {
       errors,
     });
 
-    invoke("greet", { idl }).then(console.log).catch(console.error);
+    invoke("generate", { idl }).then(console.log).catch(console.error);
   };
 
   return (

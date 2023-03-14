@@ -7,7 +7,7 @@ use std::fs::{canonicalize, create_dir_all, File};
 use walkdir::WalkDir;
 
 const IDL_DEFAULT_PATH: &str = "./idl.json";
-const TEMPLATE_DEFAULT_PATH: &str = "src/template/";
+const TEMPLATE_DEFAULT_PATH: &str = "./template/";
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
