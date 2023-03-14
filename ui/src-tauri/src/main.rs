@@ -11,8 +11,6 @@ use std::fs::{canonicalize, create_dir_all, File};
 use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
 use walkdir::WalkDir;
 
-const TEMPLATE_DEFAULT_PATH: &str = "/Users/juan/soda/template";
-
 fn main() {
     let quit = CustomMenuItem::new("quit".to_string(), "Quit");
     let close = CustomMenuItem::new("close".to_string(), "Close");
@@ -60,8 +58,8 @@ fn main() {
 }
 
 #[tauri::command]
-fn generate(idl: &str) -> String {
-    let mut template_path = TEMPLATE_DEFAULT_PATH;
+fn generate(idl: &str, template_path:&str) -> String {
+
     let idl: IDL = serde_json::from_str(idl).expect("error while reading json");
 
     handlebars_helper!(snakecase: |name: String| name.chars().fold(
