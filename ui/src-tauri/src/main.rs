@@ -21,6 +21,7 @@ fn main() {
     let generate_project =
         CustomMenuItem::new("generate_project".to_string(), "Generate Project's Files");
     let new_project = CustomMenuItem::new("new_project".to_string(), "New Project");
+    let change_template =  CustomMenuItem::new("change_template".to_string(), "Select Template");
     let submenu = Submenu::new(
         "File",
         Menu::new()
@@ -28,6 +29,7 @@ fn main() {
             .add_item(new_project)
             .add_item(generate_project)
             .add_item(generate_idl)
+            .add_item(change_template)
             .add_item(quit)
             .add_item(close),
     );
@@ -45,18 +47,11 @@ fn main() {
             "close" => {
                 event.window().close().unwrap();
             }
-            "open_idl" => {
-                event.window().close().unwrap();
-            }
-            "new_project" => {
-                event.window().close().unwrap();
-            }
-            "generate_project" => {
-                event.window().close().unwrap();
-            }
-            "generate_idl" => {
-                event.window().close().unwrap();
-            }
+            "open_idl" => {}
+            "new_project"=> {}
+            "generate_project" => {}
+            "generate_idl" => {}
+            "change_template"=> {}
             _ => {}
         })
         .invoke_handler(tauri::generate_handler![greet])
