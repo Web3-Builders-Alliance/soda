@@ -19,7 +19,7 @@ export default function Home() {
   const [types, setTypes] = useState<any>([]);
   const [events, setEvents] = useState<any>([]);
   const [errors, setErrors] = useState<any>([]);
-
+  const [templatePath, setTemplatePath] = useState(process.env.NEXT_PUBLIC_TEMPLATE_DEFAULT ?? "");
   const exportData = () => {
     const idl = JSON.stringify({
       version: "0.1.0",
@@ -31,7 +31,7 @@ export default function Home() {
       errors,
     });
 
-    invoke("greet", { idl }).then(console.log).catch(console.error);
+    invoke("generate", { idl, templatePath }).then(console.log).catch(console.error);
   };
 
   return (
