@@ -56,7 +56,7 @@ export default function Home() {
           </button>
         </div>
       )}
-      <main className="bg-neutral-900 py-5 flex flex-col justify-center">
+      <main className="bg-neutral-900 py-5 flex flex-col justify-center min-h-screen">
         <input
           placeholder="Project's Name"
           value={name}
