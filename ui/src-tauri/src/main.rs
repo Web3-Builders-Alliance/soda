@@ -58,8 +58,10 @@ fn main() {
 }
 
 #[tauri::command]
-fn generate(idl: &str, template_path:&str) -> String {
-
+fn generate(handle: tauri::AppHandle, idl: &str, ) -> String {
+    let mut template_path = handle.path_resolver()
+    .resolve_resource("../../template")
+    .expect("failed to resolve resource").display().to_string();
     let idl: IDL = serde_json::from_str(idl).expect("error while reading json");
 
     handlebars_helper!(snakecase: |name: String| name.chars().fold(
