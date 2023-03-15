@@ -1,12 +1,16 @@
 # SODA: Ship a Solana program inferred from Solana data.
 
 A tool for Solana development and audit that allows you to automate tasks and build Solana programs and clients from: IDLs, on-chain data, existing repos, input and output examples of each instruction, and naming conventions, among other possible resources.
+From IDL to whatever you want.
 
 ### First Version Features
 
-* **Generate Solana Program and client from IDL.**
-* **Template based: create your custom building blocks.**
-* **Compatibility with Anchor.**
+
+- **Generate Solana Program and client from IDL.**
+- **Write, read and edit IDL in a desktop UI.** 
+- **Template based: create your custom building blocks.**
+- **Lang and chain agnostic.**
+- **Compatibility with Anchor.**
 
 ## Getting Started
 
