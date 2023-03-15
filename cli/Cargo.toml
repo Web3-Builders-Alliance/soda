@@ -1,15 +1,12 @@
 [package]
-name = "soda"
+name = "soda-cli"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-serde = "1.0.152"
 serde_json = "1.0.93"
-handlebars = { version = "4.3.6", features = ["script_helper"]}
 env_logger = "0.10"
-serde_derive = "1.0.152"
-walkdir = "2.3.2"
 clap = { version = "4.1.8", features = ["derive"] }
+soda = { path = "../crate" }
