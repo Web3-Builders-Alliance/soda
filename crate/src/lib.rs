@@ -85,56 +85,69 @@ pub mod soda {
                 if breaks.len() % 2 == 0 {
                     let resultant: Vec<(usize, &(usize, &str))> =
                         breaks.iter().enumerate().collect();
-                    let mut arr: Vec<String> = [].to_vec();
                     for (index, (break_index, _)) in resultant {
                         if index % 2 == 0 && breaks.len() > index + 1 {
                             let (close_index, _) = breaks[index + 1];
                             let (rest, last_part) = path.split_at(close_index + 9);
                             let (prev_part, exp) = rest.split_at(*break_index);
-
                             let expresion_whithout_last: String =
                                 exp.get(0..exp.len() - 9).unwrap().to_string();
-
                             let expresion = format!("{},{}", expresion_whithout_last, "{{/each}}");
-
                             let new_paths = handlebars.render_template(&expresion, &idl);
                             let mut new_paths_unwrapped = String::from(new_paths.unwrap());
-                            let mut new_arr: Vec<String> =
-                                (&mut new_paths_unwrapped).split(",").into_iter().map(|str|str.to_string()).collect();
+                            let mut new_paths_with_template: Vec<(String, String, Vec<String>)> =
+                                (&mut new_paths_unwrapped)
+                                    .split(",")
+                                    .into_iter()
+                                    .map(|middle_part| {
+                                        (
+                                            format!("{}{}{}", prev_part, middle_part, last_part),
+                                            path.clone(),
+                                            [middle_part.to_string()].to_vec(),
+                                        )
+                                    })
+                                    .collect();
 
-                            arr.append(&mut new_arr);
+                            files.append(&mut new_paths_with_template);
                         }
                     }
-                    files.push((path.clone(), arr));
+                } else {
+                    println!(
+                        "WARN: skipping {} open and clossing #each doesn't match",
+                        path
+                    )
                 }
             } else {
-                files.push((path.clone(), [path].to_vec()));
+                files.push((path.clone(), path, [].to_vec()));
             }
         }
         println!("{:#?}", files);
-        for entry in WalkDir::new(format!("{}/files/", template_path)) {
-            let entry = entry.unwrap();
-            let path = format!("{}", entry.path().display());
+        for (path, template, path_replacements) in files {
+            //    let data = Data {idl:idl, path_replacements};
             let rel_path = path.get(template_path.len() + 6..path.len()).unwrap();
             if path.split('.').last().unwrap() == "hbs" {
                 let file_path = handlebars
                     .render_template(rel_path.get(0..rel_path.len() - 4).unwrap(), &idl)
                     .unwrap();
                 handlebars
-                    .register_template_file("template", (*path).to_string())
+                    .register_template_file("template", template)
                     .unwrap();
                 let mut output_lib_file =
                     File::create(format!("{}/{}", &idl.name, file_path)).unwrap();
                 handlebars
                     .render_to_write("template", &idl, &mut output_lib_file)
                     .unwrap();
-                println!("{}", file_path);
             } else {
                 let dir_path = handlebars.render_template(rel_path, &idl).unwrap();
                 create_dir_all(format!("{}/{}", &idl.name, dir_path)).unwrap();
-                println!("{}", dir_path);
             };
         }
+    }
+
+    #[derive(Deserialize, Serialize, Debug)]
+    struct Data {
+        idl: IDL,
+        path_replacements: Vec<String>,
     }
 
     #[derive(Deserialize, Serialize, Debug)]
