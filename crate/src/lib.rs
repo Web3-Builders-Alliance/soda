@@ -75,6 +75,42 @@ pub mod soda {
                 Err(err) => println!("{}", err),
             }
         }
+
+        let mut files = vec![];
+        for entry in WalkDir::new(format!("{}/files/", template_path)) {
+            let entry = entry.unwrap();
+            let path = format!("{}", entry.path().display());
+            if path.contains("{{#each") {
+                let breaks: Vec<(usize, &str)> = path.match_indices("{{#each").collect();
+                if breaks.len() % 2 == 0 {
+                    let resultant: Vec<(usize, &(usize, &str))> =
+                        breaks.iter().enumerate().collect();
+                    let mut arr: Vec<&str> = [].to_vec();
+                    for (index, (break_index, _)) in resultant {
+                        if index % 2 == 0 && breaks.len() > index + 1 {
+                            let (close_index, _) = breaks[index + 1];
+                            let (rest, last_part) = path.split_at(close_index + 9);
+                            let (prev_part, exp) = rest.split_at(*break_index);
+                            println!("{} - {} - {} - {}", path, prev_part, exp, last_part);
+                            let expresion_whithout_last: String =
+                                exp.get(0..exp.len() - 9).unwrap().to_string();
+                            println!("{} - {}", exp, expresion_whithout_last);
+                            let expresion = format!("{},{}", expresion_whithout_last, "{{/each}}");
+
+                            let new_paths = handlebars.render_template(&expresion, &idl);
+                            let mut new_paths_unwrapped = String::from(new_paths.unwrap());
+                            let mut new_arr: Vec<&str> =
+                                (&mut new_paths_unwrapped).split(",").into_iter().collect();
+
+                            arr.append(&mut new_arr);
+                        }
+                    }
+                }
+            } else {
+                files.push((path.clone(), path));
+            }
+        }
+
         for entry in WalkDir::new(format!("{}/files/", template_path)) {
             let entry = entry.unwrap();
             let path = format!("{}", entry.path().display());
@@ -100,167 +136,165 @@ pub mod soda {
         }
     }
 
+    #[derive(Deserialize, Serialize, Debug)]
+    pub struct IDL {
+        version: String,
+        name: String,
+        instructions: Vec<Instruction>,
+        #[serde(default)]
+        accounts: Vec<Accounts>,
+        #[serde(default)]
+        types: Vec<Types>,
+        #[serde(default)]
+        events: Vec<Event>,
+        #[serde(default)]
+        errors: Vec<ErrorDesc>,
+        #[serde(default)]
+        metadata: Metadata,
+    }
 
-#[derive(Deserialize, Serialize, Debug)]
-pub struct IDL {
-    version: String,
-    name: String,
-    instructions: Vec<Instruction>,
-    #[serde(default)]
-    accounts: Vec<Accounts>,
-    #[serde(default)]
-    types: Vec<Types>,
-    #[serde(default)]
-    events: Vec<Event>,
-    #[serde(default)]
-    errors: Vec<ErrorDesc>,
-    #[serde(default)]
-    metadata: Metadata,
-}
+    #[derive(Deserialize, Serialize, Debug)]
+    pub struct Instruction {
+        name: String,
+        #[serde(default)]
+        accounts: Vec<InstructionAccount>,
+        #[serde(default)]
+        args: Vec<InstructionArgs>,
+    }
 
-#[derive(Deserialize, Serialize, Debug)]
-pub struct Instruction {
-    name: String,
-    #[serde(default)]
-    accounts: Vec<InstructionAccount>,
-    #[serde(default)]
-    args: Vec<InstructionArgs>,
-}
+    #[derive(Deserialize, Serialize, Debug)]
+    pub struct Accounts {
+        name: String,
+        #[serde(rename = "type")]
+        type_: Type,
+    }
 
-#[derive(Deserialize, Serialize, Debug)]
-pub struct Accounts {
-    name: String,
-    #[serde(rename = "type")]
-    type_: Type,
-}
+    #[derive(Deserialize, Serialize, Debug)]
+    pub struct Types {
+        name: String,
+        #[serde(rename = "type")]
+        type_: Kind,
+    }
 
-#[derive(Deserialize, Serialize, Debug)]
-pub struct Types {
-    name: String,
-    #[serde(rename = "type")]
-    type_: Kind,
-}
+    #[derive(Deserialize, Serialize, Debug)]
+    pub struct Event {
+        name: String,
+        fields: Vec<Field>,
+    }
 
-#[derive(Deserialize, Serialize, Debug)]
-pub struct Event {
-    name: String,
-    fields: Vec<Field>,
-}
+    #[derive(Deserialize, Serialize, Debug)]
+    pub struct ErrorDesc {
+        code: u64,
+        name: String,
+        msg: String,
+    }
 
-#[derive(Deserialize, Serialize, Debug)]
-pub struct ErrorDesc {
-    code: u64,
-    name: String,
-    msg: String,
-}
+    #[derive(Deserialize, Serialize, Debug)]
+    pub struct InstructionAccount {
+        name: String,
+        isMut: bool,
+        isSigner: bool,
+        #[serde(default)]
+        pda: PDA,
+    }
 
-#[derive(Deserialize, Serialize, Debug)]
-pub struct InstructionAccount {
-    name: String,
-    isMut: bool,
-    isSigner: bool,
-    #[serde(default)]
-    pda: PDA,
-}
+    #[derive(Deserialize, Serialize, Debug)]
+    pub struct InstructionArgs {
+        name: String,
+        #[serde(rename = "type")]
+        type_: InstructionType,
+    }
 
-#[derive(Deserialize, Serialize, Debug)]
-pub struct InstructionArgs {
-    name: String,
-    #[serde(rename = "type")]
-    type_: InstructionType,
-}
+    #[derive(Deserialize, Serialize, Debug)]
+    pub struct Type {
+        kind: String,
+        fields: Vec<TypeFields>,
+    }
 
-#[derive(Deserialize, Serialize, Debug)]
-pub struct Type {
-    kind: String,
-    fields: Vec<TypeFields>,
-}
+    #[derive(Deserialize, Serialize, Debug)]
+    pub struct Kind {
+        kind: String,
+        #[serde(default)]
+        variants: Vec<Name>,
+    }
 
-#[derive(Deserialize, Serialize, Debug)]
-pub struct Kind {
-    kind: String,
-    #[serde(default)]
-    variants: Vec<Name>,
-}
+    #[derive(Deserialize, Serialize, Debug)]
+    pub struct Field {
+        name: String,
+        #[serde(rename = "type")]
+        type_: InstructionType,
+        index: bool,
+    }
 
-#[derive(Deserialize, Serialize, Debug)]
-pub struct Field {
-    name: String,
-    #[serde(rename = "type")]
-    type_: InstructionType,
-    index: bool,
-}
+    #[derive(Deserialize, Serialize, Default, Debug)]
+    pub struct PDA {
+        seeds: Vec<Seed>,
+    }
 
-#[derive(Deserialize, Serialize, Default, Debug)]
-pub struct PDA {
-    seeds: Vec<Seed>,
-}
+    #[derive(Deserialize, Serialize, Debug)]
+    pub struct Seed {
+        kind: String,
+        #[serde(rename = "type")]
+        type_: String,
+        #[serde(default)]
+        value: String,
+        #[serde(default)]
+        path: String,
+    }
 
-#[derive(Deserialize, Serialize, Debug)]
-pub struct Seed {
-    kind: String,
-    #[serde(rename = "type")]
-    type_: String,
-    #[serde(default)]
-    value: String,
-    #[serde(default)]
-    path: String,
-}
+    #[derive(Deserialize, Serialize, Debug)]
+    #[serde(untagged)]
+    pub enum InstructionType {
+        String(String),
+        vec(InstructionTypeVec),
+        defined(Defined),
+        option(OptionType),
+    }
 
-#[derive(Deserialize, Serialize, Debug)]
-#[serde(untagged)]
-pub enum InstructionType {
-    String(String),
-    vec(InstructionTypeVec),
-    defined(Defined),
-    option(OptionType),
-}
+    #[derive(Deserialize, Serialize, Debug)]
+    #[serde(untagged)]
+    pub enum InstructionTypeVec {
+        String(String),
+        defined(Defined),
+        vec(Vec_),
+    }
 
-#[derive(Deserialize, Serialize, Debug)]
-#[serde(untagged)]
-pub enum InstructionTypeVec {
-    String(String),
-    defined(Defined),
-    vec(Vec_),
-}
+    #[derive(Deserialize, Serialize, Debug)]
+    pub struct Defined {
+        defined: String,
+    }
 
-#[derive(Deserialize, Serialize, Debug)]
-pub struct Defined {
-    defined: String,
-}
+    #[derive(Deserialize, Serialize, Debug)]
+    pub struct Vec_ {
+        vec: VecEnum,
+    }
 
-#[derive(Deserialize, Serialize, Debug)]
-pub struct Vec_ {
-    vec: VecEnum,
-}
+    #[derive(Deserialize, Serialize, Debug)]
+    #[serde(untagged)]
+    pub enum VecEnum {
+        String(String),
+        defined(Defined),
+    }
 
-#[derive(Deserialize, Serialize, Debug)]
-#[serde(untagged)]
-pub enum VecEnum {
-    String(String),
-    defined(Defined),
-}
+    #[derive(Deserialize, Serialize, Debug)]
+    pub struct OptionType {
+        option: String,
+    }
 
-#[derive(Deserialize, Serialize, Debug)]
-pub struct OptionType {
-    option: String,
-}
+    #[derive(Deserialize, Serialize, Debug)]
+    pub struct Name {
+        name: String,
+    }
 
-#[derive(Deserialize, Serialize, Debug)]
-pub struct Name {
-    name: String,
-}
+    #[derive(Deserialize, Serialize, Debug)]
+    pub struct TypeFields {
+        name: String,
+        #[serde(rename = "type")]
+        type_: InstructionType,
+    }
 
-#[derive(Deserialize, Serialize, Debug)]
-pub struct TypeFields {
-    name: String,
-    #[serde(rename = "type")]
-    type_: InstructionType,
-}
-
-#[derive(Deserialize, Serialize, Debug, Default)]
-pub struct Metadata {
-    address: String,
-}
-
+    #[derive(Deserialize, Serialize, Debug, Default)]
+    pub struct Metadata {
+        address: String,
+    }
 }
