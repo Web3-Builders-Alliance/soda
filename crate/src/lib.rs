@@ -105,12 +105,13 @@ pub mod soda {
                             arr.append(&mut new_arr);
                         }
                     }
+                    files.push((path.clone(), arr));
                 }
             } else {
-                files.push((path.clone(), path));
+                files.push((path.clone(), [path].to_vec()));
             }
         }
-
+        println!("{:#?}", files);
         for entry in WalkDir::new(format!("{}/files/", template_path)) {
             let entry = entry.unwrap();
             let path = format!("{}", entry.path().display());
