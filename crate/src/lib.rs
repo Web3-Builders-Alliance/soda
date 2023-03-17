@@ -85,22 +85,22 @@ pub mod soda {
                 if breaks.len() % 2 == 0 {
                     let resultant: Vec<(usize, &(usize, &str))> =
                         breaks.iter().enumerate().collect();
-                    let mut arr: Vec<&str> = [].to_vec();
+                    let mut arr: Vec<String> = [].to_vec();
                     for (index, (break_index, _)) in resultant {
                         if index % 2 == 0 && breaks.len() > index + 1 {
                             let (close_index, _) = breaks[index + 1];
                             let (rest, last_part) = path.split_at(close_index + 9);
                             let (prev_part, exp) = rest.split_at(*break_index);
-                            println!("{} - {} - {} - {}", path, prev_part, exp, last_part);
+
                             let expresion_whithout_last: String =
                                 exp.get(0..exp.len() - 9).unwrap().to_string();
-                            println!("{} - {}", exp, expresion_whithout_last);
+
                             let expresion = format!("{},{}", expresion_whithout_last, "{{/each}}");
 
                             let new_paths = handlebars.render_template(&expresion, &idl);
                             let mut new_paths_unwrapped = String::from(new_paths.unwrap());
-                            let mut new_arr: Vec<&str> =
-                                (&mut new_paths_unwrapped).split(",").into_iter().collect();
+                            let mut new_arr: Vec<String> =
+                                (&mut new_paths_unwrapped).split(",").into_iter().map(|str|str.to_string()).collect();
 
                             arr.append(&mut new_arr);
                         }
