@@ -1,8 +1,8 @@
 #![allow(non_snake_case, non_camel_case_types)]
 use clap::Parser;
+use soda::{generate_from_idl, IDL};
 use std::error::Error;
 use std::fs::{canonicalize, File};
-use soda::soda::{IDL, generate_from_idl};
 
 const IDL_DEFAULT_PATH: &str = "./idl.json";
 const TEMPLATE_DEFAULT_PATH: &str = "./template/";

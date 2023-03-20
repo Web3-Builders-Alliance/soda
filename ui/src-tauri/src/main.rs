@@ -4,8 +4,8 @@
 )]
 #![allow(non_snake_case, non_camel_case_types)]
 
+use soda::{generate_from_idl, IDL};
 use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
-use soda::soda::{IDL, generate_from_idl};
 
 fn main() {
     let quit = CustomMenuItem::new("quit".to_string(), "Quit");
@@ -15,7 +15,7 @@ fn main() {
     let generate_project =
         CustomMenuItem::new("generate_project".to_string(), "Generate Project's Files");
     let new_project = CustomMenuItem::new("new_project".to_string(), "New Project");
-    let change_template =  CustomMenuItem::new("change_template".to_string(), "Select Template");
+    let change_template = CustomMenuItem::new("change_template".to_string(), "Select Template");
     let submenu = Submenu::new(
         "File",
         Menu::new()
@@ -42,10 +42,10 @@ fn main() {
                 event.window().close().unwrap();
             }
             "open_idl" => {}
-            "new_project"=> {}
+            "new_project" => {}
             "generate_project" => {}
             "generate_idl" => {}
-            "change_template"=> {}
+            "change_template" => {}
             _ => {}
         })
         .invoke_handler(tauri::generate_handler![generate])
@@ -54,10 +54,13 @@ fn main() {
 }
 
 #[tauri::command]
-fn generate(handle: tauri::AppHandle, idl: &str, ) -> String {
-    let template_path = &handle.path_resolver()
-    .resolve_resource("../../template")
-    .expect("failed to resolve resource").display().to_string();
+fn generate(handle: tauri::AppHandle, idl: &str) -> String {
+    let template_path = &handle
+        .path_resolver()
+        .resolve_resource("../../template")
+        .expect("failed to resolve resource")
+        .display()
+        .to_string();
     let idl: IDL = serde_json::from_str(idl).expect("error while reading json");
     generate_from_idl(idl, template_path);
     format!("Project Generated!")
