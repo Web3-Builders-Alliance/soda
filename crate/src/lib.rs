@@ -122,8 +122,9 @@ pub mod soda {
                 files.push((path.clone(), path, [].to_vec()));
             }
         }
-        println!("{:#?}", files);
+
         for (path, template, path_replacements) in files {
+            // The data struct will be parth of the finalization of the deterministic path feature
             //let mut data: Data = idl.clone().into();
             //data.path_replacements = path_replacements;
             let rel_path = path.get(template_path.len() + 6..path.len()).unwrap();
