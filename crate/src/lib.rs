@@ -3,6 +3,7 @@ use handlebars::{handlebars_helper, Handlebars};
 use serde_derive::{self, Deserialize, Serialize};
 use std::fs::{create_dir_all, File};
 use walkdir::WalkDir;
+use std::convert::From;
 
 pub mod soda {
     use super::*;
@@ -123,7 +124,8 @@ pub mod soda {
         }
         println!("{:#?}", files);
         for (path, template, path_replacements) in files {
-            //    let data = Data {idl:idl, path_replacements};
+            //let mut data: Data = idl.clone().into();
+            //data.path_replacements = path_replacements;
             let rel_path = path.get(template_path.len() + 6..path.len()).unwrap();
             if path.split('.').last().unwrap() == "hbs" {
                 let file_path = handlebars
@@ -145,12 +147,6 @@ pub mod soda {
     }
 
     #[derive(Deserialize, Serialize, Debug)]
-    struct Data {
-        idl: IDL,
-        path_replacements: Vec<String>,
-    }
-
-    #[derive(Deserialize, Serialize, Debug)]
     pub struct IDL {
         version: String,
         name: String,
@@ -165,6 +161,40 @@ pub mod soda {
         errors: Vec<ErrorDesc>,
         #[serde(default)]
         metadata: Metadata,
+    }
+
+    #[derive(Deserialize, Serialize, Debug)]
+    struct Data {
+        version: String,
+        name: String,
+        instructions: Vec<Instruction>,
+        #[serde(default)]
+        accounts: Vec<Accounts>,
+        #[serde(default)]
+        types: Vec<Types>,
+        #[serde(default)]
+        events: Vec<Event>,
+        #[serde(default)]
+        errors: Vec<ErrorDesc>,
+        #[serde(default)]
+        metadata: Metadata,
+        path_replacements: Vec<String>,
+    }
+
+    impl From<IDL> for Data {
+        fn from(idl: IDL) -> Self {
+            Data { 
+                version: idl.version,
+                name: idl.name,
+                instructions: idl.instructions,
+                accounts: idl.accounts,
+                types: idl.types,
+                events: idl.events,
+                errors: idl.errors,
+                metadata: idl.metadata,
+                path_replacements: [].to_vec(),
+            }
+        }
     }
 
     #[derive(Deserialize, Serialize, Debug)]
