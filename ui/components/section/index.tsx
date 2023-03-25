@@ -1,6 +1,6 @@
 import { FC, useState, useEffect } from "react";
 import { NewItem } from "../NewItem";
-import { Card } from "../Card";
+import { Card } from "../card";
 
 export const Section: FC<any> = ({ name, content, setContent, initExpanded= false }) => {
   const [expanded, setExpanded] = useState(initExpanded);

@@ -1,4 +1,4 @@
-import { Section } from "@/components/Section";
+import { Section } from "@/components/section";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
