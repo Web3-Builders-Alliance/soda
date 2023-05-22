@@ -1,0 +1,40 @@
+import * as anchor from "@project-serum/anchor";
+import { expect } from 'chai';
+
+// Configure the client to use the local cluster.
+const provider = anchor.AnchorProvider.env();
+anchor.setProvider(provider);
+const program = anchor.workspace.{{pascalcase name}};
+
+describe('tests', async () => {
+
+  {{#each instructions}}
+  it('{{name}}', async () => {
+
+    // args
+    {{#each args}}
+    const {{name}} = {{#if (eq type "string")}}""{{else}}0{{/if}}; //{{type}}
+    {{/each}}
+
+    // accounts
+    {{#each accounts}}
+    {{#if (eq name "systemProgram")}}{{else}}const {{name}}Account = null;
+{{/if}}{{/each}}
+    const tx = await program.methods
+      .addCertification({{#each args}}{{name}},{{/each}})
+      .accounts({
+        {{#each accounts}}
+          {{#if (eq name "systemProgram")}}
+          {{name}}: anchor.web3.SystemProgram.programId,
+          {{else}}
+          {{name}}: {{name}}Account,
+          {{/if}}
+        {{/each}}
+      })
+      .rpc();
+
+    expect(tx).to.have.lengthOf.greaterThan(0);
+  });
+
+  {{/each}}
+});
