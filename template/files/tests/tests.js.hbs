@@ -21,7 +21,7 @@ describe('tests', async () => {
     {{#if (eq name "systemProgram")}}{{else}}const {{name}}Account = null;
 {{/if}}{{/each}}
     const tx = await program.methods
-      .addCertification({{#each args}}{{name}},{{/each}})
+      .{{name}}({{#each args}}{{name}},{{/each}})
       .accounts({
         {{#each accounts}}
           {{#if (eq name "systemProgram")}}
