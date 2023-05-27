@@ -8,7 +8,6 @@ class {{this.name}}(Account):
 {{#each this.type.fields}}
     {{this.name}} : {{{this.type}}}  
 {{/each}}
-
 {{/each}}
 
 # Events
@@ -24,9 +23,7 @@ class {{this.name}}(Event):
     {{this.name}} : {{this.type}}
     {{/if}}
     {{/if}}
-
 {{/each}}
-
 {{/each}}
 
 
@@ -48,7 +45,15 @@ def {{this.name}}(
     {{/if}}
     {{/each}}
     {{#each this.args}}
+    {{#if (eq this.type "string")}}
+    {{this.name}} : str
+    {{else}}
+    {{#if (eq this.type "publicKey")}}
+    {{this.name}} : Pubkey
+    {{else}}
     {{this.name}} : {{this.type}}
+    {{/if}}
+    {{/if}}
     {{/each}}  
 ):
     //  write your code here
