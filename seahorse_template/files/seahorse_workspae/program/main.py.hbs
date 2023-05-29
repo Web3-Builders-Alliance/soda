@@ -8,8 +8,25 @@ class {{this.name}}(Account):
 {{#each this.type.fields}}
     {{this.name}} : {{{this.type}}}  
 {{/each}}
-
 {{/each}}
+
+# Events
+{{#each events}}
+class {{this.name}}(Event):
+{{#each this.fields}}
+    {{#if (eq this.type "string")}}
+    {{this.name}} : str
+    {{else}}
+    {{#if (eq this.type "publicKey")}}
+    {{this.name}} : Pubkey
+    {{else}}
+    {{this.name}} : {{this.type}}
+    {{/if}}
+    {{/if}}
+{{/each}}
+{{/each}}
+
+
 
 # Instructions
 {{#each instructions}}
@@ -28,8 +45,17 @@ def {{this.name}}(
     {{/if}}
     {{/each}}
     {{#each this.args}}
+    {{#if (eq this.type "string")}}
+    {{this.name}} : str
+    {{else}}
+    {{#if (eq this.type "publicKey")}}
+    {{this.name}} : Pubkey
+    {{else}}
     {{this.name}} : {{this.type}}
+    {{/if}}
+    {{/if}}
     {{/each}}  
 ):
     //  write your code here
 {{/each}}
+
