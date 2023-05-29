@@ -2,6 +2,7 @@ import { Section } from "@/components/section";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
+import { open } from "@tauri-apps/api/dialog";
 
 type Err = {
   message?: String;
@@ -19,7 +20,10 @@ export default function Home() {
   const [types, setTypes] = useState<any>([]);
   const [events, setEvents] = useState<any>([]);
   const [errors, setErrors] = useState<any>([]);
-  const exportData = () => {
+  const [templateFolder, setTemplateFolder] = useState<any>(undefined);
+  const [baseFolder, setBaseFolder] = useState<any>(undefined);
+
+  const exportData = async () => {
     const idl = JSON.stringify({
       version: "0.1.0",
       name,
@@ -30,8 +34,32 @@ export default function Home() {
       errors,
     });
 
-    invoke("generate", { idl }).then(console.log).catch(console.error);
+    try {
+      const result = await open({
+        multiple: false,
+        directory: true,
+        title: "Select a target folder",
+      });
+      console.log(result);
+      setBaseFolder(result);
+      invoke("generate", { baseFolder:result, idl, templateFolder }).then(console.log).catch(console.error);
+    } catch (e) {
+      console.error(e);
+    }
   };
+  const handleTemplateFolder = async () => {
+    try {
+      const result = await open({
+        multiple: false,
+        directory: true,
+        title: "Select a template folder",
+      });
+      console.log(result);
+      setTemplateFolder(result);
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   return (
     <>
@@ -105,6 +133,13 @@ export default function Home() {
           onClick={exportData}
         >
           Create Project
+        </button>
+        <button
+          type="button"
+          className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200  "
+          onClick={handleTemplateFolder}
+        >
+          Select a template
         </button>
       </main>
     </>
