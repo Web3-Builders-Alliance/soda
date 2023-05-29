@@ -7,7 +7,7 @@ pub mod structs;
 use helpers::{apply_user_helpers, create_handlebars_registry};
 pub use structs::IDL;
 
-pub fn generate_from_idl(idl: IDL, template_path: &str) {
+pub fn generate_from_idl(base_path: &str, idl: IDL, template_path: &str) {
     let mut handlebars = create_handlebars_registry();
     apply_user_helpers(template_path, &mut handlebars);
     let mut files = vec![];
@@ -66,13 +66,13 @@ pub fn generate_from_idl(idl: IDL, template_path: &str) {
             handlebars
                 .register_template_file("template", template)
                 .unwrap();
-            let mut output_lib_file = File::create(format!("{}/{}", &idl.name, file_path)).unwrap();
+            let mut output_lib_file = File::create(format!("{}/{}/{}", base_path, &idl.name, file_path)).unwrap();
             handlebars
                 .render_to_write("template", &idl, &mut output_lib_file)
                 .unwrap();
         } else {
             let dir_path = handlebars.render_template(rel_path, &idl).unwrap();
-            create_dir_all(format!("{}/{}", &idl.name, dir_path)).unwrap();
+            create_dir_all(format!("{}/{}/{}", base_path, &idl.name, dir_path)).unwrap();
         };
     }
 }

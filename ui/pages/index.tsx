@@ -20,8 +20,10 @@ export default function Home() {
   const [types, setTypes] = useState<any>([]);
   const [events, setEvents] = useState<any>([]);
   const [errors, setErrors] = useState<any>([]);
-  const [templateFolder, setTemplateFolder] = useState<any>([]);
-  const exportData = () => {
+  const [templateFolder, setTemplateFolder] = useState<any>(undefined);
+  const [baseFolder, setBaseFolder] = useState<any>(undefined);
+
+  const exportData = async () => {
     const idl = JSON.stringify({
       version: "0.1.0",
       name,
@@ -32,7 +34,18 @@ export default function Home() {
       errors,
     });
 
-    invoke("generate", { idl, templateFolder }).then(console.log).catch(console.error);
+    try {
+      const result = await open({
+        multiple: false,
+        directory: true,
+        title: "Select a target folder",
+      });
+      console.log(result);
+      setBaseFolder(result);
+      invoke("generate", { baseFolder:result, idl, templateFolder }).then(console.log).catch(console.error);
+    } catch (e) {
+      console.error(e);
+    }
   };
   const handleTemplateFolder = async () => {
     try {

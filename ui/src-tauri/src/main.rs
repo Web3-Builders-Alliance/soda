@@ -54,8 +54,8 @@ fn main() {
 }
 
 #[tauri::command]
-fn generate(handle: tauri::AppHandle, idl: &str, templateFolder: &str) -> String {
+fn generate(handle: tauri::AppHandle, baseFolder: &str, idl: &str, templateFolder: &str) -> String {
     let idl: IDL = serde_json::from_str(idl).expect("error while reading json");
-    generate_from_idl(idl, templateFolder);
+    generate_from_idl(baseFolder, idl, templateFolder);
     format!("Project Generated!")
 }
