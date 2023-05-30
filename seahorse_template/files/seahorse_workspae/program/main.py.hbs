@@ -6,7 +6,15 @@ declare_id('AgkcdQ51pv11566g4PVrw53ugD87BMqS3wFrRre1skbo')
 {{#each accounts}}
 class {{this.name}}(Account):
 {{#each this.type.fields}}
-    {{this.name}} : {{{this.type}}}  
+    {{#if (eq this.type " string")}}
+    {{this.name}} : str
+    {{else}}
+    {{#if (eq this.type "publickey")}}
+    {{this.name}} : Pubkey
+    {{else}}
+    {{this.name}} : {{this.type}}
+    {{/if}}
+    {{/if}}  
 {{/each}}
 {{/each}}
 
