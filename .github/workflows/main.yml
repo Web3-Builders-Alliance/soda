@@ -37,6 +37,7 @@ jobs:
       - name: Sync node version and setup cache
         uses: actions/setup-node@v3
         with:
+          projectPath: './ui'
           node-version: 'lts/*'
           cache: 'npm' # Set this to npm, yarn or pnpm.
 
