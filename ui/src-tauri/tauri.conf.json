@@ -12,8 +12,13 @@
   "tauri": {
     "allowlist": {
       "all": false,
-      "fs": {
-        "scope": ["$RESOURCE/*"]
+      "dialog": {
+        "all": true,
+        "ask": true,
+        "confirm": true,
+        "message": true,
+        "open": true,
+        "save": true
       }
     },
     "bundle": {
@@ -40,9 +45,6 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": [
-        "../../template"
-      ],
       "shortDescription": "",
       "targets": "all",
       "windows": {

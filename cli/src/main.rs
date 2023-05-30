@@ -28,7 +28,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let json_file_path = canonicalize(idl_path).unwrap();
     let file = File::open(json_file_path).unwrap();
     let idl: IDL = serde_json::from_reader(file).expect("error while reading json");
-    generate_from_idl(idl, template_path);
+    generate_from_idl(".", idl, template_path);
     println!("Project Generated!");
     Ok(())
 }
