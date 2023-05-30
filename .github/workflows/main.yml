@@ -32,7 +32,7 @@ jobs:
       - name: Rust cache
         uses: swatinem/rust-cache@v2
         with:
-          workspaces: './src-tauri -> target'
+          workspaces: './ui/src-tauri -> target'
 
       - name: Sync node version and setup cache
         uses: actions/setup-node@v3
