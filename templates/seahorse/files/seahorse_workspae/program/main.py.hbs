@@ -7,7 +7,7 @@ declare_id('AgkcdQ51pv11566g4PVrw53ugD87BMqS3wFrRre1skbo')
 {{#each accounts}}
 class {{this.name}}(Account):
 {{#each this.type.fields}}
-    {{#if (eq this.type " string")}}
+    {{#if (eq this.type "string")}}
     {{this.name}} : str
     {{else}}
     {{#if (eq this.type "publickey")}}
