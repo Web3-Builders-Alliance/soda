@@ -32,14 +32,14 @@ jobs:
       - name: Rust cache
         uses: swatinem/rust-cache@v2
         with:
-          workspaces: './ui/src-tauri -> target'
+          workspaces: '/src-tauri -> target'
 
       - name: Sync node version and setup cache
         uses: actions/setup-node@v3
         with:
-          projectPath: './ui'
           node-version: 'lts/*'
           cache: 'npm' # Set this to npm, yarn or pnpm.
+          cache-dependency-path: './ui/package-lock.json'
 
       - name: Install frontend dependencies
         # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
