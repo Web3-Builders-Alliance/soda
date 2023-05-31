@@ -1,9 +1,11 @@
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { open } from "@tauri-apps/api/dialog";
 import { readTextFile } from "@tauri-apps/api/fs";
 import { Editor } from "@/components/Editor";
+import { emit, listen } from '@tauri-apps/api/event'
+import { s } from "@tauri-apps/api/dialog-15855a2f";
 
 type Err = {
   message?: String;
@@ -24,7 +26,7 @@ export default function Home() {
   const [templateFolder, setTemplateFolder] = useState<any>(undefined);
   const [baseFolder, setBaseFolder] = useState<any>(undefined);
 
-  const exportData = async () => {
+  const exportData = useCallback(async () => {
     const idl = JSON.stringify({
       version: "0.1.0",
       name,
@@ -47,9 +49,9 @@ export default function Home() {
     } catch (e) {
       console.error(e);
     }
-  };
+  }, [name, instructions, accounts, types, events, errors, templateFolder]);
 
-  const handleTemplateFolder = async () => {
+  const handleTemplateFolder = useCallback(async () => {
     try {
       const result = await open({
         multiple: false,
@@ -61,9 +63,9 @@ export default function Home() {
     } catch (e) {
       console.error(e);
     }
-  }
+  }, [setTemplateFolder,])
 
-  const openIDLFile = async () => {
+  const openIDLFile = useCallback(async () => {
     try {
       const result = await open({
         multiple: false,
@@ -91,8 +93,21 @@ export default function Home() {
     } catch (e) {
       console.error(e);
     }
-  }
+  }, [setName, setInstructions, setAccounts, setTypes, setEvents, setErrors])
 
+  useEffect(() => {
+    (async () => {
+      const unlistenOpen = await listen('open_idl', (event) => openIDLFile())
+      const unlistenGenerate = await listen('generate_project', (event) =>  exportData())
+      const unlistenChange = await listen('change_template', (event) =>  handleTemplateFolder())
+      return () => {
+        unlistenOpen()
+        unlistenGenerate()
+        unlistenChange()
+      }
+    })()
+  }, [exportData, handleTemplateFolder, openIDLFile])
+  
   return (
     <>
       <Head>
