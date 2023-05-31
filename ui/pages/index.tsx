@@ -3,6 +3,7 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { open } from "@tauri-apps/api/dialog";
+import { readTextFile } from "@tauri-apps/api/fs";
 
 type Err = {
   message?: String;
@@ -42,11 +43,12 @@ export default function Home() {
       });
       console.log(result);
       setBaseFolder(result);
-      invoke("generate", { baseFolder:result, idl, templateFolder }).then(console.log).catch(console.error);
+      invoke("generate", { baseFolder: result, idl, templateFolder }).then(console.log).catch(console.error);
     } catch (e) {
       console.error(e);
     }
   };
+
   const handleTemplateFolder = async () => {
     try {
       const result = await open({
@@ -56,6 +58,36 @@ export default function Home() {
       });
       console.log(result);
       setTemplateFolder(result);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  const openIDLFile = async () => {
+    try {
+      const result = await open({
+        multiple: false,
+        directory: false,
+        title: "Select an IDL file",
+        filters: [
+          {
+            name: "IDL",
+            extensions: ["json"],
+          },
+        ],
+
+      });
+      console.log(result);
+      if (typeof result !== "string") return;
+      const idl = await readTextFile(result);
+      console.log(idl);
+      const parsed = JSON.parse(idl);
+      if (parsed.name) setName(parsed.name);
+      if (parsed.instructions) setInstructions(parsed.instructions);
+      if (parsed.accounts) setAccounts(parsed.accounts);
+      if (parsed.types) setTypes(parsed.types);
+      if (parsed.events) setEvents(parsed.events);
+      if (parsed.errors) setErrors(parsed.errors);
     } catch (e) {
       console.error(e);
     }
@@ -127,20 +159,29 @@ export default function Home() {
             initExpanded={initExpanded}
           />
         ))}
-        <button
-          type="button"
-          className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200  "
-          onClick={exportData}
-        >
-          Create Project
-        </button>
-        <button
-          type="button"
-          className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200  "
-          onClick={handleTemplateFolder}
-        >
-          Select a template
-        </button>
+        <div className="flex">
+          <button
+            type="button"
+            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200  "
+            onClick={exportData}
+          >
+            Create Project
+          </button>
+          <button
+            type="button"
+            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200  "
+            onClick={handleTemplateFolder}
+          >
+            Select a template
+          </button>
+          <button
+            type="button"
+            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200  "
+            onClick={openIDLFile}
+          >
+            Open IDL file
+          </button>
+        </div>
       </main>
     </>
   );
