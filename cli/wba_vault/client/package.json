@@ -1,0 +1,35 @@
+{
+  "name": "wba_vault",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint --fix"
+  },
+  "dependencies": {
+    "@project-serum/anchor": "^0.25.0",
+    "@solana/wallet-adapter-base": "^0.7.0",
+    "@solana/wallet-adapter-phantom": "^0.7.0",
+    "@solana/wallet-adapter-react": "^0.13.1",
+    "@solana/wallet-adapter-react-ui": "^0.6.0",
+    "@solana/wallet-adapter-solflare": "^0.4.0",
+    "@solana/wallet-adapter-sollet": "^0.8.0",
+    "@solana/wallet-adapter-wallets": "^0.11.3",
+    "next": "12.1.0",
+    "next-compose-plugins": "^2.2.1",
+    "next-transpile-modules": "^9.0.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
+  },
+  "devDependencies": {
+    "@types/react": "17.0.34",
+    "autoprefixer": "^10.4.5",
+    "eslint": "7",
+    "eslint-config-next": "12.0.3",
+    "postcss": "^8.4.12",
+    "tailwindcss": "^3.0.24",
+    "typescript": "4.4.4"
+  }
+}
