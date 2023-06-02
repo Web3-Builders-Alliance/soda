@@ -12,7 +12,9 @@ const DEVNET_ENDPOINT = clusterApiUrl('devnet');
 export default function App() {
   return (
     <ConnectionProvider
-      config={{commitment: 'processed'}}
+      config={
+        {commitment: 'processed'}
+        }
       endpoint={DEVNET_ENDPOINT}>
       <AuthorizationProvider>
         <SafeAreaView style={styles.shell}>
