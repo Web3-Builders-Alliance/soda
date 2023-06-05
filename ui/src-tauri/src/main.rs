@@ -41,11 +41,26 @@ fn main() {
             "close" => {
                 event.window().close().unwrap();
             }
-            "open_idl" => {}
+            "open_idl" => {
+                event
+                    .window()
+                    .emit("open_idl", Some("open_idl".to_string()))
+                    .unwrap();
+            }
             "new_project" => {}
-            "generate_project" => {}
+            "generate_project" => {
+                /*event
+                    .window()
+                    .emit("generate_project", Some("generate_project".to_string()))
+                    .unwrap();*/
+            }
             "generate_idl" => {}
-            "change_template" => {}
+            "change_template" => {
+                event
+                    .window()
+                    .emit("change_template", Some("change_template".to_string()))
+                    .unwrap();
+            }
             _ => {}
         })
         .invoke_handler(tauri::generate_handler![generate])

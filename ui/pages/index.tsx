@@ -1,9 +1,11 @@
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { open } from "@tauri-apps/api/dialog";
 import { readTextFile } from "@tauri-apps/api/fs";
 import { Editor } from "@/components/Editor";
+import { emit, listen } from '@tauri-apps/api/event'
+import { s } from "@tauri-apps/api/dialog-15855a2f";
 
 type Err = {
   message?: String;
@@ -61,7 +63,7 @@ export default function Home() {
     } catch (e) {
       console.error(e);
     }
-  }
+  };
 
   const openIDLFile = async () => {
     try {
@@ -91,8 +93,28 @@ export default function Home() {
     } catch (e) {
       console.error(e);
     }
-  }
+  };
 
+  useEffect(() => {
+    (async () => {
+      const unlistenOpen = await listen('open_idl', (event) => openIDLFile())
+      const unlistenChange = await listen('change_template', (event) =>  handleTemplateFolder())
+      return () => {
+        unlistenOpen()
+        unlistenChange()
+      }
+    })()
+  }, [])
+
+  useEffect(() => {
+    (async () => {
+      const unlistenGenerate = await listen('generate_project', (event) =>  exportData())
+      return () => {
+        unlistenGenerate()
+      }
+    })()
+  }, [templateFolder])
+  
   return (
     <>
       <Head>
