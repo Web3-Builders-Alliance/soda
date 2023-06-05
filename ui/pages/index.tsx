@@ -5,7 +5,6 @@ import { open } from "@tauri-apps/api/dialog";
 import { readTextFile } from "@tauri-apps/api/fs";
 import { Editor } from "@/components/Editor";
 import { emit, listen } from '@tauri-apps/api/event'
-import { s } from "@tauri-apps/api/dialog-15855a2f";
 
 type Err = {
   message?: String;
@@ -25,10 +24,11 @@ export default function Home() {
   const [errors, setErrors] = useState<any>([]);
   const [templateFolder, setTemplateFolder] = useState<any>(undefined);
   const [baseFolder, setBaseFolder] = useState<any>(undefined);
+  const [version, setVersion] = useState<string | undefined>("0.1.0");
 
   const exportData = async () => {
     const idl = JSON.stringify({
-      version: "0.1.0",
+      version,
       name,
       instructions,
       accounts,
@@ -95,26 +95,69 @@ export default function Home() {
     }
   };
 
+  const newProject = async () => {
+    setVersion("0.1.0"),
+    setName("Project's Name"),
+    setInstructions([
+      {
+        name: "initialize",
+      },
+    ]),
+    setAccounts([]),
+    setTypes([]),
+    setEvents([]),
+    setErrors([])
+  }
+  const generateIDL = async () => {
+    // ToDo
+  }
+
   useEffect(() => {
     (async () => {
-      const unlistenOpen = await listen('open_idl', (event) => openIDLFile())
-      const unlistenChange = await listen('change_template', (event) =>  handleTemplateFolder())
+      const unlisten = await listen('open_idl', (event) => openIDLFile())
       return () => {
-        unlistenOpen()
-        unlistenChange()
+        unlisten()
+
       }
     })()
   }, [])
 
   useEffect(() => {
     (async () => {
-      const unlistenGenerate = await listen('generate_project', (event) =>  exportData())
+      const unlisten = await listen('change_template', (event) => handleTemplateFolder())
       return () => {
-        unlistenGenerate()
+        unlisten()
       }
     })()
-  }, [templateFolder])
-  
+  }, [])
+
+  useEffect(() => {
+    (async () => {
+      const unlisten = await listen('generate_project', (event) => exportData())
+      return () => {
+        unlisten()
+      }
+    })()
+  }, [])
+
+  useEffect(() => {
+    (async () => {
+      const unlisten = await listen('new_project', (event) => newProject())
+      return () => {
+        unlisten()
+      }
+    })()
+  }, [])
+
+  useEffect(() => {
+    (async () => {
+      const unlisten = await listen('generate_idl', (event) => generateIDL())
+      return () => {
+        unlisten()
+      }
+    })()
+  }, [])
+
   return (
     <>
       <Head>
@@ -170,6 +213,20 @@ export default function Home() {
             onClick={openIDLFile}
           >
             Open IDL file
+          </button>
+          <button
+            type="button"
+            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200 "
+            onClick={newProject}
+          >
+            New Project
+          </button>
+          <button
+            type="button"
+            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200 "
+            onClick={generateIDL}
+          >
+            Save IDL
           </button>
         </div>
       </main>

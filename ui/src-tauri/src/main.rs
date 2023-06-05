@@ -9,7 +9,6 @@ use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
 
 fn main() {
     let quit = CustomMenuItem::new("quit".to_string(), "Quit");
-    let close = CustomMenuItem::new("close".to_string(), "Close");
     let open_idl = CustomMenuItem::new("open_idl".to_string(), "Open IDL File");
     let generate_idl = CustomMenuItem::new("generate_idl".to_string(), "Save IDL File");
     let generate_project =
@@ -21,11 +20,10 @@ fn main() {
         Menu::new()
             .add_item(open_idl)
             .add_item(new_project)
-            .add_item(generate_project)
-            .add_item(generate_idl)
+            //.add_item(generate_project)
+            //.add_item(generate_idl)
             .add_item(change_template)
             .add_item(quit)
-            .add_item(close),
     );
     let menu = Menu::new()
         .add_native_item(MenuItem::Copy)
@@ -35,33 +33,39 @@ fn main() {
     tauri::Builder::default()
         .menu(menu)
         .on_menu_event(|event| match event.menu_item_id() {
-            "quit" => {
-                std::process::exit(0);
-            }
-            "close" => {
-                event.window().close().unwrap();
-            }
             "open_idl" => {
                 event
                     .window()
                     .emit("open_idl", Some("open_idl".to_string()))
                     .unwrap();
             }
-            "new_project" => {}
-            "generate_project" => {
-                /*event
+            "new_project" => {
+                event
+                    .window()
+                    .emit("new_project", Some("new_project".to_string()))
+                    .unwrap();
+            }
+            /*"generate_project" => {
+                event
                     .window()
                     .emit("generate_project", Some("generate_project".to_string()))
-                    .unwrap();*/
-            }
-            "generate_idl" => {}
+                    .unwrap();
+            }*/
+            /*"generate_idl" => {
+                event
+                    .window()
+                    .emit("generate_idl", Some("generate_idl".to_string()))
+                    .unwrap();
+            }*/
             "change_template" => {
                 event
                     .window()
                     .emit("change_template", Some("change_template".to_string()))
                     .unwrap();
             }
-            _ => {}
+            _ => {
+                std::process::exit(0);
+            }
         })
         .invoke_handler(tauri::generate_handler![generate])
         .run(tauri::generate_context!())
