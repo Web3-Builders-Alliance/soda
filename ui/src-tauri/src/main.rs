@@ -49,10 +49,10 @@ fn main() {
             }
             "new_project" => {}
             "generate_project" => {
-                event
+                /*event
                     .window()
                     .emit("generate_project", Some("generate_project".to_string()))
-                    .unwrap();
+                    .unwrap();*/
             }
             "generate_idl" => {}
             "change_template" => {

@@ -26,7 +26,7 @@ export default function Home() {
   const [templateFolder, setTemplateFolder] = useState<any>(undefined);
   const [baseFolder, setBaseFolder] = useState<any>(undefined);
 
-  const exportData = useCallback(async () => {
+  const exportData = async () => {
     const idl = JSON.stringify({
       version: "0.1.0",
       name,
@@ -49,9 +49,9 @@ export default function Home() {
     } catch (e) {
       console.error(e);
     }
-  }, [name, instructions, accounts, types, events, errors, templateFolder]);
+  };
 
-  const handleTemplateFolder = useCallback(async () => {
+  const handleTemplateFolder = async () => {
     try {
       const result = await open({
         multiple: false,
@@ -63,9 +63,9 @@ export default function Home() {
     } catch (e) {
       console.error(e);
     }
-  }, [setTemplateFolder,])
+  };
 
-  const openIDLFile = useCallback(async () => {
+  const openIDLFile = async () => {
     try {
       const result = await open({
         multiple: false,
@@ -93,20 +93,27 @@ export default function Home() {
     } catch (e) {
       console.error(e);
     }
-  }, [setName, setInstructions, setAccounts, setTypes, setEvents, setErrors])
+  };
 
   useEffect(() => {
     (async () => {
       const unlistenOpen = await listen('open_idl', (event) => openIDLFile())
-      const unlistenGenerate = await listen('generate_project', (event) =>  exportData())
       const unlistenChange = await listen('change_template', (event) =>  handleTemplateFolder())
       return () => {
         unlistenOpen()
-        unlistenGenerate()
         unlistenChange()
       }
     })()
-  }, [exportData, handleTemplateFolder, openIDLFile])
+  }, [])
+
+  useEffect(() => {
+    (async () => {
+      const unlistenGenerate = await listen('generate_project', (event) =>  exportData())
+      return () => {
+        unlistenGenerate()
+      }
+    })()
+  }, [templateFolder])
   
   return (
     <>
