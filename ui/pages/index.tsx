@@ -97,19 +97,42 @@ export default function Home() {
 
   const newProject = async () => {
     setVersion("0.1.0"),
-    setName("Project's Name"),
-    setInstructions([
-      {
-        name: "initialize",
-      },
-    ]),
-    setAccounts([]),
-    setTypes([]),
-    setEvents([]),
-    setErrors([])
+      setName("Project's Name"),
+      setInstructions([
+        {
+          name: "initialize",
+        },
+      ]),
+      setAccounts([]),
+      setTypes([]),
+      setEvents([]),
+      setErrors([])
   }
   const generateIDL = async () => {
-    // ToDo
+    try {
+      const result = await open({
+        multiple: false,
+        directory: true,
+        title: "Select a target folder",
+      });
+      console.log(result);
+      setBaseFolder(result);
+      invoke("generate_idl_file", {
+        baseFolder: result,
+        idl: JSON.stringify({
+          version,
+          name,
+          instructions,
+          accounts,
+          types,
+          events,
+          errors,
+        })
+      }).then(console.log).catch(console.error);
+    } catch (e) {
+      console.error(e);
+    }
+
   }
 
   useEffect(() => {
