@@ -6,6 +6,7 @@ import { readTextFile } from "@tauri-apps/api/fs";
 import { Editor } from "@/components/Editor";
 import { emit, listen } from "@tauri-apps/api/event";
 import { message } from "@tauri-apps/api/dialog";
+import { ask } from '@tauri-apps/api/dialog';
 
 export default function Home() {
   const [name, setName] = useState<string>("Project's Name");
@@ -36,14 +37,31 @@ export default function Home() {
     });
 
     try {
+      let template = templateFolder;
+      if (templateFolder === undefined) {
+        await message(
+          "You need to select a template folder before generate the project",
+          "Select a Template folder",
+        );
+        template = await open({
+          multiple: false,
+          directory: true,
+          title: "Select a template folder",
+        });
+        setTemplateFolder(template);
+        await message(
+          "Select in wich folder you want to generate the project",
+          "Select a output folder",
+        );
+      }
       const result = await open({
         multiple: false,
         directory: true,
         title: "Select a target folder",
       });
-      console.log(result);
       setBaseFolder(result);
-      invoke("generate", { baseFolder: result, idl, templateFolder })
+
+      invoke("generate", { baseFolder: result, idl, templateFolder: template })
         .then(async () => {
           await message(`Output path: ${result}/${name}`, "Project generated");
         })
@@ -92,7 +110,7 @@ export default function Home() {
       });
       if (typeof result !== "string") {
         await message(
-          `The type resulted of the seleciton is ${typeof result}`,
+          `The type resulted of the selection is ${typeof result}`,
           {
             title: "Something fail while tryng to open an IDL File.",
             type: "error",
@@ -119,6 +137,8 @@ export default function Home() {
   };
 
   const newProject = async () => {
+    const confirm = await ask('Are you sure?', 'This will close your previus project');
+    if (!confirm) return;
     setVersion("0.1.0");
     setName("Project's Name");
     setInstructions([
@@ -225,7 +245,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      
+
       <main className="bg-neutral-900 py-5 flex flex-col justify-center min-h-screen">
         <Editor
           name={name}
