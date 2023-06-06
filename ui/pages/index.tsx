@@ -4,14 +4,10 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { open } from "@tauri-apps/api/dialog";
 import { readTextFile } from "@tauri-apps/api/fs";
 import { Editor } from "@/components/Editor";
-import { emit, listen } from '@tauri-apps/api/event'
-
-type Err = {
-  message?: String;
-};
+import { emit, listen } from "@tauri-apps/api/event";
+import { message } from "@tauri-apps/api/dialog";
 
 export default function Home() {
-  const [error, setError] = useState<Err | false>();
   const [name, setName] = useState<string>("Project's Name");
   const [instructions, setInstructions] = useState<any>([
     {
@@ -25,6 +21,7 @@ export default function Home() {
   const [templateFolder, setTemplateFolder] = useState<any>(undefined);
   const [baseFolder, setBaseFolder] = useState<any>(undefined);
   const [version, setVersion] = useState<string | undefined>("0.1.0");
+  const [metadata, setMetadata] = useState<any>(undefined);
 
   const exportData = async () => {
     const idl = JSON.stringify({
@@ -35,6 +32,7 @@ export default function Home() {
       types,
       events,
       errors,
+      metadata,
     });
 
     try {
@@ -45,9 +43,18 @@ export default function Home() {
       });
       console.log(result);
       setBaseFolder(result);
-      invoke("generate", { baseFolder: result, idl, templateFolder }).then(console.log).catch(console.error);
+      invoke("generate", { baseFolder: result, idl, templateFolder })
+        .then(async () => {
+          await message(`Output path: ${result}/${name}`, "Project generated");
+        })
+        .catch(async (e) => {
+          await message(e, { title: "Error", type: "error" });
+        });
     } catch (e) {
-      console.error(e);
+      await message(`${e}`, {
+        title: "Something fail while tryng to export data.",
+        type: "error",
+      });
     }
   };
 
@@ -58,10 +65,15 @@ export default function Home() {
         directory: true,
         title: "Select a template folder",
       });
-      console.log(result);
+      async () => {
+        await message(`Template path: ${result}`, "Template Seleccionado");
+      };
       setTemplateFolder(result);
     } catch (e) {
-      console.error(e);
+      await message(`${e}`, {
+        title: "Something fail while tryng to open the template folder.",
+        type: "error",
+      });
     }
   };
 
@@ -77,37 +89,50 @@ export default function Home() {
             extensions: ["json"],
           },
         ],
-
       });
-      console.log(result);
-      if (typeof result !== "string") return;
-      const idl = await readTextFile(result);
-      console.log(idl);
-      const parsed = JSON.parse(idl);
-      if (parsed.name) setName(parsed.name);
-      if (parsed.instructions) setInstructions(parsed.instructions);
-      if (parsed.accounts) setAccounts(parsed.accounts);
-      if (parsed.types) setTypes(parsed.types);
-      if (parsed.events) setEvents(parsed.events);
-      if (parsed.errors) setErrors(parsed.errors);
+      if (typeof result !== "string") {
+        await message(
+          `The type resulted of the seleciton is ${typeof result}`,
+          {
+            title: "Something fail while tryng to open an IDL File.",
+            type: "error",
+          }
+        );
+      } else {
+        const idl = await readTextFile(result);
+        console.log(idl);
+        const parsed = JSON.parse(idl);
+        if (parsed.name) setName(parsed.name);
+        if (parsed.instructions) setInstructions(parsed.instructions);
+        if (parsed.accounts) setAccounts(parsed.accounts);
+        if (parsed.types) setTypes(parsed.types);
+        if (parsed.events) setEvents(parsed.events);
+        if (parsed.errors) setErrors(parsed.errors);
+        if (parsed.metadata) setMetadata(parsed.metadata);
+      }
     } catch (e) {
-      console.error(e);
+      await message(`${e}`, {
+        title: "Something fail while tryng to open an IDL File.",
+        type: "error",
+      });
     }
   };
 
   const newProject = async () => {
-    setVersion("0.1.0"),
-      setName("Project's Name"),
-      setInstructions([
-        {
-          name: "initialize",
-        },
-      ]),
-      setAccounts([]),
-      setTypes([]),
-      setEvents([]),
-      setErrors([])
-  }
+    setVersion("0.1.0");
+    setName("Project's Name");
+    setInstructions([
+      {
+        name: "initialize",
+      },
+    ]);
+    setAccounts([]);
+    setTypes([]);
+    setEvents([]);
+    setErrors([]);
+    setMetadata(undefined);
+  };
+
   const generateIDL = async () => {
     try {
       const result = await open({
@@ -115,7 +140,6 @@ export default function Home() {
         directory: true,
         title: "Select a target folder",
       });
-      console.log(result);
       setBaseFolder(result);
       invoke("generate_idl_file", {
         baseFolder: result,
@@ -127,59 +151,71 @@ export default function Home() {
           types,
           events,
           errors,
+          metadata,
+        }),
+      })
+        .then(async () => {
+          await message(`Output path: ${result}/idl.json`, "Project generated");
         })
-      }).then(console.log).catch(console.error);
+        .catch(async (e) => {
+          await message(e, { title: "Error", type: "error" });
+        });
     } catch (e) {
-      console.error(e);
+      await message(`${e}`, {
+        title: "Something fail while tryng to generate an IDL File.",
+        type: "error",
+      });
     }
-
-  }
-
-  useEffect(() => {
-    (async () => {
-      const unlisten = await listen('open_idl', (event) => openIDLFile())
-      return () => {
-        unlisten()
-
-      }
-    })()
-  }, [])
+  };
 
   useEffect(() => {
     (async () => {
-      const unlisten = await listen('change_template', (event) => handleTemplateFolder())
+      const unlisten = await listen("open_idl", (event) => openIDLFile());
       return () => {
-        unlisten()
-      }
-    })()
-  }, [])
+        unlisten();
+      };
+    })();
+  }, []);
 
   useEffect(() => {
     (async () => {
-      const unlisten = await listen('generate_project', (event) => exportData())
+      const unlisten = await listen("change_template", (event) =>
+        handleTemplateFolder()
+      );
       return () => {
-        unlisten()
-      }
-    })()
-  }, [])
+        unlisten();
+      };
+    })();
+  }, []);
 
   useEffect(() => {
     (async () => {
-      const unlisten = await listen('new_project', (event) => newProject())
+      const unlisten = await listen("generate_project", (event) =>
+        exportData()
+      );
       return () => {
-        unlisten()
-      }
-    })()
-  }, [])
+        unlisten();
+      };
+    })();
+  }, []);
 
   useEffect(() => {
     (async () => {
-      const unlisten = await listen('generate_idl', (event) => generateIDL())
+      const unlisten = await listen("new_project", (event) => newProject());
       return () => {
-        unlisten()
-      }
-    })()
-  }, [])
+        unlisten();
+      };
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      const unlisten = await listen("generate_idl", (event) => generateIDL());
+      return () => {
+        unlisten();
+      };
+    })();
+  }, []);
 
   return (
     <>
@@ -189,17 +225,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {error && (
-        <div className="p-5 text-red text-center bg-white w-full absolute top-40">
-          <h1>{error?.message ?? "ups something goes wrong"}</h1>
-          <button
-            className="p-2 m-2 mx-auto bg-purple-900 text-white mt-5"
-            onClick={() => setError(false)}
-          >
-            Close
-          </button>
-        </div>
-      )}
+      
       <main className="bg-neutral-900 py-5 flex flex-col justify-center min-h-screen">
         <Editor
           name={name}
