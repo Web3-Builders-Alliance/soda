@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import { Editor } from "@/components/Editor";
 import { TauriEvent, listen } from "@tauri-apps/api/event";
-import { cleanProject, generateProjectFiles, openIDLFile, saveIDLFile, selectTemplateFolder } from "@/helpers";
+import { cleanProject, egg, generateProjectFiles, openIDLFile, saveIDLFile, selectTemplateFolder } from "@/helpers";
 
 export default function Home() {
   const [name, setName] = useState<string>("Project's Name");
@@ -19,13 +19,18 @@ export default function Home() {
   const [baseFolder, setBaseFolder] = useState<any>(undefined);
   const [version, setVersion] = useState<string | undefined>("0.1.0");
   const [metadata, setMetadata] = useState<any>(undefined);
-
+  
   const exportData = generateProjectFiles(version, name, instructions, accounts, types, events, errors, metadata, templateFolder, setTemplateFolder, setBaseFolder);
   const handleTemplateFolder = selectTemplateFolder(setTemplateFolder);
   const openIDL = openIDLFile(setName, setInstructions, setAccounts, setTypes, setEvents, setErrors, setMetadata);
   const newProject = cleanProject(setVersion, setName, setInstructions, setAccounts, setTypes, setEvents, setErrors, setMetadata);
   const generateIDL = saveIDLFile(setBaseFolder, version, name, instructions, accounts, types, events, errors, metadata);
-
+  const handleName = (name: string) => {
+    console.log(name);
+    console.log(process.env.egg ?? "soda");
+    console.log(name === process.env.egg ?? "soda")
+    name === (process.env.egg ?? "soda") ? egg() : setName(name)};
+  
   useEffect(() => {
     (async () => {
       const unlisten = await listen( TauriEvent.MENU, (event) => {
@@ -68,7 +73,7 @@ export default function Home() {
       <main className="bg-neutral-900 py-5 flex flex-col justify-center min-h-screen">
         <Editor
           name={name}
-          setName={setName}
+          setName={handleName}
           instructions={instructions}
           setInstructions={setInstructions}
           accounts={accounts}

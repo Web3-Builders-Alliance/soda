@@ -1,6 +1,5 @@
 import { message } from "@tauri-apps/api/dialog";
 import { open } from "@tauri-apps/api/dialog";
-import { F } from "@tauri-apps/api/fs-4bb77382";
 import { invoke } from "@tauri-apps/api/tauri";
 
 const generateProjectFiles = (

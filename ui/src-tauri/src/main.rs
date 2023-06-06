@@ -67,7 +67,7 @@ fn main() {
                 std::process::exit(0);
             }
         })
-        .invoke_handler(tauri::generate_handler![generate, generate_idl_file])
+        .invoke_handler(tauri::generate_handler![generate, generate_idl_file, egg])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
@@ -84,4 +84,13 @@ fn generate_idl_file(handle: tauri::AppHandle, baseFolder: &str, idl: &str) -> (
     // generate json file
     let mut file = std::fs::File::create(format!("{}/idl.json", baseFolder)).unwrap();
     file.write_all(serde_json::to_string_pretty(&idl).unwrap().as_bytes()).unwrap();
+}
+
+#[tauri::command]
+async fn egg(handle: tauri::AppHandle) {
+  let docs_window = tauri::WindowBuilder::new(
+    &handle,
+    "external",
+    tauri::WindowUrl::App("egg".into()),
+  ).build().unwrap();
 }
