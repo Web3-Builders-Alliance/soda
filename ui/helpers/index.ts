@@ -4,6 +4,7 @@ import openIDLFile from "./openIDLFile";
 import cleanProject from "./cleanProject";
 import saveIDLFile from "./saveIDLFile";
 import egg from "./egg";
+import about from "./about";
 
 export {
     generateProjectFiles,
@@ -12,4 +13,5 @@ export {
     cleanProject,
     saveIDLFile,
     egg,
+    about,
 };

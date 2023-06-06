@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import { Editor } from "@/components/Editor";
 import { TauriEvent, listen } from "@tauri-apps/api/event";
-import { cleanProject, egg, generateProjectFiles, openIDLFile, saveIDLFile, selectTemplateFolder } from "@/helpers";
+import { about, cleanProject, egg, generateProjectFiles, openIDLFile, saveIDLFile, selectTemplateFolder } from "@/helpers";
 
 export default function Home() {
   const [name, setName] = useState<string>("Project's Name");
@@ -51,6 +51,8 @@ export default function Home() {
           case "generate_idl":
             generateIDL();
             break;
+          case "about":
+            about();
           default:
             break;
         }

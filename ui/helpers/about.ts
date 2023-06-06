@@ -1,14 +1,14 @@
 import { message } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api/tauri";
 
-const egg = () => {
-    invoke("egg")
+const about = () => {
+    invoke("show_about")
     .then(
-        ()=>{console.log("Egg");}
+        ()=>{console.log("about");}
     )
     .catch(async (e) => {
       await message(e, { title: "Error", type: "error" });
     });
 };
 
-export default egg;
+export default about;
