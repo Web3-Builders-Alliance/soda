@@ -2,19 +2,19 @@ use serde_derive::{self, Deserialize, Serialize};
 use std::convert::From;
 #[derive(Deserialize, Serialize, Debug)]
 pub struct IDL {
+    pub(crate) version: String,
+    pub(crate) name: String,
+    pub(crate) instructions: Vec<Instruction>,
     #[serde(default)]
     pub(crate) accounts: Vec<Accounts>,
     #[serde(default)]
-    pub(crate) errors: Vec<ErrorDesc>,
+    pub(crate) types: Vec<Types>,
     #[serde(default)]
     pub(crate) events: Vec<Event>,
-    pub(crate) instructions: Vec<Instruction>,
+    #[serde(default)]
+    pub(crate) errors: Vec<ErrorDesc>,
     #[serde(default)]
     pub(crate) metadata: Metadata,
-    pub(crate) name: String,
-    #[serde(default)]
-    pub(crate) types: Vec<Types>,
-    pub(crate) version: String,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
