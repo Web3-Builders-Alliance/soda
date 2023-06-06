@@ -20,7 +20,7 @@ fn main() {
         Menu::new()
             .add_item(open_idl)
             .add_item(new_project)
-            //.add_item(generate_project)
+            .add_item(generate_project)
             .add_item(generate_idl)
             .add_item(change_template)
             .add_item(quit)
@@ -45,12 +45,12 @@ fn main() {
                     .emit("new_project", Some("new_project".to_string()))
                     .unwrap();
             }
-            /*"generate_project" => {
+            "generate_project" => {
                 event
                     .window()
                     .emit("generate_project", Some("generate_project".to_string()))
                     .unwrap();
-            }*/
+            }
             "generate_idl" => {
                 event
                     .window()

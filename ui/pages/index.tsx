@@ -37,14 +37,31 @@ export default function Home() {
     });
 
     try {
+      let template = templateFolder;
+      if (templateFolder === undefined) {
+        await message(
+          "You need to select a template folder before generate the project",
+          "Select a Template folder",
+        );
+        template = await open({
+          multiple: false,
+          directory: true,
+          title: "Select a template folder",
+        });
+        setTemplateFolder(template);
+        await message(
+          "Select in wich folder you want to generate the project",
+          "Select a output folder",
+        );
+      }
       const result = await open({
         multiple: false,
         directory: true,
         title: "Select a target folder",
       });
-      console.log(result);
       setBaseFolder(result);
-      invoke("generate", { baseFolder: result, idl, templateFolder })
+
+      invoke("generate", { baseFolder: result, idl, templateFolder: template })
         .then(async () => {
           await message(`Output path: ${result}/${name}`, "Project generated");
         })
@@ -228,7 +245,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      
+
       <main className="bg-neutral-900 py-5 flex flex-col justify-center min-h-screen">
         <Editor
           name={name}
