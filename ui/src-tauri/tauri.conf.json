@@ -7,11 +7,17 @@
   },
   "package": {
     "productName": "soda",
-    "version": "0.0.1"
+    "version": "0.0.2"
   },
   "tauri": {
     "allowlist": {
       "all": false,
+      "fs": {
+        "readFile": true,
+        "writeFile": true,
+        "readDir": true,
+        "createDir": true
+      },
       "dialog": {
         "all": true,
         "ask": true,
