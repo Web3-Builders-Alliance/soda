@@ -13,7 +13,7 @@ fn main() {
     let generate_idl = CustomMenuItem::new("generate_idl".to_string(), "Save IDL File");
     let generate_project =
         CustomMenuItem::new("generate_project".to_string(), "Generate Project's Files");
-    let new_project = CustomMenuItem::new("new_project".to_string(), "New Project");
+    let new_project = CustomMenuItem::new("new_project".to_string(), "New IDL");
     let change_template = CustomMenuItem::new("change_template".to_string(), "Select Template");
     let about = CustomMenuItem::new("about".to_string(), "About");
     let submenu = Submenu::new(
@@ -21,9 +21,9 @@ fn main() {
         Menu::new()
             .add_item(open_idl)
             .add_item(new_project)
-            .add_item(generate_project)
             .add_item(generate_idl)
             .add_item(change_template)
+            .add_item(generate_project)
             .add_item(about)
             .add_item(quit),
     );

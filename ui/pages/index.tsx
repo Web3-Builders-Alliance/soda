@@ -19,18 +19,18 @@ export default function Home() {
   const [baseFolder, setBaseFolder] = useState<any>(undefined);
   const [version, setVersion] = useState<string | undefined>("0.1.0");
   const [metadata, setMetadata] = useState<any>(undefined);
-  
+
   const exportData = generateProjectFiles(version, name, instructions, accounts, types, events, errors, metadata, templateFolder, setTemplateFolder, setBaseFolder);
   const handleTemplateFolder = selectTemplateFolder(setTemplateFolder);
   const openIDL = openIDLFile(setName, setInstructions, setAccounts, setTypes, setEvents, setErrors, setMetadata);
   const newProject = cleanProject(setVersion, setName, setInstructions, setAccounts, setTypes, setEvents, setErrors, setMetadata);
   const generateIDL = saveIDLFile(setBaseFolder, version, name, instructions, accounts, types, events, errors, metadata);
-  
-  const handleName = (name: string) => {nameSetter(name, setName)};
+
+  const handleName = (name: string) => { nameSetter(name, setName) };
   useEffect(() => {
     (async () => {
-      const unlisten = await listen( TauriEvent.MENU, (event) => {
-        switch (event?.payload 
+      const unlisten = await listen(TauriEvent.MENU, (event) => {
+        switch (event?.payload
         ) {
           case "new_project":
             newProject();
@@ -70,6 +70,43 @@ export default function Home() {
       </Head>
 
       <main className="bg-neutral-900 py-5 flex flex-col justify-center min-h-screen">
+        <div className="flex">
+          <button
+            type="button"
+            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200 "
+            onClick={openIDL}
+          >
+            Open IDL file
+          </button>
+          <button
+            type="button"
+            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200 "
+            onClick={newProject}
+          >
+            New IDL
+          </button>
+          <button
+            type="button"
+            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200 "
+            onClick={generateIDL}
+          >
+            Save IDL
+          </button>
+          <button
+            type="button"
+            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200"
+            onClick={handleTemplateFolder}
+          >
+            Select a template
+          </button>
+          <button
+            type="button"
+            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200"
+            onClick={exportData}
+          >
+            Create Project
+          </button>
+        </div>
         <Editor
           name={name}
           setName={handleName}
@@ -84,43 +121,7 @@ export default function Home() {
           errors={errors}
           setErrors={setErrors}
         />
-        <div className="flex">
-          <button
-            type="button"
-            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200"
-            onClick={exportData}
-          >
-            Create Project
-          </button>
-          <button
-            type="button"
-            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200"
-            onClick={handleTemplateFolder}
-          >
-            Select a template
-          </button>
-          <button
-            type="button"
-            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200 "
-            onClick={openIDL}
-          >
-            Open IDL file
-          </button>
-          <button
-            type="button"
-            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200 "
-            onClick={newProject}
-          >
-            New Project
-          </button>
-          <button
-            type="button"
-            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200 "
-            onClick={generateIDL}
-          >
-            Save IDL
-          </button>
-        </div>
+
       </main>
     </>
   );
