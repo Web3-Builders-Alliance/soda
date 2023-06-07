@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import { Editor } from "@/components/Editor";
 import { TauriEvent, listen } from "@tauri-apps/api/event";
-import { about, cleanProject, egg, generateProjectFiles, openIDLFile, saveIDLFile, selectTemplateFolder } from "@/helpers";
+import { about, cleanProject, generateProjectFiles, nameSetter, openIDLFile, saveIDLFile, selectTemplateFolder } from "@/helpers";
 
 export default function Home() {
   const [name, setName] = useState<string>("Project's Name");
@@ -25,8 +25,8 @@ export default function Home() {
   const openIDL = openIDLFile(setName, setInstructions, setAccounts, setTypes, setEvents, setErrors, setMetadata);
   const newProject = cleanProject(setVersion, setName, setInstructions, setAccounts, setTypes, setEvents, setErrors, setMetadata);
   const generateIDL = saveIDLFile(setBaseFolder, version, name, instructions, accounts, types, events, errors, metadata);
-  const handleName = (name: string) => name === (process.env.egg ?? "soda") ? egg() : setName(name);
   
+  const handleName = (name: string) => {nameSetter(name, setName)};
   useEffect(() => {
     (async () => {
       const unlisten = await listen( TauriEvent.MENU, (event) => {
@@ -49,6 +49,7 @@ export default function Home() {
             break;
           case "about":
             about();
+            break;
           default:
             break;
         }
