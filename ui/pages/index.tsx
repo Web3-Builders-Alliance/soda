@@ -25,11 +25,7 @@ export default function Home() {
   const openIDL = openIDLFile(setName, setInstructions, setAccounts, setTypes, setEvents, setErrors, setMetadata);
   const newProject = cleanProject(setVersion, setName, setInstructions, setAccounts, setTypes, setEvents, setErrors, setMetadata);
   const generateIDL = saveIDLFile(setBaseFolder, version, name, instructions, accounts, types, events, errors, metadata);
-  const handleName = (name: string) => {
-    console.log(name);
-    console.log(process.env.egg ?? "soda");
-    console.log(name === process.env.egg ?? "soda")
-    name === (process.env.egg ?? "soda") ? egg() : setName(name)};
+  const handleName = (name: string) => name === (process.env.egg ?? "soda") ? egg() : setName(name);
   
   useEffect(() => {
     (async () => {
