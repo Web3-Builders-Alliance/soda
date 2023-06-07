@@ -12,12 +12,12 @@ export default function About() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="bg-neutral-900 py-5 flex flex-col justify-center min-h-screen text-white">
+      <main className="bg-neutral-900 flex flex-col justify-center min-h-screen text-white">
         <Image
           src="/soda.svg"
           alt="soda"
-          width={500}
-          height={500}
+          width={200}
+          height={200}
           className="mx-auto"
         />
 
