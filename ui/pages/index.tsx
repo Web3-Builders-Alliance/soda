@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import { Editor } from "@/components/Editor";
 import { TauriEvent, listen } from "@tauri-apps/api/event";
-import { cleanProject, generateProjectFiles, openIDLFile, saveIDLFile, selectTemplateFolder } from "@/helpers";
+import { about, cleanProject, generateProjectFiles, nameSetter, openIDLFile, saveIDLFile, selectTemplateFolder } from "@/helpers";
 
 export default function Home() {
   const [name, setName] = useState<string>("Project's Name");
@@ -26,10 +26,11 @@ export default function Home() {
   const newProject = cleanProject(setVersion, setName, setInstructions, setAccounts, setTypes, setEvents, setErrors, setMetadata);
   const generateIDL = saveIDLFile(setBaseFolder, version, name, instructions, accounts, types, events, errors, metadata);
 
+  const handleName = (name: string) => { nameSetter(name, setName) };
   useEffect(() => {
     (async () => {
-      const unlisten = await listen( TauriEvent.MENU, (event) => {
-        switch (event?.payload 
+      const unlisten = await listen(TauriEvent.MENU, (event) => {
+        switch (event?.payload
         ) {
           case "new_project":
             newProject();
@@ -45,6 +46,9 @@ export default function Home() {
             break;
           case "generate_idl":
             generateIDL();
+            break;
+          case "about":
+            about();
             break;
           default:
             break;
@@ -66,35 +70,7 @@ export default function Home() {
       </Head>
 
       <main className="bg-neutral-900 py-5 flex flex-col justify-center min-h-screen">
-        <Editor
-          name={name}
-          setName={setName}
-          instructions={instructions}
-          setInstructions={setInstructions}
-          accounts={accounts}
-          setAccounts={setAccounts}
-          types={types}
-          setTypes={setTypes}
-          events={events}
-          setEvents={setEvents}
-          errors={errors}
-          setErrors={setErrors}
-        />
         <div className="flex">
-          <button
-            type="button"
-            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200"
-            onClick={exportData}
-          >
-            Create Project
-          </button>
-          <button
-            type="button"
-            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200"
-            onClick={handleTemplateFolder}
-          >
-            Select a template
-          </button>
           <button
             type="button"
             className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200 "
@@ -107,7 +83,7 @@ export default function Home() {
             className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200 "
             onClick={newProject}
           >
-            New Project
+            New IDL
           </button>
           <button
             type="button"
@@ -116,7 +92,36 @@ export default function Home() {
           >
             Save IDL
           </button>
+          <button
+            type="button"
+            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200"
+            onClick={handleTemplateFolder}
+          >
+            Select a template
+          </button>
+          <button
+            type="button"
+            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200"
+            onClick={exportData}
+          >
+            Create Project
+          </button>
         </div>
+        <Editor
+          name={name}
+          setName={handleName}
+          instructions={instructions}
+          setInstructions={setInstructions}
+          accounts={accounts}
+          setAccounts={setAccounts}
+          types={types}
+          setTypes={setTypes}
+          events={events}
+          setEvents={setEvents}
+          errors={errors}
+          setErrors={setErrors}
+        />
+
       </main>
     </>
   );

@@ -7,7 +7,7 @@
   },
   "package": {
     "productName": "soda",
-    "version": "0.0.2"
+    "version": "0.0.3"
   },
   "tauri": {
     "allowlist": {
@@ -25,6 +25,13 @@
         "message": true,
         "open": true,
         "save": true
+      },
+      "shell": {
+        "all": false,
+        "execute": false,
+        "open": true,
+        "scope": [],
+        "sidecar": false
       }
     },
     "bundle": {
