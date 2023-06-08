@@ -56,7 +56,7 @@ export default function Egg() {
           bubbles?.map((bubble) => (
             <div
               key={bubble.timestamp}
-              className="absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-1000"
+              className="absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-1000 ease-linear"
               style={{
                 top: `${bubble.y}%`,
                 left: `${bubble.x}%`,
