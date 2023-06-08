@@ -55,7 +55,7 @@ jobs:
         with:
           projectPath: './ui'
           tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
-          releaseName: 'Soda v__VERSION__' # tauri-action replaces \_\_VERSION\_\_ with the app version.
+          releaseName: 'Soda v__VERSION__-alpha' # tauri-action replaces \_\_VERSION\_\_ with the app version.
           releaseBody: 'This is a very early unaudited and untested release, DO NOT USE IT unless you now what are you doing.\nIn order to use the program you will need to:\n\nDownload the installation files for your OS\nInstall soda\nDownload the template.zip file\nDecompress template.zip'
           releaseDraft: true
           prerelease: false
