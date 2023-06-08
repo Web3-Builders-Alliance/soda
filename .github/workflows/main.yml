@@ -54,8 +54,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           projectPath: './ui'
-          tagName: pre-alpha-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
+          tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
           releaseName: 'Soda v__VERSION__' # tauri-action replaces \_\_VERSION\_\_ with the app version.
-          releaseBody: 'See the assets to download and install this version.'
+          releaseBody: 'This is a very early unaudited and untested release, DO NOT USE IT unless you now what are you doing.\nIn order to use the program you will need to:\n\nDownload the installation files for your OS\nInstall soda\nDownload the template.zip file\nDecompress template.zip'
           releaseDraft: true
           prerelease: false
