@@ -13,7 +13,7 @@ const IDLProvider = ({ children }: { children: ReactNode }) => {
         name: "",
         version: "0.1.0",
         instructions: [{
-            name: "initialize"
+            name: "initialize",
         }],
         accounts: [],
         types: [],

@@ -16,8 +16,6 @@ const Tab: FC<any> = ({ objConfig, elements, property, instruction, editingInstr
   const [propertyEdit, setPropertyEdit] = useState<any>({})
   const { IDL, setIDL } = useIDL()
 
-  console.log(IDL)
-
   useLayoutEffect(() => {
     const isIndeterminate = selectedProperty.length > 0 && selectedProperty.length < IDL[instruction][editingInstruction][property]?.length
     setChecked(selectedProperty.length === IDL[instruction][editingInstruction][property]?.length)
