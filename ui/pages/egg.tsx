@@ -20,10 +20,10 @@ export default function Egg() {
           ...bubbles.map((bubble) => {
             return {
               ...bubble,
-              y: bubble.y - Math.random() * Math.sqrt(count ? count * 2 : 2),
+              y: bubble.y - Math.random() * Math.log(Math.max(count, 20)),
             };
           }),
-          ...(Math.sqrt(count ? count : 2) > Math.random() * 10
+          ...(Math.random() * Math.log(Math.max(count, 15)) > 2
             ? [
                 {
                   x: Math.random() * 100,
@@ -42,13 +42,9 @@ export default function Egg() {
     <main className="bg-neutral-900 flex min-h-screen min-w-screen overflow-hidden max-h-screen max-w-screen p-5">
       <div className="min-w-full min-h-full relative">
         <h1
-          className={`absolute transform -translate-x-1/2 -translate-y-1/2 duration-1000 text-5xl ${
+          className={`absolute transform -translate-x-1/2 -translate-y-1/2 duration-1000 text-5xl top-[2%] left-[90%] ${
             isPlaying ? "text-green-500" : "text-red-700"
           }`}
-          style={{
-            top: `2%`,
-            left: `90%`,
-          }}
         >
           {count}
         </h1>
@@ -56,16 +52,14 @@ export default function Egg() {
           bubbles?.map((bubble) => (
             <div
               key={bubble.timestamp}
-              className="absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-1000 ease-linear"
+              className="absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-1000 ease-linear opacity-90"
               style={{
                 top: `${bubble.y}%`,
                 left: `${bubble.x}%`,
               }}
               onClick={() => {
                 setBubbles(
-                  bubbles.filter((b) => {
-                    return b.timestamp !== bubble.timestamp;
-                  })
+                  bubbles.filter((b) => b.timestamp !== bubble.timestamp)
                 );
                 setCount(count + 1);
               }}
