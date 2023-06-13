@@ -1,6 +1,6 @@
 #![allow(non_snake_case, non_camel_case_types)]
 use clap::Parser;
-use soda_crate::{generate_from_idl, IDL};
+use soda_sol::{generate_from_idl, IDL};
 use std::error::Error;
 use std::fs::{canonicalize, File};
 

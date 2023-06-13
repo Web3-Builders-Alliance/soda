@@ -559,12 +559,14 @@ dependencies = [
  "clap",
  "env_logger",
  "serde_json",
- "soda_crate",
+ "soda_sol",
 ]
 
 [[package]]
-name = "soda_crate"
-version = "0.1.0"
+name = "soda_sol"
+version = "0.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "718c25eca226235a9debb10bc6e35d4460354a11d458e1f6dc548b26d12c8004"
 dependencies = [
  "env_logger",
  "handlebars",
