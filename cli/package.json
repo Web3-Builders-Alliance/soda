@@ -1,7 +1,7 @@
 {
   "name": "soda-cli",
   "version": "0.0.1",
-  
+  "description": "Generates Solana Projects from an IDL",
   "main": "start.js",
   "directories": {
     "test": "tests"
@@ -13,7 +13,7 @@
   },
   "keywords": [],
   
-  "license": "ISC",
+  "license": "Apache-2.0",
   "files": [
     "pre-install.js",
     "start.js",
