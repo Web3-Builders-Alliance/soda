@@ -480,8 +480,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "soda"
-version = "0.1.0"
+name = "soda_sol"
+version = "0.0.1"
 dependencies = [
  "env_logger",
  "handlebars",
