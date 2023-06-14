@@ -1,39 +1,36 @@
 # SODA: Ship a Solana program inferred from Solana data.
 
 A tool for Solana development and audit that allows you to automate tasks and build Solana programs and clients from: IDLs, on-chain data, existing repos, input and output examples of each instruction, and naming conventions, among other possible resources.
-From IDL to whatever you want.
+From an IDL to whatever you want.
 
-### First Version Features
-
+### Current Features
 
 - **Generate Solana Program and client from IDL.**
 - **Write, read and edit IDL in a desktop UI.** 
 - **Template based: create your custom building blocks.**
 - **Lang and chain agnostic.**
-- **Compatibility with Anchor.**
 
-## Getting Started
+## Install Soda CLI
 
-This is a tool that can read an IDL and outputs the files needed for a Solana program and client code. Current default template outputs an Anchor-Workspace and a NEXT.js, Typescript and Tailwind client.
+You can install the CLI using cargo or npm.
 
-Do you prefer a different client? the program code in other language? write a template and all your projects can generate from it.
+- Using cargo:
+`cargo install soda-cli`
 
+- Using npm:
+`npm i @marche/soda-cli`
 
-***
+## Install Soda Desktop
 
-#### Steps to run this project
-
-0. prerrequisites: rust, node
-1. to run desktop program `cd ui/cargo tauri dev`
-2. to run cli `cd cli` and follow usage instrutions bellow
+To install the Desktop App you need to [download the lastest release](https://github.com/Web3-Builders-Alliance/soda/releases)
 
 #### CLI Usage
 
-`soda`: from ./idl.json generates code using default template.
+`soda-cli`: from ./idl.json generates code using default template.
 
-`soda <path>` from idl file or url in `<path>` generate project using default template.
+`soda-cli <path>` from idl file or url in `<path>` generate project using default template.
 
-`soda <path1> <path2>` from idl file or url in `<path1>` generate project using template in `<path2>`.
+`soda-cli <path1> <path2>` from idl file or url in `<path1>` generate project using template in `<path2>`.
 
 ## Note
 
