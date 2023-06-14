@@ -2,7 +2,7 @@ import { FC, useState, useEffect } from "react";
 import { NewItem } from "../NewItem";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid"
 import { Card } from "../card";
-import Tab from "./EditInstruction/Tabs/tabs";
+import Tab from "./EditInstruction/Tabs/tabWithoutType";
 import EditInstructions from "./EditInstruction";
 import { useIDL } from "@/context/IDL";
 
@@ -46,26 +46,29 @@ export const Section: FC<any> = ({ instruction }) => {
         </div>
       }
       <div className="flex gap-5 h-[calc(100%_-_6rem)] w-full">
-        <div className=" flex flex-col gap-2 max-h-full w-56 min-w-[14rem] pr-4 overflow-y-auto">
-          
-          {
-            IDL[instruction]?.map((item: { name: string; }, index: number) => (
-              <Card
-                key={item.name}
-                name={item.name}
-                filter={() => {
-                  const del = IDL[instruction].toSpliced(index, 1)
-                  setIDL({
-                    ...IDL,
-                    [instruction]: del
-                  })
-                }}
-                onClick={() => {
-                  setEditingItem(index)
-                }}
-              />
-            ))}
-        </div>
+        {
+          instruction !== "errors" &&
+          <div className=" flex flex-col gap-2 max-h-full w-56 min-w-[14rem] pr-4 overflow-y-auto">
+            
+            {
+              IDL[instruction]?.map((item: { name: string; }, index: number) => (
+                <Card
+                  key={item.name}
+                  name={item.name}
+                  filter={() => {
+                    const del = IDL[instruction].toSpliced(index, 1)
+                    setIDL({
+                      ...IDL,
+                      [instruction]: del
+                    })
+                  }}
+                  onClick={() => {
+                    setEditingItem(index)
+                  }}
+                />
+              ))}
+          </div>
+        }
         <EditInstructions
           instruction={instruction}
           editingItem={editingItem}

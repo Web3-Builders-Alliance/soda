@@ -6,79 +6,27 @@ function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ')
 }
 
-const Tab: FC<any> = ({ objConfig, elements, property, instruction, editingInstruction }) => {
+const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
   const checkbox = useRef<any>()
   const [checked, setChecked] = useState(false)
   const [newProperty, setNewProperty] = useState<any>({})
   const [indeterminate, setIndeterminate] = useState<any>(false)
   const [selectedProperty, setSelectedProperties] = useState<any>([])
   const [propertySelectedEdit, setPropertySelectedEdit] = useState<number>()
-  const [propertyEdit, setPropertyEdit] = useState<any>({})
-  const { IDL, setIDL } = useIDL()
+  const [propertyEditing, setPropertyEditing] = useState<any>({})
 
   useLayoutEffect(() => {
-    const isIndeterminate = selectedProperty.length > 0 && selectedProperty.length < IDL[instruction][editingInstruction][property]?.length
-    setChecked(selectedProperty.length === IDL[instruction][editingInstruction][property]?.length)
+    const isIndeterminate = selectedProperty.length > 0 && selectedProperty.length < elements.length
+    setChecked(selectedProperty.length === elements?.length)
     setIndeterminate(isIndeterminate)
     checkbox.current.indeterminate = isIndeterminate
   }, [selectedProperty])
 
   function toggleAll() {
-    setSelectedProperties(checked || indeterminate ? [] : IDL[instruction][editingInstruction][property])
+    setSelectedProperties(checked || indeterminate ? [] : elements)
     setChecked(!checked && !indeterminate)
     setIndeterminate(false)
   }
-
-
-  const addProperty = () => {
-    const verifyProperty = isProperty(newProperty, property)
-    if (verifyProperty) {
-      setIDL({
-        ...IDL,
-        [instruction]: IDL[instruction].map((inst: any, index: any) => {
-          if (index === editingInstruction && !inst?.[property]?.includes(newProperty)) {
-
-            return {
-              ...inst,
-              [property]: [
-                ...inst?.[property] || [],
-                newProperty
-              ]
-            }
-
-          }
-          return inst
-        })
-      })
-    }
-  }
-
-  const editProperty = () => {
-    const verifyProperty = isProperty(propertyEdit, property)
-    if (verifyProperty) {
-      const newProperty ={
-      ...IDL,
-      [instruction]: IDL[instruction].map((inst: any, index: any) => {
-        if (index === editingInstruction) {
-          return {
-            ...inst,
-            [property]: inst[property].map((prop: any, index: number) => {
-              if (index === propertySelectedEdit) {
-                return propertyEdit
-              } else {
-                return prop
-              }
-            })
-          }
-        }
-        return inst
-      })
-    }
-      setIDL(newProperty)
-    }
-    setPropertySelectedEdit(undefined)
-  }
-
 
   return (
     <div className="flex flex-col gap-4 w-full overflow-x-auto h-full  overflow-y-auto">
@@ -188,7 +136,7 @@ const Tab: FC<any> = ({ objConfig, elements, property, instruction, editingInstr
                 }
                 <td className="whitespace-nowrap w-24 text-center text-sm font-medium">
                   <button
-                    onClick={addProperty}
+                    onClick={()=> addProperty(newProperty)}
                     className="text-indigo-600 hover:text-indigo-900 p-2"
                   >
                     Add Property
@@ -196,7 +144,7 @@ const Tab: FC<any> = ({ objConfig, elements, property, instruction, editingInstr
                 </td>
               </tr>
               {
-                IDL?.[instruction]?.[editingInstruction]?.[property]?.map((property: any, index: number) => {
+                elements?.map((property: any, index: number) => {
                   return propertySelectedEdit === index ?
                     <tr key={property.name} className='py-2'>
                       <td className="relative px-5">
@@ -211,8 +159,8 @@ const Tab: FC<any> = ({ objConfig, elements, property, instruction, editingInstr
                                   id={name}
                                   defaultValue={property[name]}
                                   onChange={(e) => {
-                                    setPropertyEdit({
-                                      ...propertyEdit,
+                                    setPropertyEditing({
+                                      ...propertyEditing,
                                       [e.target.id]: e.target.value
                                     })
                                   }}
@@ -250,8 +198,8 @@ const Tab: FC<any> = ({ objConfig, elements, property, instruction, editingInstr
                                   defaultValue={property[name]}
                                   className='bg-transparent border-none'
                                   onChange={(e) => {
-                                    setPropertyEdit({
-                                      ...propertyEdit,
+                                    setPropertyEditing({
+                                      ...propertyEditing,
                                       [e.target.id]: e.target.value
                                     })
                                   }}
@@ -263,7 +211,10 @@ const Tab: FC<any> = ({ objConfig, elements, property, instruction, editingInstr
                       }
                       <td className="whitespace-nowrap w-24 text-center text-sm font-medium">
                         <button
-                          onClick={editProperty}
+                          onClick={()=>{
+                            editProperty(elements[index] = propertyEditing)
+                            setPropertySelectedEdit(undefined)
+                          }}
                           className="text-indigo-600 hover:text-indigo-900 p-2"
                         >
                           Confirm Edit
@@ -314,7 +265,7 @@ const Tab: FC<any> = ({ objConfig, elements, property, instruction, editingInstr
                         <button
                           onClick={() => {
                             setPropertySelectedEdit(index)
-                            setPropertyEdit(property)
+                            setPropertyEditing(property)
                           }}
                           className="text-indigo-600 hover:text-indigo-900"
                         >
