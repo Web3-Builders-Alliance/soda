@@ -18,7 +18,7 @@ You can install the CLI using cargo or npm.
 `cargo install soda-cli`
 
 - Using npm:
-`npm i @marche/soda-cli`
+`npm i @use_soda/soda-cli`
 
 ## Install Soda Desktop
 
