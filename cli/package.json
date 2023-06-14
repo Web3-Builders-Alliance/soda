@@ -1,5 +1,5 @@
 {
-  "name": "soda-cli",
+  "name": "@marche/soda-cli",
   "version": "0.0.1",
   "description": "Generates Solana Projects from an IDL",
   "main": "start.js",
