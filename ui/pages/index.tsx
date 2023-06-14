@@ -20,6 +20,7 @@ export default function Home() {
   const [version, setVersion] = useState<string | undefined>("0.1.0");
   const [metadata, setMetadata] = useState<any>(undefined);
 
+
   const exportData = generateProjectFiles(version, name, instructions, accounts, types, events, errors, metadata, templateFolder, setTemplateFolder, setBaseFolder);
   const handleTemplateFolder = selectTemplateFolder(setTemplateFolder);
   const openIDL = openIDLFile(setName, setInstructions, setAccounts, setTypes, setEvents, setErrors, setMetadata);

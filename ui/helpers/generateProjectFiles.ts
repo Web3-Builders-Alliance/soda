@@ -1,6 +1,7 @@
 import { message } from "@tauri-apps/api/dialog";
 import { open } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api/tauri";
+import handleBaseFolder from "./handleBaseFolder";
 
 const generateProjectFiles = (
   version: string | undefined,
@@ -50,9 +51,10 @@ const generateProjectFiles = (
         directory: true,
         title: "Select a target folder",
       });
-      setBaseFolder(result);
+      if (typeof result !== "string") return;
+      handleBaseFolder(result, setBaseFolder);
 
-      invoke("generate", { baseFolder: result, idl, templateFolder: template })
+      invoke("generate", { idl, templateFolder: template })
         .then(async () => {
           await message(`Output path: ${result}/${name}`, "Project generated");
         })

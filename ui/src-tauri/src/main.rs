@@ -4,8 +4,16 @@
 )]
 #![allow(non_snake_case, non_camel_case_types)]
 use soda::{generate_from_idl, IDL};
-use std::io::Write;
-use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
+use std::{io::Write, sync::Mutex};
+use tauri::{CustomMenuItem, Menu, MenuItem, Submenu, State};
+
+#[derive(Debug)]
+struct StateStruct {
+    base_folder: String,
+}
+
+#[derive(Debug)]
+struct AppState(Mutex<StateStruct>);
 
 fn main() {
     let quit = CustomMenuItem::new("quit".to_string(), "Quit");
@@ -33,6 +41,11 @@ fn main() {
         .add_submenu(submenu);
 
     tauri::Builder::default()
+        .manage(AppState(Mutex::new(
+            StateStruct {
+                base_folder: ".".to_string(),
+            }
+        )))
         .menu(menu)
         .on_menu_event(|event| match event.menu_item_id() {
             "open_idl" => {
@@ -78,17 +91,17 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             generate,
             generate_idl_file,
-            egg,
-            show_about
+            update_base_folder_path,
+            new_window,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
 
 #[tauri::command]
-fn generate(handle: tauri::AppHandle, baseFolder: &str, idl: &str, templateFolder: &str) -> () {
+fn generate(handle: tauri::AppHandle, idl: &str, templateFolder: &str, state: State<AppState>) -> () {
     let idl: IDL = serde_json::from_str(idl).expect("error while reading json");
-    generate_from_idl(baseFolder, idl, templateFolder);
+    generate_from_idl(&state.0.lock().unwrap().base_folder, idl, templateFolder);
 }
 
 #[tauri::command]
@@ -100,21 +113,19 @@ fn generate_idl_file(handle: tauri::AppHandle, baseFolder: &str, idl: &str) -> (
 }
 
 #[tauri::command]
-async fn egg(handle: tauri::AppHandle) {
-    tauri::WindowBuilder::new(&handle, "egg", tauri::WindowUrl::App("egg".into()))
-        .title("Bubbles")
+async fn new_window(handle: tauri::AppHandle, target: &str) -> Result<(), ()> {
+    tauri::WindowBuilder::new(&handle, target, tauri::WindowUrl::App(target.into()))
+        .title(target)
         .inner_size(800.0, 700.0)
         .position(0.0, 0.0)
         .build()
         .unwrap();
+    Ok(())
 }
 
 #[tauri::command]
-async fn show_about(handle: tauri::AppHandle) {
-    tauri::WindowBuilder::new(&handle, "about", tauri::WindowUrl::App("about".into()))
-        .title("About")
-        .inner_size(800.0, 700.0)
-        .position(500.0, 0.0)
-        .build()
-        .unwrap();
+fn update_base_folder_path(base: String, state: State<AppState>) -> Result<(), ()> {
+    let mut state = state.0.lock().unwrap();
+    state.base_folder = base;
+    Ok(())
 }

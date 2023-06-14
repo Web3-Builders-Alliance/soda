@@ -6,6 +6,7 @@ import saveIDLFile from "./saveIDLFile";
 import egg from "./egg";
 import about from "./about";
 import nameSetter from "./nameSetter";
+import handleBaseFolder from "./handleBaseFolder";
 
 export {
     generateProjectFiles,
@@ -16,4 +17,5 @@ export {
     egg,
     about,
     nameSetter,
+    handleBaseFolder,
 };
