@@ -164,7 +164,10 @@ const Layout: FC<any> = ({ children, openIDL, newProject, generateIDL, handleTem
                                                 <li>
                                                     <ul role="list" className="-mx-2 space-y-1">
                                                         {navigation.map((item) => (
-                                                            <li key={item.name}>
+                                                            <li
+                                                                key={item.name}
+                                                                onClick={item?.event}
+                                                            >
                                                                 <a
                                                                     href={item.href}
                                                                     className={'text-white hover:text-indigo-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'}
@@ -250,17 +253,6 @@ const Layout: FC<any> = ({ children, openIDL, newProject, generateIDL, handleTem
                         <span className="sr-only">Open sidebar</span>
                         <Bars3Icon className="h-6 w-6" aria-hidden="true" />
                     </button>
-                    <div className="flex-1 text-sm font-semibold leading-6 text-white">Dashboard</div>
-                    <a href="#">
-                        <span className="sr-only">Your profile</span>
-                        {/* <Image
-                            height={25}
-                            width={25}
-                            className="h-8 w-8 rounded-full bg-gray-50"
-                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                            alt=""
-                        /> */}
-                    </a>
                 </div>
 
                 <main className="py-10 lg:pl-72 h-full bg-[#081635]">
