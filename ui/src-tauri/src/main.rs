@@ -10,6 +10,8 @@ use tauri::{CustomMenuItem, Menu, MenuItem, Submenu, State};
 #[derive(Debug)]
 struct StateStruct {
     base_folder: String,
+    template_folder: String,
+    idl_string: String,
 }
 
 #[derive(Debug)]
@@ -44,6 +46,8 @@ fn main() {
         .manage(AppState(Mutex::new(
             StateStruct {
                 base_folder: ".".to_string(),
+                template_folder: ".".to_string(),
+                idl_string: r#"{"version":"0.1.0","name":"Project's Name","instructions":[{"name":"initialize","accounts":[],"args":[]}],"accounts":[],"types":[],"events":[],"errors":[],"metadata":{"address":""}}"#.to_string(),
             }
         )))
         .menu(menu)
@@ -93,15 +97,17 @@ fn main() {
             generate_idl_file,
             update_base_folder_path,
             new_window,
+            update_template_folder_path,
+            update_idl_string,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
 
 #[tauri::command]
-fn generate(handle: tauri::AppHandle, idl: &str, templateFolder: &str, state: State<AppState>) -> () {
-    let idl: IDL = serde_json::from_str(idl).expect("error while reading json");
-    generate_from_idl(&state.0.lock().unwrap().base_folder, idl, templateFolder);
+fn generate(handle: tauri::AppHandle, state: State<AppState>) -> () {
+    let idl: IDL = serde_json::from_str(&state.0.lock().unwrap().idl_string).expect("error while reading json");
+    generate_from_idl(&state.0.lock().unwrap().base_folder, idl, &state.0.lock().unwrap().template_folder);
 }
 
 #[tauri::command]
@@ -126,5 +132,19 @@ async fn new_window(handle: tauri::AppHandle, target: &str) -> Result<(), ()> {
 fn update_base_folder_path(base: String, state: State<AppState>) -> Result<(), ()> {
     let mut state = state.0.lock().unwrap();
     state.base_folder = base;
+    Ok(())
+}
+
+#[tauri::command]
+fn update_template_folder_path(template: String, state: State<AppState>) -> Result<(), ()> {
+    let mut state = state.0.lock().unwrap();
+    state.template_folder = template;
+    Ok(())
+}
+
+#[tauri::command]
+fn update_idl_string(idl: String, state: State<AppState>) -> Result<(), ()> {
+    let mut state = state.0.lock().unwrap();
+    state.idl_string = idl;
     Ok(())
 }
