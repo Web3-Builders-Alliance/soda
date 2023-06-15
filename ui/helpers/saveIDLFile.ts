@@ -13,19 +13,7 @@ const saveIDLFile = (setBaseFolder: Function, version: string | undefined, name:
         });
         if (typeof result !== "string")return;
         handleBaseFolder(result, setBaseFolder);
-        invoke("generate_idl_file", {
-          baseFolder: result,
-          idl: JSON.stringify({
-            version,
-            name,
-            instructions,
-            accounts,
-            types,
-            events,
-            errors,
-            metadata,
-          }),
-        })
+        invoke("generate_idl_file")
           .then(async () => {
             await message(`Output path: ${result}/idl.json`, "Project generated");
           })

@@ -119,9 +119,16 @@ fn generate(handle: tauri::AppHandle, state: State<AppState>) -> () {
 }
 
 #[tauri::command]
-fn generate_idl_file(handle: tauri::AppHandle, baseFolder: &str, idl: &str) -> () {
-    let idl: IDL = serde_json::from_str(idl).expect("error while reading json");
-    let mut file = std::fs::File::create(format!("{}/idl.json", baseFolder)).unwrap();
+fn generate_idl_file(handle: tauri::AppHandle, state: State<AppState>) -> () {
+    let (idl_string, base_folder) = {
+        let state = state.0.lock().unwrap();
+        (
+            &state.idl_string.clone(),
+            &state.base_folder.clone(),
+        )
+    };
+    let idl: IDL = serde_json::from_str(idl_string).expect("error while reading json");
+    let mut file = std::fs::File::create(format!("{}/idl.json", base_folder)).unwrap();
     file.write_all(serde_json::to_string_pretty(&idl).unwrap().as_bytes())
         .unwrap();
 }
