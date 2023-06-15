@@ -18,21 +18,21 @@ pub struct IDL {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub(crate) struct Data {
-    pub(crate) version: String,
-    pub(crate) name: String,
-    pub(crate) instructions: Vec<Instruction>,
+pub struct Data {
+    pub version: String,
+    pub name: String,
+    pub instructions: Vec<Instruction>,
     #[serde(default)]
-    pub(crate) accounts: Vec<Accounts>,
+    pub accounts: Vec<Accounts>,
     #[serde(default)]
-    pub(crate) types: Vec<Types>,
+    pub types: Vec<Types>,
     #[serde(default)]
-    pub(crate) events: Vec<Event>,
+    pub events: Vec<Event>,
     #[serde(default)]
-    pub(crate) errors: Vec<ErrorDesc>,
+    pub errors: Vec<ErrorDesc>,
     #[serde(default)]
-    pub(crate) metadata: Metadata,
-    pub(crate) path_replacements: Vec<String>,
+    pub metadata: Metadata,
+    pub path_replacements: Vec<String>,
 }
 
 impl From<IDL> for Data {

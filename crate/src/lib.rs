@@ -5,7 +5,7 @@ use walkdir::WalkDir;
 mod helpers;
 pub mod structs;
 use helpers::{apply_user_helpers, create_handlebars_registry};
-pub use structs::IDL;
+pub use structs::{Data,IDL};
 
 pub fn generate_from_idl(base_path: &str, idl: IDL, template_path: &str) {
     let mut handlebars = create_handlebars_registry();
@@ -53,26 +53,25 @@ pub fn generate_from_idl(base_path: &str, idl: IDL, template_path: &str) {
             files.push((path.clone(), path, [].to_vec()));
         }
     }
+    let mut data: Data = idl.into();
 
-    for (path, template, _path_replacements) in files {
-        // The data struct will be parth of the finalization of the deterministic path feature
-        //let mut data: Data = idl.clone().into();
-        //data.path_replacements = path_replacements;
+    for (path, template, path_replacements) in files {
+        data.path_replacements = path_replacements;
         let rel_path = path.get(template_path.len() + 6..path.len()).unwrap();
         if path.split('.').last().unwrap() == "hbs" {
             let file_path = handlebars
-                .render_template(rel_path.get(0..rel_path.len() - 4).unwrap(), &idl)
+                .render_template(rel_path.get(0..rel_path.len() - 4).unwrap(), &data)
                 .unwrap();
             handlebars
                 .register_template_file("template", template)
                 .unwrap();
-            let mut output_lib_file = File::create(format!("{}/{}/{}", base_path, &idl.name, file_path)).unwrap();
+            let mut output_lib_file = File::create(format!("{}/{}/{}", base_path, &data.name, file_path)).unwrap();
             handlebars
-                .render_to_write("template", &idl, &mut output_lib_file)
+                .render_to_write("template", &data, &mut output_lib_file)
                 .unwrap();
         } else {
-            let dir_path = handlebars.render_template(rel_path, &idl).unwrap();
-            create_dir_all(format!("{}/{}/{}", base_path, &idl.name, dir_path)).unwrap();
+            let dir_path = handlebars.render_template(rel_path, &data).unwrap();
+            create_dir_all(format!("{}/{}/{}", base_path, &data.name, dir_path)).unwrap();
         };
     }
 }
