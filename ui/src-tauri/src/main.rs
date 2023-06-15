@@ -106,8 +106,16 @@ fn main() {
 
 #[tauri::command]
 fn generate(handle: tauri::AppHandle, state: State<AppState>) -> () {
-    let idl: IDL = serde_json::from_str(&state.0.lock().unwrap().idl_string).expect("error while reading json");
-    generate_from_idl(&state.0.lock().unwrap().base_folder, idl, &state.0.lock().unwrap().template_folder);
+    let (idl_string, base_folder, template_folder) = {
+        let state = state.0.lock().unwrap();
+        (
+            &state.idl_string.clone(),
+            &state.base_folder.clone(),
+            &state.template_folder.clone(),
+        )
+    };
+    let idl: IDL = serde_json::from_str(idl_string).expect("error while reading json");
+    generate_from_idl(base_folder, idl, template_folder);
 }
 
 #[tauri::command]

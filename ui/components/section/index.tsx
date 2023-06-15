@@ -1,78 +1,79 @@
 import { FC, useState, useEffect } from "react";
 import { NewItem } from "../NewItem";
+import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid"
 import { Card } from "../card";
+import Tab from "./EditInstruction/Tabs/tabWithoutType";
+import EditInstructions from "./EditInstruction";
+import { useIDL } from "@/context/IDL";
 
-export const Section: FC<any> = ({ name, content, setContent, initExpanded= false }) => {
-  const [expanded, setExpanded] = useState(initExpanded);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newIntructionName, setNewIntructionName] = useState<string>("instruction_name");
+export const Section: FC<any> = ({ instruction }) => {
+  const { IDL, setIDL } = useIDL()
+  const [newIntructionName, setNewIntructionName] = useState<string>("");
   const [editingItem, setEditingItem] = useState(0);
 
-  useEffect(()=>console.log(isModalOpen),[isModalOpen])
+
   return (
-    <section className={`flex p-5 m-5 border border-neutral-700 bg-black rounded-md relative`}>
-      <div
-        className="absolute flex left-5 top-0 transform -translate-y-1/2 text-white justify-center items-center font-mono font-thin"
-      >
-        {name}
-      </div>
-      <div className={`mini-scrollbar flex transition-all duration-500 ease-in-out overflow-x-auto overflow-y-hidden ${expanded ? "h-64" : " overflow-x-hidden h-4"}`}>
-      {content.map((item: { name: string; }, index:number) => (
-        <Card
-          key={item.name}
-          name={item.name}
-          onClick={()=>{
-            setEditingItem(index)
-            setIsModalOpen(true)
-          }}
-        />
-      ))}
-      <NewItem
-        onClick={()=>{
-          setEditingItem((content?.length ?? 0) + 1)
-          setIsModalOpen(true)}
-        }
-      />
-      </div>
-      <button
-        type="button"
-        className="absolute flex left-1/2 bottom-0 border border-neutral-500 bg-black rounded-full w-8 h-8 transform -translate-x-1/2 translate-y-1/2 text-white justify-center items-center"
-        onClick={() => {
-          setExpanded(!expanded);
-        }}
-      >
-        {expanded ? "-" : "+"}
-      </button>
-      {isModalOpen && (
-        <div className="flex flex-col p-5 text-white text-center rounded-md bg-black border-2 border-neutral-900 absolute left-5 top-5 right-5 bottom-5">
-                <input
-            placeholder="Instruction's Name"
+    <section className={`flex flex-col p-5 relative gap-5 h-[calc(100%_-_3.5rem)]`}>
+      {
+        instruction !== "errors" &&
+        <div
+          className=" flex bg-[#102042] h-14 justify-between w-80 rounded-xl py-4 px-6 text-white cursor-pointer"
+        >
+          <input
+            placeholder={`Add ${instruction}'s Name`}
             value={newIntructionName}
             onChange={(e) => setNewIntructionName(e.target.value)}
-            className="p-5 mb-5 text-center bg-black rounded-md ring-2 ring-green-400 text-white"
+            className=" w-full bg-transparent focus:outline-none"
           />
-          <div>
-          <button
-            className="p-2 m-2 mx-auto bg-neutral-900 text-white rounded-md mt-5"
-            onClick={() => setIsModalOpen(false)}
-          >
-            Cancel
-          </button>
-          <button
-            className="p-2 m-2 mx-auto bg-green-600 text-white rounded-md mt-5 ml-5 ring-2 ring-black"
-            onClick={() => {
-              setIsModalOpen(false)
-              setContent([
-                ...content,
-                {name:newIntructionName}
-              ])
-            }}
-          >
-            Save
-          </button>
+          <div className="flex gap-2">
+            <CheckIcon
+              className="w-5 h-5 text-white"
+              onClick={() => {
+                if(!IDL[instruction].find((inst: any)=>inst.name === newIntructionName)){
+                  setIDL({
+                    ...IDL,
+                    [instruction]: [
+                      ...IDL[instruction],
+                      {
+                        name: newIntructionName
+                      }
+                    ]
+                  })
+                }}
+                }
+            />
           </div>
         </div>
-      )}
+      }
+      <div className="flex gap-5 h-[calc(100%_-_6rem)] w-full">
+        {
+          instruction !== "errors" &&
+          <div className=" flex flex-col gap-2 max-h-full w-56 min-w-[14rem] pr-4 overflow-y-auto">
+            
+            {
+              IDL[instruction]?.map((item: { name: string; }, index: number) => (
+                <Card
+                  key={item.name}
+                  name={item.name}
+                  filter={() => {
+                    const del = IDL[instruction].toSpliced(index, 1)
+                    setIDL({
+                      ...IDL,
+                      [instruction]: del
+                    })
+                  }}
+                  onClick={() => {
+                    setEditingItem(index)
+                  }}
+                />
+              ))}
+          </div>
+        }
+        <EditInstructions
+          instruction={instruction}
+          editingItem={editingItem}
+        />
+      </div>
     </section>
   );
 };

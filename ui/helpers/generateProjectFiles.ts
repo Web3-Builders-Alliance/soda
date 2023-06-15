@@ -5,30 +5,12 @@ import handleBaseFolder from "./handleBaseFolder";
 import handleTemplateFolder from "./handleTemplateFolder";
 
 const generateProjectFiles = (
-  version: string | undefined,
   name: string,
-  instructions: any,
-  accounts: any,
-  types: any,
-  events: any,
-  errors: any,
-  metadata: any,
   templateFolder: any,
   setTemplateFolder: Function,
   setBaseFolder: Function,
 ) => {
   return async () => {
-    const idl = JSON.stringify({
-      version,
-      name,
-      instructions,
-      accounts,
-      types,
-      events,
-      errors,
-      metadata,
-    });
-
     try {
       let template = templateFolder;
       if (templateFolder === undefined) {
@@ -55,7 +37,7 @@ const generateProjectFiles = (
       if (typeof result !== "string") return;
       handleBaseFolder(result, setBaseFolder);
 
-      invoke("generate", { idl, templateFolder: template })
+      invoke("generate")
         .then(async () => {
           await message(`Output path: ${result}/${name}`, "Project generated");
         })
