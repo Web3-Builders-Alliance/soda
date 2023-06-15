@@ -1,6 +1,6 @@
 import { FC, useState, useEffect } from "react";
 import { NewItem } from "../NewItem";
-import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid"
+import { CheckIcon } from "@heroicons/react/24/solid"
 import { Card } from "../card";
 import Tab from "./EditInstruction/Tabs/tabWithoutType";
 import EditInstructions from "./EditInstruction";
@@ -10,7 +10,14 @@ export const Section: FC<any> = ({ instruction }) => {
   const { IDL, setIDL } = useIDL()
   const [newIntructionName, setNewIntructionName] = useState<string>("");
   const [editingItem, setEditingItem] = useState(0);
+  const [editingName, setEditingName] = useState<number>()
 
+  // const editNameInstruction = (e) => {
+  //   setIDL({
+  //     ...IDL,
+  //     IDL[instruction][index].name = e.target.value
+  //   })
+  // }
 
   return (
     <section className={`flex flex-col p-5 relative gap-5 h-[calc(100%_-_3.5rem)]`}>
@@ -29,7 +36,7 @@ export const Section: FC<any> = ({ instruction }) => {
             <CheckIcon
               className="w-5 h-5 text-white"
               onClick={() => {
-                if(!IDL[instruction].find((inst: any)=>inst.name === newIntructionName)){
+                if (!IDL[instruction].find((inst: any) => inst.name === newIntructionName)) {
                   setIDL({
                     ...IDL,
                     [instruction]: [
@@ -39,8 +46,9 @@ export const Section: FC<any> = ({ instruction }) => {
                       }
                     ]
                   })
-                }}
                 }
+              }
+              }
             />
           </div>
         </div>
@@ -49,12 +57,14 @@ export const Section: FC<any> = ({ instruction }) => {
         {
           instruction !== "errors" &&
           <div className=" flex flex-col gap-2 max-h-full w-56 min-w-[14rem] pr-4 overflow-y-auto">
-            
+
             {
-              IDL[instruction]?.map((item: { name: string; }, index: number) => (
+              IDL[instruction]?.map(({ name }: { name: string; }, index: number) => (
                 <Card
-                  key={item.name}
-                  name={item.name}
+                  key={name}
+                  name={name}
+                  instruction={instruction}
+                  index={index}
                   filter={() => {
                     const del = IDL[instruction].toSpliced(index, 1)
                     setIDL({
