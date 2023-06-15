@@ -1,6 +1,7 @@
 import { web3 } from "@project-serum/anchor";
 
 {{#each instructions}}
+{{#if (eq name ../path_replacements.0)}}
 export const {{name}} = (program,{{#each args}} {{name}},{{/each}}{{#each accounts}} {{name}},{{/each}}) => {
   if (program) {
     (async () => {
@@ -17,5 +18,5 @@ export const {{name}} = (program,{{#each args}} {{name}},{{/each}}{{#each accoun
     })();
   }
 };
-
+{{/if}}
 {{/each}}
