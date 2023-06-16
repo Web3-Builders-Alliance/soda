@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { TrashIcon, CheckIcon } from "@heroicons/react/24/solid"
 import { useIDL } from "@/context/IDL";
 
@@ -8,23 +8,27 @@ export const Card: FC<any> = ({ name, onClick, filter, instruction, index }) => 
   const { IDL, setIDL } = useIDL()
   const [showOptions, setShowOptions] = useState(false)
   const [newName, setNewName] = useState(name)
+  const timeoutName = useRef<NodeJS.Timeout>()
 
-  const editNameInstruction = () => {
-    setIDL({
-      ...IDL,
-      [instruction]: IDL[instruction].map((inst: any, i: number) => {
-        if (index === i) {
-          return {
-            ...inst,
-            name: newName
+  useEffect(()=> {
+    clearTimeout(timeoutName.current)
+
+    timeoutName.current = setTimeout(()=> {
+
+      setIDL({
+        ...IDL,
+        [instruction]: IDL[instruction].map((inst: any, i: number) => {
+          if (index === i) {
+            return {
+              ...inst,
+              name: newName
+            }
           }
-        }
-        return inst
+          return inst
+        })
       })
-    })
-  }
-
-  console.log(IDL)
+    }, 1000)
+  },[newName])
 
   return (
     <div
@@ -44,10 +48,10 @@ export const Card: FC<any> = ({ name, onClick, filter, instruction, index }) => 
       {
         showOptions &&
         <div className="flex">
-          <CheckIcon
+          {/* <CheckIcon
             onClick={editNameInstruction}
             className=" w-4 h-4"
-          />
+          /> */}
           <TrashIcon
             onClick={filter}
             className="text-white w-4 h-4"
