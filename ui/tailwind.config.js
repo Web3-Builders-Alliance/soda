@@ -9,7 +9,15 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      boxShadow: {
+        'tab': '0px 1px 0px -0.5px',
+        'tabSelected': "0px 0px 4px -2px "
+      }
+    },
   },
-  plugins: [],
-};
+  plugins: [
+    // ...
+    require('@tailwindcss/forms'),
+  ],
+}
