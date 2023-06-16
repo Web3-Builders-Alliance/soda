@@ -3,7 +3,7 @@
     windows_subsystem = "windows"
 )]
 #![allow(non_snake_case, non_camel_case_types)]
-use soda::{generate_from_idl, IDL};
+use soda_sol::{generate_from_idl, IDL};
 use std::io::Write;
 use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
 
