@@ -23,58 +23,6 @@ function classNames(...classes: any) {
 
 const Layout: FC<any> = ({ children, openIDL, newProject, generateIDL, handleTemplateFolder, exportData }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const [templateFolder, setTemplateFolder] = useState<any>(undefined);
-    const { IDL, setIDL } = useIDL()
-    const [baseFolder, setBaseFolder] = useState<any>(undefined);
-
-    // const openIDLFile = async () => {
-    //     try {
-    //         const result = await open({
-    //             multiple: false,
-    //             directory: false,
-    //             title: "Select an IDL file",
-    //             filters: [
-    //                 {
-    //                     name: "IDL",
-    //                     extensions: ["json"],
-    //                 },
-    //             ],
-
-    //         });
-    //         console.log(result);
-    //         if (typeof result !== "string") return;
-    //         const idl = await readTextFile(result);
-    //         console.log(idl);
-    //         const parsed = JSON.parse(idl);
-    //         if (parsed.name) setIDL({
-    //             ...IDL,
-    //             name: parsed.name
-    //         });
-    //         if (parsed.instructions) setIDL({
-    //             ...IDL,
-    //             instructions: parsed.instructions
-    //         });
-    //         if (parsed.accounts) setIDL({
-    //             ...IDL,
-    //             accounts: parsed.accounts
-    //         });
-    //         if (parsed.types) setIDL({
-    //             ...IDL,
-    //             types: parsed.types
-    //         });
-    //         if (parsed.events) setIDL({
-    //             ...IDL,
-    //             events: parsed.events
-    //         });
-    //         if (parsed.errors) setIDL({
-    //             ...IDL,
-    //             errors: parsed.errors
-    //         });
-    //     } catch (e) {
-    //         console.error(e);
-    //     }
-    // };
-
 
     const navigation = [
         {
@@ -108,7 +56,7 @@ const Layout: FC<any> = ({ children, openIDL, newProject, generateIDL, handleTem
         <>
             <div className='h-screen'>
                 <Transition.Root show={sidebarOpen} as={Fragment}>
-                    <Dialog as="div" className="relative z-50 lg:hidden" onClose={setSidebarOpen}>
+                    <Dialog as="div" className="relative z-50" onClose={setSidebarOpen}>
                         <Transition.Child
                             as={Fragment}
                             enter="transition-opacity ease-linear duration-300"
@@ -192,10 +140,10 @@ const Layout: FC<any> = ({ children, openIDL, newProject, generateIDL, handleTem
                 </Transition.Root>
 
                 {/* Static sidebar for desktop */}
-                <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+                {/* <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col"> */}
                     {/* Sidebar component, swap this element with another sidebar if you like */}
-                    <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-[#13306e] bg-[#081635]  px-6">
-                        <div className="flex h-16 shrink-0 items-center">
+                    {/* <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-[#13306e] bg-[#081635]  px-6">
+                        <div className="flex h-16 shrink-0 items-center"> */}
                             {/* <Image
                                 height={25}
                                 width={25}
@@ -203,7 +151,7 @@ const Layout: FC<any> = ({ children, openIDL, newProject, generateIDL, handleTem
                                 src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
                                 alt="Your Company"
                             /> */}
-                        </div>
+                        {/* </div>
                         <nav className="flex flex-1 flex-col">
                             <ul role="list" className="flex flex-1 flex-col gap-y-7">
                                 <li>
@@ -216,12 +164,12 @@ const Layout: FC<any> = ({ children, openIDL, newProject, generateIDL, handleTem
                                                 <a
                                                     href={item.href}
                                                     className={'text-white hover:text-indigo-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'}
-                                                >
+                                                > */}
                                                     {/* <item.icon
                                                         className={'text-gray-400 group-hover:text-indigo-600 h-6 w-6 shrink-0'}
                                                         aria-hidden="true"
                                                     /> */}
-                                                    {item.name}
+                                                    {/* {item.name}
                                                 </a>
                                             </li>
                                         ))}
@@ -231,7 +179,7 @@ const Layout: FC<any> = ({ children, openIDL, newProject, generateIDL, handleTem
                                     <a
                                         href="#"
                                         className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
-                                    >
+                                    > */}
                                         {/* <Image
                                             height={25}
                                             width={25}
@@ -239,23 +187,22 @@ const Layout: FC<any> = ({ children, openIDL, newProject, generateIDL, handleTem
                                             src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                                             alt=""
                                         /> */}
-                                        <span className="sr-only">Your profile</span>
+                                        {/* <span className="sr-only">Your profile</span>
                                         <span aria-hidden="true">Tom Cook</span>
                                     </a>
                                 </li>
                             </ul>
                         </nav>
                     </div>
-                </div>
+                </div> */}
 
-                <div className="sticky top-0 z-40 flex items-center gap-x-6 bg-[#081635] px-4 py-4 shadow-sm sm:px-6 lg:hidden">
-                    <button type="button" className="-m-2.5 p-2.5 text-white lg:hidden" onClick={() => setSidebarOpen(true)}>
-                        <span className="sr-only">Open sidebar</span>
+                <div className="sticky top-0 z-40 flex items-center gap-x-6 bg-[#081635] px-4 py-4 shadow-sm sm:px-6">
+                    <button type="button" className="-m-2.5 p-2.5 text-white" onClick={() => setSidebarOpen(true)}>
                         <Bars3Icon className="h-6 w-6" aria-hidden="true" />
                     </button>
                 </div>
 
-                <main className="py-10 lg:pl-72 h-full bg-[#081635]">
+                <main className="py-10 h-full bg-[#081635]">
                     {children}
                 </main>
             </div>

@@ -2,7 +2,6 @@ import { FC, useState, useEffect } from "react"
 import Tab from "./Tabs/tab"
 import { type_args } from "@/const"
 import { useIDL } from "@/context/IDL"
-import { isProperty } from "./Tabs/verifyType"
 
 const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
     const [tabConfig, setTab] = useState("accounts")
