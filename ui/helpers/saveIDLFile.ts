@@ -1,6 +1,7 @@
 import { invoke } from "@tauri-apps/api/tauri";
 import { open } from "@tauri-apps/api/dialog";
 import { message } from "@tauri-apps/api/dialog";
+import handleBaseFolder from "./handleBaseFolder";
 
 const saveIDLFile = (setBaseFolder: Function, version: string | undefined, name: string, instructions: any, accounts: any, types: any, events: any, errors: any, metadata: any) => {
     return async () => {
@@ -10,20 +11,9 @@ const saveIDLFile = (setBaseFolder: Function, version: string | undefined, name:
           directory: true,
           title: "Select a target folder",
         });
-        setBaseFolder(result);
-        invoke("generate_idl_file", {
-          baseFolder: result,
-          idl: JSON.stringify({
-            version,
-            name,
-            instructions,
-            accounts,
-            types,
-            events,
-            errors,
-            metadata,
-          }),
-        })
+        if (typeof result !== "string")return;
+        handleBaseFolder(result, setBaseFolder);
+        invoke("generate_idl_file")
           .then(async () => {
             await message(`Output path: ${result}/idl.json`, "Project generated");
           })

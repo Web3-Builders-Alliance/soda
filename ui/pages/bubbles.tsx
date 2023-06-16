@@ -6,7 +6,7 @@ interface Bubble {
   timestamp: number;
 }
 
-export default function Egg() {
+export default function Bubbles() {
   const [bubbles, setBubbles] = useState<Array<Bubble>>([]);
   const [count, setCount] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
