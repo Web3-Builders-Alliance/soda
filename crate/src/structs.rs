@@ -210,3 +210,9 @@ pub struct TypeFields {
 pub struct Metadata {
     pub(crate) address: String,
 }
+
+#[derive(Clone)]
+pub enum Content {
+    String(String),
+    Vec(Vec<u8>)
+}

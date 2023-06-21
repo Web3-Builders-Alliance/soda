@@ -1,7 +1,7 @@
 #![allow(non_snake_case, non_camel_case_types)]
 
 use std::{
-    fs::{create_dir_all, read_to_string, File},
+    fs::{create_dir_all, read, read_to_string, File},
     io::Write,
     path::PathBuf,
 };
@@ -9,7 +9,7 @@ use walkdir::WalkDir;
 mod helpers;
 pub mod structs;
 use helpers::{apply_user_helpers, create_handlebars_registry};
-pub use structs::{Data, IDL};
+pub use structs::{Data, IDL, Content};
 
 pub fn generate_from_idl(base_path: &str, idl: IDL, template_path: &str) {
     let handlebars = create_handlebars_registry();
@@ -22,23 +22,34 @@ pub fn generate_from_idl(base_path: &str, idl: IDL, template_path: &str) {
         } else {
             let file_path = handlebars.render_template(&path, &idl).unwrap();
             let mut output_lib_file = File::create(format!("{}/{}", base_path, file_path)).unwrap();
-            output_lib_file.write_all(content.as_bytes()).unwrap();
+            match content {
+                Content::String(content) => {
+                    let content = handlebars.render_template(&content, &idl).unwrap();
+                    output_lib_file.write_all(content.as_bytes()).unwrap();
+                }
+                Content::Vec(content) => {
+                    output_lib_file.write_all(content.as_slice()).unwrap();
+                }
+            }
         };
     }
 }
 
 pub fn get_template_from_fs(
     template_path: &str,
-) -> (Vec<(String, String, bool)>, Vec<(String, String)>) {
+) -> (Vec<(String, Content, bool)>, Vec<(String, String)>) {
     let mut files = vec![];
     for entry in WalkDir::new(format!("{}/files/", template_path)) {
         let entry = entry.unwrap();
         let path = &format!("{}", entry.path().display());
         let is_dir = PathBuf::from(path).is_dir();
-        let template = if is_dir {
-            "".to_string()
+        let template: Content = if is_dir {
+            structs::Content::String("".to_string())
         } else {
-            read_to_string(path.clone()).unwrap()
+            if PathBuf::from(path).extension().unwrap() != "hbs" {
+                read_to_string(path.clone()).unwrap();
+            }
+            structs::Content::Vec(read(path.clone()).unwrap())
         };
         files.push((
             path.get(template_path.len() + 6..path.len())
@@ -72,9 +83,9 @@ pub fn get_template_from_fs(
 }
 
 pub fn generate_project(
-    template: (Vec<(String, String, bool)>, Vec<(String, String)>),
+    template: (Vec<(String, Content, bool)>, Vec<(String, String)>),
     idl: &IDL,
-) -> Vec<(String, bool, String)> {
+) -> Vec<(String, bool, Content)> {
     let (files, helpers) = template;
     let mut handlebars = create_handlebars_registry();
     apply_user_helpers(helpers, &mut handlebars);
@@ -95,7 +106,7 @@ pub fn generate_project(
                         let expresion = format!("{},{}", expresion_whithout_last, "{{/each}}");
                         let new_paths = handlebars.render_template(&expresion, idl);
                         let new_paths_unwrapped = new_paths.unwrap();
-                        let mut new_paths_with_template: Vec<(String, String, bool, Vec<String>)> =
+                        let mut new_paths_with_template: Vec<(String, Content, bool, Vec<String>)> =
                             (new_paths_unwrapped)
                                 .split(',')
                                 .map(|middle_part| {
@@ -121,7 +132,7 @@ pub fn generate_project(
             dinamic_files.push((path.clone(), template.clone(), is_dir, [].to_vec()));
         }
     }
-    let mut project = vec![];
+    let mut project:Vec<(String, bool, Content)> = vec![];
     for (path, template, is_dir, path_replacements) in dinamic_files {
         data.path_replacements = path_replacements;
         if is_dir {
@@ -129,13 +140,18 @@ pub fn generate_project(
             project.push((
                 format!("{}/{}", &data.name, dir_path),
                 is_dir,
-                "".to_string(),
+                structs::Content::String("".to_string()),
             ))
         } else {
             let file_path = handlebars
                 .render_template(path.get(0..path.len() - 4).unwrap(), &data)
                 .unwrap();
-            let content = handlebars.render_template(&template, &data).unwrap();
+            let content: Content = match template {
+                Content::String(content) => structs::Content::String(handlebars.render_template(&content, &data).unwrap()),
+                Content::Vec(content) => structs::Content::Vec(content),
+            };
+                
+
             project.push((format!("{}/{}", &data.name, file_path), is_dir, content))
         };
     }

@@ -1,7 +1,6 @@
 use crate::structs;
 use handlebars::{handlebars_helper, Handlebars};
 use structs::{InstructionType, InstructionTypeVec, VecEnum, IDL};
-use walkdir::WalkDir;
 
 pub(crate) fn create_handlebars_registry() -> Handlebars<'static> {
     handlebars_helper!(snakecase: |name: String| name.chars().fold(
