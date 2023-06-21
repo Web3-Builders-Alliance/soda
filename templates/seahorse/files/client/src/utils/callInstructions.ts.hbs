@@ -1,0 +1,21 @@
+import { web3 } from "@project-serum/anchor";
+
+{{#each instructions}}
+export const {{name}} = (program,{{#each args}} {{name}},{{/each}}{{#each accounts}} {{name}},{{/each}}) => {
+  if (program) {
+    (async () => {
+      try {
+        const tx = await program.methods
+          .{{name}}({{#each args}} {{name}},{{/each}})
+          .accounts({
+            {{#each accounts}} 
+            {{name}},
+            {{/each}}
+          })
+          .rpc();
+      } catch (error) { console.log(error) }
+    })();
+  }
+};
+
+{{/each}}
