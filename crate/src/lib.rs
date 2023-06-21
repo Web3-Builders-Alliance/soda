@@ -12,8 +12,7 @@ use helpers::{apply_user_helpers, create_handlebars_registry};
 pub use structs::{Data, IDL};
 
 pub fn generate_from_idl(base_path: &str, idl: IDL, template_path: &str) {
-    let mut handlebars = create_handlebars_registry();
-    apply_user_helpers(template_path, &mut handlebars);
+    let handlebars = create_handlebars_registry();
     let template = get_template_from_fs(template_path);
     let dinamyc_files = generate_project(template, &idl);
     for (path, is_dir, content) in dinamyc_files {
@@ -21,16 +20,16 @@ pub fn generate_from_idl(base_path: &str, idl: IDL, template_path: &str) {
             let dir_path = handlebars.render_template(&path, &idl).unwrap();
             create_dir_all(format!("{}/{}", base_path, dir_path)).unwrap();
         } else {
-            let file_path = handlebars
-                .render_template(&path, &idl)
-                .unwrap();
+            let file_path = handlebars.render_template(&path, &idl).unwrap();
             let mut output_lib_file = File::create(format!("{}/{}", base_path, file_path)).unwrap();
             output_lib_file.write_all(content.as_bytes()).unwrap();
         };
     }
 }
 
-fn get_template_from_fs(template_path: &str) -> Vec<(String, String, bool)> {
+fn get_template_from_fs(
+    template_path: &str,
+) -> (Vec<(String, String, bool)>, Vec<(String, String)>) {
     let mut files = vec![];
     for entry in WalkDir::new(format!("{}/files/", template_path)) {
         let entry = entry.unwrap();
@@ -49,14 +48,36 @@ fn get_template_from_fs(template_path: &str) -> Vec<(String, String, bool)> {
             is_dir,
         ));
     }
-    files
+    let mut helpers = vec![];
+    for entry in WalkDir::new(format!("{}/helpers/", template_path)) {
+        match entry {
+            Ok(val) => {
+                let path = format!("{}", val.path().to_string_lossy());
+                if path.split('.').count() > 1 {
+                    let script = read_to_string(val.path()).unwrap();
+                    let helper_name = path
+                        .get(0..path.len() - 5)
+                        .unwrap()
+                        .split('/')
+                        .last()
+                        .unwrap()
+                        .to_string();
+                    helpers.push((helper_name, script));
+                }
+            }
+            Err(err) => println!("{}", err),
+        }
+    }
+    (files, helpers)
 }
 
 fn generate_project(
-    files: Vec<(String, String, bool)>,
+    template: (Vec<(String, String, bool)>, Vec<(String, String)>),
     idl: &IDL,
 ) -> Vec<(String, bool, String)> {
-    let handlebars = create_handlebars_registry();
+    let (files, helpers) = template;
+    let mut handlebars = create_handlebars_registry();
+    apply_user_helpers(helpers, &mut handlebars);
     let mut data: Data = idl.clone().into();
     let mut dinamic_files = vec![];
     for (path, template, is_dir) in files {

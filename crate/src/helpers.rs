@@ -55,24 +55,10 @@ pub(crate) fn create_handlebars_registry() -> Handlebars<'static> {
     handlebars
 }
 
-pub fn apply_user_helpers(template_path: &str, handlebars: &mut handlebars::Handlebars) {
-    for entry in WalkDir::new(format!("{}/helpers/", template_path)) {
-        match entry {
-            Ok(val) => {
-                let path = format!("{}", val.path().to_string_lossy());
-                if path.split('.').count() > 1 {
-                    let helper_name = path
-                        .get(0..path.len() - 5)
-                        .unwrap()
-                        .split('/')
-                        .last()
-                        .unwrap();
-                    handlebars
-                        .register_script_helper_file(helper_name, &path)
-                        .unwrap();
-                }
-            }
-            Err(err) => println!("{}", err),
-        }
+pub fn apply_user_helpers(helpers: Vec<(String, String)>, handlebars: &mut handlebars::Handlebars) {
+    for (helper_name, script) in helpers {
+        handlebars
+            .register_script_helper(&helper_name, &script)
+            .unwrap();
     }
 }
