@@ -27,7 +27,7 @@ pub fn generate_from_idl(base_path: &str, idl: IDL, template_path: &str) {
     }
 }
 
-fn get_template_from_fs(
+pub fn get_template_from_fs(
     template_path: &str,
 ) -> (Vec<(String, String, bool)>, Vec<(String, String)>) {
     let mut files = vec![];
@@ -71,7 +71,7 @@ fn get_template_from_fs(
     (files, helpers)
 }
 
-fn generate_project(
+pub fn generate_project(
     template: (Vec<(String, String, bool)>, Vec<(String, String)>),
     idl: &IDL,
 ) -> Vec<(String, bool, String)> {
@@ -121,13 +121,12 @@ fn generate_project(
             dinamic_files.push((path.clone(), template.clone(), is_dir, [].to_vec()));
         }
     }
-    let mut returned = vec![];
+    let mut project = vec![];
     for (path, template, is_dir, path_replacements) in dinamic_files {
         data.path_replacements = path_replacements;
-        //let rel_path = path.get(path.len() + 6..path.len()).unwrap();
         if is_dir {
             let dir_path = handlebars.render_template(&path, &data).unwrap();
-            returned.push((
+            project.push((
                 format!("{}/{}", &data.name, dir_path),
                 is_dir,
                 "".to_string(),
@@ -137,8 +136,8 @@ fn generate_project(
                 .render_template(path.get(0..path.len() - 4).unwrap(), &data)
                 .unwrap();
             let content = handlebars.render_template(&template, &data).unwrap();
-            returned.push((format!("{}/{}", &data.name, file_path), is_dir, content))
+            project.push((format!("{}/{}", &data.name, file_path), is_dir, content))
         };
     }
-    returned
+    project
 }
