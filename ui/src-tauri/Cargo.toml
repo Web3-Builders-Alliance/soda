@@ -15,10 +15,10 @@ rust-version = "1.59"
 tauri-build = { version = "1.2.1", features = [] }
 
 [dependencies]
-tauri = { version = "1.2.4", features = ["dialog-all", "fs-create-dir", "fs-read-dir", "fs-read-file", "fs-write-file"] }
+tauri = { version = "1.2.5", features = ["dialog-all", "fs-create-dir", "fs-read-dir", "fs-read-file", "fs-write-file", "shell-open"] }
 serde_json = "1.0.93"
 env_logger = "0.10"
-soda = { path = "../../crate" }
+soda_sol = "0.0.1"
 
 [features]
 # by default Tauri runs in production mode

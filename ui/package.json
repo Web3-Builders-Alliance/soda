@@ -10,6 +10,9 @@
     "export": "next export"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.15",
+    "@heroicons/react": "^2.0.18",
+    "@tailwindcss/forms": "^0.5.3",
     "@tauri-apps/api": "^1.2.0",
     "@types/node": "18.15.0",
     "@types/react": "18.0.28",
