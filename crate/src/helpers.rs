@@ -15,10 +15,14 @@ pub(crate) fn create_handlebars_registry() -> Handlebars<'static> {
 
     handlebars_helper!(pascalcase: |name: String|{
             let mut passcalcaseChars: Vec<char> = name.chars().collect();
+            if passcalcaseChars.len() == 0 {
+                "".to_string()
+            } else {
             let first: Vec<char> = passcalcaseChars[0].to_uppercase().to_string().chars().collect();
             passcalcaseChars[0] = *first.first().unwrap();
             let passcalcase: String = passcalcaseChars.into_iter().collect();
             passcalcase
+            }
         }
     );
 
