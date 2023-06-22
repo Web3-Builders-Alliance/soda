@@ -11,4 +11,4 @@ description = "Generates Solana Projects from an IDL"
 serde_json = "1.0.93"
 env_logger = "0.10"
 clap = { version = "4.1.8", features = ["derive"] }
-soda_sol = "0.0.2"
+soda_sol = { path = "../crate" }

@@ -6,7 +6,6 @@ import saveIDLFile from "./saveIDLFile";
 import about from "./about";
 import nameSetter from "./nameSetter";
 import handleBaseFolder from "./handleBaseFolder";
-import handleTemplateFolder from "./handleTemplateFolder";
 
 export {
     generateProjectFiles,
@@ -17,5 +16,4 @@ export {
     about,
     nameSetter,
     handleBaseFolder,
-    handleTemplateFolder,
 };
