@@ -9,7 +9,7 @@ use walkdir::WalkDir;
 mod helpers;
 pub mod structs;
 use helpers::{apply_user_helpers, create_handlebars_registry};
-pub use structs::{Content, Data, Template, IDL, TemplateFile, TemplateHelper};
+pub use structs::{Content, Data, Template, TemplateFile, TemplateHelper, IDL};
 
 pub fn generate_from_idl(base_path: &str, idl: IDL, template_path: &str) {
     let template = get_template_from_fs(template_path);
@@ -17,9 +17,14 @@ pub fn generate_from_idl(base_path: &str, idl: IDL, template_path: &str) {
     write_project_to_fs(dinamyc_files, idl, base_path);
 }
 
-pub fn write_project_to_fs(dinamyc_files: Vec<(String, bool, Content)>, idl: IDL, base_path: &str) {
+pub fn write_project_to_fs(dinamyc_files: Vec<TemplateFile>, idl: IDL, base_path: &str) {
     let handlebars = create_handlebars_registry();
-    for (path, is_dir, content) in dinamyc_files {
+    for TemplateFile {
+        path,
+        is_dir,
+        content,
+    } in dinamyc_files
+    {
         if is_dir {
             let dir_path = handlebars.render_template(&path, &idl).unwrap();
             create_dir_all(format!("{}/{}", base_path, dir_path)).unwrap();
@@ -47,12 +52,10 @@ pub fn get_template_from_fs(template_path: &str) -> Template {
         let is_dir = PathBuf::from(path).is_dir();
         let content: Content = if is_dir {
             structs::Content::String("".to_string())
+        } else if PathBuf::from(path).extension().unwrap() == "hbs" {
+            structs::Content::String(read_to_string(path.clone()).unwrap())
         } else {
-            if PathBuf::from(path).extension().unwrap() == "hbs" {
-                structs::Content::String(read_to_string(path.clone()).unwrap())
-            } else {
-                structs::Content::Vec(read(path.clone()).unwrap())
-            }
+            structs::Content::Vec(read(path.clone()).unwrap())
         };
         files.push(TemplateFile {
             path: path
@@ -77,7 +80,10 @@ pub fn get_template_from_fs(template_path: &str) -> Template {
                         .last()
                         .unwrap()
                         .to_string();
-                    helpers.push(TemplateHelper{helper_name, script});
+                    helpers.push(TemplateHelper {
+                        helper_name,
+                        script,
+                    });
                 }
             }
             Err(err) => println!("{}", err),
@@ -86,16 +92,18 @@ pub fn get_template_from_fs(template_path: &str) -> Template {
     Template { files, helpers }
 }
 
-pub fn generate_project(
-    template: Template,
-    idl: &IDL,
-) -> Vec<(String, bool, Content)> {
-    let Template{files, helpers} = template;
+pub fn generate_project(template: Template, idl: &IDL) -> Vec<TemplateFile> {
+    let Template { files, helpers } = template;
     let mut handlebars = create_handlebars_registry();
     apply_user_helpers(helpers, &mut handlebars);
     let mut data: Data = idl.clone().into();
     let mut dinamic_files = vec![];
-    for TemplateFile{path, content, is_dir} in files {
+    for TemplateFile {
+        path,
+        content,
+        is_dir,
+    } in files
+    {
         if path.contains("{{#each") {
             let breaks: Vec<(usize, &str)> = path.match_indices("{{#each").collect();
             if breaks.len() % 2 == 0 {
@@ -136,16 +144,16 @@ pub fn generate_project(
             dinamic_files.push((path.clone(), content.clone(), is_dir, [].to_vec()));
         }
     }
-    let mut project: Vec<(String, bool, Content)> = vec![];
+    let mut project: Vec<TemplateFile> = vec![];
     for (path, template, is_dir, path_replacements) in dinamic_files {
         data.path_replacements = path_replacements;
         if is_dir {
             let dir_path = handlebars.render_template(&path, &data).unwrap();
-            project.push((
-                format!("{}/{}", &data.name, dir_path),
+            project.push(TemplateFile {
+                path: format!("{}/{}", &data.name, dir_path),
+                content: structs::Content::String("".to_string()),
                 is_dir,
-                structs::Content::String("".to_string()),
-            ))
+            })
         } else {
             let file_path = if PathBuf::from(&path).extension().unwrap() == "hbs" {
                 handlebars
@@ -161,7 +169,11 @@ pub fn generate_project(
                 Content::Vec(content) => structs::Content::Vec(content),
             };
 
-            project.push((format!("{}/{}", &data.name, file_path), is_dir, content))
+            project.push(TemplateFile {
+                path: format!("{}/{}", &data.name, file_path),
+                content,
+                is_dir,
+            })
         };
     }
     project

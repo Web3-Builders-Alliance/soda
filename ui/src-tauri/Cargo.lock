@@ -2394,7 +2394,7 @@ dependencies = [
 
 [[package]]
 name = "soda_sol"
-version = "0.0.2"
+version = "0.0.3"
 dependencies = [
  "env_logger",
  "handlebars",

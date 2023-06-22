@@ -232,5 +232,5 @@ pub struct Metadata {
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub enum Content {
     String(String),
-    Vec(Vec<u8>)
+    Vec(Vec<u8>),
 }

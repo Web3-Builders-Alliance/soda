@@ -1,6 +1,6 @@
 use crate::structs;
 use handlebars::{handlebars_helper, Handlebars};
-use structs::{InstructionType, InstructionTypeVec, VecEnum, IDL, TemplateHelper};
+use structs::{InstructionType, InstructionTypeVec, TemplateHelper, VecEnum, IDL};
 
 pub(crate) fn create_handlebars_registry() -> Handlebars<'static> {
     handlebars_helper!(snakecase: |name: String| name.chars().fold(
@@ -15,7 +15,7 @@ pub(crate) fn create_handlebars_registry() -> Handlebars<'static> {
 
     handlebars_helper!(pascalcase: |name: String|{
             let mut passcalcaseChars: Vec<char> = name.chars().collect();
-            if passcalcaseChars.len() == 0 {
+            if passcalcaseChars.is_empty() {
                 "".to_string()
             } else {
             let first: Vec<char> = passcalcaseChars[0].to_uppercase().to_string().chars().collect();
@@ -59,7 +59,11 @@ pub(crate) fn create_handlebars_registry() -> Handlebars<'static> {
 }
 
 pub fn apply_user_helpers(helpers: Vec<TemplateHelper>, handlebars: &mut handlebars::Handlebars) {
-    for TemplateHelper{helper_name, script} in helpers {
+    for TemplateHelper {
+        helper_name,
+        script,
+    } in helpers
+    {
         handlebars
             .register_script_helper(&helper_name, &script)
             .unwrap();
