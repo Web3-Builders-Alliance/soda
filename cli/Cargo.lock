@@ -564,9 +564,9 @@ dependencies = [
 
 [[package]]
 name = "soda_sol"
-version = "0.0.1"
+version = "0.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "718c25eca226235a9debb10bc6e35d4460354a11d458e1f6dc548b26d12c8004"
+checksum = "1646a373eb756dab91c2a499b41495a781846895df6c833aa0c5426fe04c9848"
 dependencies = [
  "env_logger",
  "handlebars",

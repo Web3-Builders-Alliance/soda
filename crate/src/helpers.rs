@@ -1,7 +1,6 @@
 use crate::structs;
 use handlebars::{handlebars_helper, Handlebars};
-use structs::{InstructionType, InstructionTypeVec, VecEnum, IDL};
-use walkdir::WalkDir;
+use structs::{InstructionType, InstructionTypeVec, VecEnum, IDL, TemplateHelper};
 
 pub(crate) fn create_handlebars_registry() -> Handlebars<'static> {
     handlebars_helper!(snakecase: |name: String| name.chars().fold(
@@ -16,10 +15,14 @@ pub(crate) fn create_handlebars_registry() -> Handlebars<'static> {
 
     handlebars_helper!(pascalcase: |name: String|{
             let mut passcalcaseChars: Vec<char> = name.chars().collect();
+            if passcalcaseChars.len() == 0 {
+                "".to_string()
+            } else {
             let first: Vec<char> = passcalcaseChars[0].to_uppercase().to_string().chars().collect();
             passcalcaseChars[0] = *first.first().unwrap();
             let passcalcase: String = passcalcaseChars.into_iter().collect();
             passcalcase
+            }
         }
     );
 
@@ -55,24 +58,10 @@ pub(crate) fn create_handlebars_registry() -> Handlebars<'static> {
     handlebars
 }
 
-pub fn apply_user_helpers(template_path: &str, handlebars: &mut handlebars::Handlebars) {
-    for entry in WalkDir::new(format!("{}/helpers/", template_path)) {
-        match entry {
-            Ok(val) => {
-                let path = format!("{}", val.path().to_string_lossy());
-                if path.split('.').count() > 1 {
-                    let helper_name = path
-                        .get(0..path.len() - 5)
-                        .unwrap()
-                        .split('/')
-                        .last()
-                        .unwrap();
-                    handlebars
-                        .register_script_helper_file(helper_name, &path)
-                        .unwrap();
-                }
-            }
-            Err(err) => println!("{}", err),
-        }
+pub fn apply_user_helpers(helpers: Vec<TemplateHelper>, handlebars: &mut handlebars::Handlebars) {
+    for TemplateHelper{helper_name, script} in helpers {
+        handlebars
+            .register_script_helper(&helper_name, &script)
+            .unwrap();
     }
 }
