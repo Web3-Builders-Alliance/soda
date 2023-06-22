@@ -1,6 +1,6 @@
 use crate::structs;
 use handlebars::{handlebars_helper, Handlebars};
-use structs::{InstructionType, InstructionTypeVec, VecEnum, IDL};
+use structs::{InstructionType, InstructionTypeVec, VecEnum, IDL, TemplateHelper};
 
 pub(crate) fn create_handlebars_registry() -> Handlebars<'static> {
     handlebars_helper!(snakecase: |name: String| name.chars().fold(
@@ -58,8 +58,8 @@ pub(crate) fn create_handlebars_registry() -> Handlebars<'static> {
     handlebars
 }
 
-pub fn apply_user_helpers(helpers: Vec<(String, String)>, handlebars: &mut handlebars::Handlebars) {
-    for (helper_name, script) in helpers {
+pub fn apply_user_helpers(helpers: Vec<TemplateHelper>, handlebars: &mut handlebars::Handlebars) {
+    for TemplateHelper{helper_name, script} in helpers {
         handlebars
             .register_script_helper(&helper_name, &script)
             .unwrap();

@@ -67,6 +67,24 @@ impl From<Data> for IDL {
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
+pub struct Template {
+    pub(crate) files: Vec<TemplateFile>,
+    pub(crate) helpers: Vec<TemplateHelper>,
+}
+
+#[derive(Deserialize, Serialize, Debug, Clone)]
+pub struct TemplateFile {
+    pub(crate) path: String,
+    pub(crate) content: Content,
+    pub(crate) is_dir: bool,
+}
+
+#[derive(Deserialize, Serialize, Debug, Clone)]
+pub struct TemplateHelper {
+    pub(crate) helper_name: String,
+    pub(crate) script: String,
+}
+#[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Instruction {
     pub(crate) name: String,
     #[serde(default)]
@@ -211,7 +229,7 @@ pub struct Metadata {
     pub(crate) address: String,
 }
 
-#[derive(Clone)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 pub enum Content {
     String(String),
     Vec(Vec<u8>)

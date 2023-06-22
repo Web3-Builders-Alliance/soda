@@ -9,12 +9,16 @@ use walkdir::WalkDir;
 mod helpers;
 pub mod structs;
 use helpers::{apply_user_helpers, create_handlebars_registry};
-pub use structs::{Content, Data, IDL};
+pub use structs::{Content, Data, Template, IDL, TemplateFile, TemplateHelper};
 
 pub fn generate_from_idl(base_path: &str, idl: IDL, template_path: &str) {
-    let handlebars = create_handlebars_registry();
     let template = get_template_from_fs(template_path);
     let dinamyc_files = generate_project(template, &idl);
+    write_project_to_fs(dinamyc_files, idl, base_path);
+}
+
+pub fn write_project_to_fs(dinamyc_files: Vec<(String, bool, Content)>, idl: IDL, base_path: &str) {
+    let handlebars = create_handlebars_registry();
     for (path, is_dir, content) in dinamyc_files {
         if is_dir {
             let dir_path = handlebars.render_template(&path, &idl).unwrap();
@@ -35,15 +39,13 @@ pub fn generate_from_idl(base_path: &str, idl: IDL, template_path: &str) {
     }
 }
 
-pub fn get_template_from_fs(
-    template_path: &str,
-) -> (Vec<(String, Content, bool)>, Vec<(String, String)>) {
+pub fn get_template_from_fs(template_path: &str) -> Template {
     let mut files = vec![];
     for entry in WalkDir::new(format!("{}/files/", template_path)) {
         let entry = entry.unwrap();
         let path = &format!("{}", entry.path().display());
         let is_dir = PathBuf::from(path).is_dir();
-        let template: Content = if is_dir {
+        let content: Content = if is_dir {
             structs::Content::String("".to_string())
         } else {
             if PathBuf::from(path).extension().unwrap() == "hbs" {
@@ -52,13 +54,14 @@ pub fn get_template_from_fs(
                 structs::Content::Vec(read(path.clone()).unwrap())
             }
         };
-        files.push((
-            path.get(template_path.len() + 6..path.len())
+        files.push(TemplateFile {
+            path: path
+                .get(template_path.len() + 6..path.len())
                 .unwrap()
                 .to_string(),
-            template,
+            content,
             is_dir,
-        ));
+        });
     }
     let mut helpers = vec![];
     for entry in WalkDir::new(format!("{}/helpers/", template_path)) {
@@ -74,25 +77,25 @@ pub fn get_template_from_fs(
                         .last()
                         .unwrap()
                         .to_string();
-                    helpers.push((helper_name, script));
+                    helpers.push(TemplateHelper{helper_name, script});
                 }
             }
             Err(err) => println!("{}", err),
         }
     }
-    (files, helpers)
+    Template { files, helpers }
 }
 
 pub fn generate_project(
-    template: (Vec<(String, Content, bool)>, Vec<(String, String)>),
+    template: Template,
     idl: &IDL,
 ) -> Vec<(String, bool, Content)> {
-    let (files, helpers) = template;
+    let Template{files, helpers} = template;
     let mut handlebars = create_handlebars_registry();
     apply_user_helpers(helpers, &mut handlebars);
     let mut data: Data = idl.clone().into();
     let mut dinamic_files = vec![];
-    for (path, template, is_dir) in files {
+    for TemplateFile{path, content, is_dir} in files {
         if path.contains("{{#each") {
             let breaks: Vec<(usize, &str)> = path.match_indices("{{#each").collect();
             if breaks.len() % 2 == 0 {
@@ -113,7 +116,7 @@ pub fn generate_project(
                                 .map(|middle_part| {
                                     (
                                         format!("{}{}{}", prev_part, middle_part, last_part),
-                                        template.clone(),
+                                        content.clone(),
                                         is_dir,
                                         [middle_part.to_string()].to_vec(),
                                     )
@@ -130,7 +133,7 @@ pub fn generate_project(
                 )
             }
         } else {
-            dinamic_files.push((path.clone(), template.clone(), is_dir, [].to_vec()));
+            dinamic_files.push((path.clone(), content.clone(), is_dir, [].to_vec()));
         }
     }
     let mut project: Vec<(String, bool, Content)> = vec![];
