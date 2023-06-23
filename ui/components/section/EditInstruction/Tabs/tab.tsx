@@ -1,5 +1,5 @@
 import { useIDL } from '@/context/IDL'
-import { FC, useLayoutEffect, useRef, useState } from 'react'
+import { FC, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { isProperty } from './verifyType'
 
 function classNames(...classes: any) {
@@ -7,32 +7,43 @@ function classNames(...classes: any) {
 }
 
 const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
-  const checkbox = useRef<any>()
-  const [checked, setChecked] = useState(false)
   const [newProperty, setNewProperty] = useState<any>({})
-  const [indeterminate, setIndeterminate] = useState<any>(false)
   const [selectedProperty, setSelectedProperties] = useState<any>([])
   const [propertySelectedEdit, setPropertySelectedEdit] = useState<number>()
   const [propertyEditing, setPropertyEditing] = useState<any>({})
 
-  useLayoutEffect(() => {
-    const isIndeterminate = selectedProperty.length > 0 && selectedProperty.length < elements.length
-    setChecked(selectedProperty.length === elements?.length)
-    setIndeterminate(isIndeterminate)
-    checkbox.current.indeterminate = isIndeterminate
-  }, [selectedProperty])
+  useEffect(() => {
+    const defaultProperty = objConfig.reduce((acc: any, prop: any)=> {
+      return {
+        ...acc,
+        [prop.name]: prop?.options?.[0] || ""
+      }
+    }, {})
+    console.log(defaultProperty)
+  }, [])
 
-  function toggleAll() {
-    setSelectedProperties(checked || indeterminate ? [] : elements)
-    setChecked(!checked && !indeterminate)
-    setIndeterminate(false)
-  }
+  // const checkbox = useRef<any>()
+  // const [checked, setChecked] = useState(false)
+  // const [indeterminate, setIndeterminate] = useState<any>(false)
+
+  // useLayoutEffect(() => {
+  //   const isIndeterminate = selectedProperty.length > 0 && selectedProperty.length < elements.length
+  //   setChecked(selectedProperty.length === elements?.length)
+  //   setIndeterminate(isIndeterminate)
+  //   checkbox.current.indeterminate = isIndeterminate
+  // }, [selectedProperty])
+
+  // function toggleAll() {
+  //   setSelectedProperties(checked || indeterminate ? [] : elements)
+  //   setChecked(!checked && !indeterminate)
+  //   setIndeterminate(false)
+  // }
 
   return (
     <div className="flex flex-col gap-4 w-full overflow-x-auto h-full  overflow-y-auto">
       <div className="inline-block w-full align-middle">
         <div className="relative">
-          {
+          {/* {
             selectedProperty.length > 0 && (
               <div className="absolute left-14 top-0 flex h-12 items-center space-x-3 bg-white sm:left-12">
                 <button
@@ -43,11 +54,11 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                 </button>
               </div>
             )
-          }
+          } */}
           <table className="w-full max-w-full">
             <thead>
               <tr className='py-2'>
-                <th scope="col" className="relative px-7 sm:w-12 sm:px-6">
+                {/* <th scope="col" className="relative px-7 sm:w-12 sm:px-6">
                   <input
                     type="checkbox"
                     className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
@@ -55,7 +66,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                     checked={checked}
                     onChange={toggleAll}
                   />
-                </th>
+                </th> */}
                 {
                   objConfig.map(({ name }: { name: string }) => {
                     return (
@@ -73,17 +84,18 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
             </thead>
             <tbody className="text-white divide-y divide-gray-200 bg-[#102042] ">
               <tr className='py-2'>
-                <td className="relative px-5">
-                </td>
+                {/* <td className="relative px-5">
+                </td> */}
                 {
-                  objConfig.map(({ name, options }: any) => {
+                  objConfig.map(({ disabled, name, options }: any) => {
                     if (options) {
                       return (
                         <td key={name} className='w-min'>
                           <select
                             className='bg-transparent'
                             id={name}
-                            defaultValue={0}
+                            disabled={disabled}
+                            defaultValue={"false" || "bool"}
                             onChange={(e) => {
                               setNewProperty({
                                 ...newProperty,
@@ -91,12 +103,6 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                               })
                             }}
                           >
-                            <option
-                              value={0}
-                              disabled
-                            >
-                              Select {name}
-                            </option>
                             {
                               options.map((op: any) => {
                                 return (
@@ -121,6 +127,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                           <input
                             type='text'
                             id={name}
+                            disabled={disabled}
                             className='bg-transparent border-none'
                             onChange={(e) => {
                               setNewProperty({
@@ -136,7 +143,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                 }
                 <td className="whitespace-nowrap w-24 text-center text-sm font-medium">
                   <button
-                    onClick={()=> addProperty(newProperty)}
+                    onClick={() => addProperty(newProperty)}
                     className="text-indigo-600 hover:text-indigo-900 p-2"
                   >
                     Add Property
@@ -147,10 +154,10 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                 elements?.map((property: any, index: number) => {
                   return propertySelectedEdit === index ?
                     <tr key={property.name} className='py-2'>
-                      <td className="relative px-5">
-                      </td>
+                      {/* <td className="relative px-5">
+                      </td> */}
                       {
-                        objConfig.map(({ name, options }: any) => {
+                        objConfig.map(({ disabled, name, options }: any) => {
                           if (options) {
                             return (
                               <td key={name} className='w-min'>
@@ -158,6 +165,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                                   className='bg-transparent'
                                   id={name}
                                   defaultValue={property[name]}
+                                  disabled={disabled}
                                   onChange={(e) => {
                                     setPropertyEditing({
                                       ...propertyEditing,
@@ -165,12 +173,6 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                                     })
                                   }}
                                 >
-                                  <option
-                                    value={0}
-                                    disabled
-                                  >
-                                    Select {name}
-                                  </option>
                                   {
                                     options.map((op: any) => {
                                       return (
@@ -195,6 +197,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                                 <input
                                   type='text'
                                   id={name}
+                                  disabled={disabled}
                                   defaultValue={property[name]}
                                   className='bg-transparent border-none'
                                   onChange={(e) => {
@@ -211,8 +214,8 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                       }
                       <td className="whitespace-nowrap w-24 text-center text-sm font-medium">
                         <button
-                          onClick={()=>{
-                            editProperty(elements[index] = propertyEditing)
+                          onClick={() => {
+                            editProperty(propertyEditing, index)
                             setPropertySelectedEdit(undefined)
                           }}
                           className="text-indigo-600 hover:text-indigo-900 p-2"
@@ -223,7 +226,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                     </tr>
                     :
                     <tr key={property.name} className={`${selectedProperty.includes(property) ? 'bg-gray-50' : undefined} `}>
-                      <td className="relative px-7 sm:w-12 sm:px-6">
+                      {/* <td className="relative px-7 sm:w-12 sm:px-6">
                         {selectedProperty.includes(property) && (
                           <div className="absolute inset-y-0 left-0 w-0.5 bg-indigo-600" />
                         )}
@@ -239,9 +242,9 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                             )
                           }
                         />
-                      </td>
+                      </td> */}
                       {
-                        objConfig.map(({name}: any) => {
+                        objConfig.map(({ name }: any) => {
                           return (
                             <td
                               key={name}
@@ -252,9 +255,9 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                             >
                               {
                                 typeof property[name] === "object" ?
-                                JSON.stringify(property[name])
-                                :
-                                property[name]
+                                  JSON.stringify(property[name])
+                                  :
+                                  property[name]
                               }
                             </td>
 
