@@ -19,7 +19,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
         [prop.name]: prop?.options?.[0] || ""
       }
     }, {})
-    console.log(defaultProperty)
+    setNewProperty(defaultProperty)
   }, [])
 
   // const checkbox = useRef<any>()
