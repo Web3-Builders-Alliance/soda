@@ -59,7 +59,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout openIDL={openIDL} newProject={newProject} generateIDL={generateIDL} handleTemplateFolder={handleTemplateFolder} exportData={exportData}>
-        <Editor generateIDL={generateIDL}  />
+        <Editor generateIDL={generateIDL}/>
       </Layout>
     </>
   );
