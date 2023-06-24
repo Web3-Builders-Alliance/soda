@@ -11,6 +11,7 @@ import {
 import {useConnection} from '../components/providers/ConnectionProvider';
 import DisconnectButton from '../components/DisconnectButton';
 import RequestAirdropButton from '../components/RequestAirdropButton';
+import CallInstructionsFrontEnd from "../components/CallInstructionsFrontEnd"
 
 export default function MainScreen() {
   const {connection} = useConnection();
@@ -53,6 +54,7 @@ export default function MainScreen() {
                     await fetchAndUpdateBalance(account)
                   }
                 />
+                <CallInstructionsFrontEnd/>
               </Section>
             </>
           ) : null}
