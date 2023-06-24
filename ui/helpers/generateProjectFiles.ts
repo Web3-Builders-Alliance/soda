@@ -2,7 +2,6 @@ import { message } from "@tauri-apps/api/dialog";
 import { open } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api/tauri";
 import handleBaseFolder from "./handleBaseFolder";
-import handleTemplateFolder from "./handleTemplateFolder";
 
 const generateProjectFiles = (
   name: string,
@@ -12,23 +11,6 @@ const generateProjectFiles = (
 ) => {
   return async () => {
     try {
-      let template = templateFolder;
-      if (templateFolder === undefined) {
-        await message(
-          "You need to select a template folder before generate the project",
-          "Select a Template folder"
-        );
-        template = await open({
-          multiple: false,
-          directory: true,
-          title: "Select a template folder",
-        });
-        handleTemplateFolder(template, setTemplateFolder);
-        await message(
-          "Select in wich folder you want to generate the project",
-          "Select a output folder"
-        );
-      }
       const result = await open({
         multiple: false,
         directory: true,

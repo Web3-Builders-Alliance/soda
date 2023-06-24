@@ -3,14 +3,17 @@
     windows_subsystem = "windows"
 )]
 #![allow(non_snake_case, non_camel_case_types)]
-use soda_sol::{generate_from_idl, IDL};
+
+use soda_sol::{generate_project, write_project_to_fs, get_template_from_fs, IDL, Template};
 use std::{io::Write, sync::Mutex};
 use tauri::{CustomMenuItem, Menu, MenuItem, Submenu, State};
+mod default_template;
+use default_template::default_template;
 
 #[derive(Debug)]
 struct StateStruct {
     base_folder: String,
-    template_folder: String,
+    template: Template,
     idl_string: String,
 }
 
@@ -46,7 +49,7 @@ fn main() {
         .manage(AppState(Mutex::new(
             StateStruct {
                 base_folder: ".".to_string(),
-                template_folder: ".".to_string(),
+                template: default_template(),
                 idl_string: r#"{"version":"0.1.0","name":"Project's Name","instructions":[{"name":"initialize","accounts":[],"args":[]}],"accounts":[],"types":[],"events":[],"errors":[],"metadata":{"address":""}}"#.to_string(),
             }
         )))
@@ -97,7 +100,7 @@ fn main() {
             generate_idl_file,
             update_base_folder_path,
             new_window,
-            update_template_folder_path,
+            update_template,
             update_idl_string,
         ])
         .run(tauri::generate_context!())
@@ -106,16 +109,17 @@ fn main() {
 
 #[tauri::command]
 fn generate(handle: tauri::AppHandle, state: State<AppState>) -> () {
-    let (idl_string, base_folder, template_folder) = {
+    let (idl_string, base_folder, template) = {
         let state = state.0.lock().unwrap();
         (
             &state.idl_string.clone(),
             &state.base_folder.clone(),
-            &state.template_folder.clone(),
+            &state.template.clone(),
         )
     };
     let idl: IDL = serde_json::from_str(idl_string).expect("error while reading json");
-    generate_from_idl(base_folder, idl, template_folder);
+    let dinamyc_files = generate_project(template.clone(), &idl);
+    write_project_to_fs(dinamyc_files, idl, base_folder);
 }
 
 #[tauri::command]
@@ -151,9 +155,10 @@ fn update_base_folder_path(base: String, state: State<AppState>) -> Result<(), (
 }
 
 #[tauri::command]
-fn update_template_folder_path(template: String, state: State<AppState>) -> Result<(), ()> {
+fn update_template(template_folder: String, state: State<AppState>) -> Result<(), ()> {
     let mut state = state.0.lock().unwrap();
-    state.template_folder = template;
+    let template = get_template_from_fs(&template_folder);
+    state.template = template;
     Ok(())
 }
 
