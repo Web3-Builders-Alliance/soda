@@ -10,7 +10,6 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
 
     useEffect(() => {
         if (IDL?.[instruction]?.[editingItem]?.type) {
-            console.log(IDL?.[instruction]?.[editingItem]?.type)
             setKind(IDL?.[instruction]?.[editingItem]?.type?.kind)
         } else {
             setKind("")
@@ -74,8 +73,6 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
         })
         // }
     }
-
-    console.log()
 
     const editProperty = (propertyEdit: any, indexProperty: number) => {
         if (instruction === "errors") {
@@ -178,7 +175,7 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                         editProperty={editProperty}
                         addProperty={addProperty}
                         elements={IDL?.[instruction]?.[editingItem]?.[tabConfig]}
-                        objConfig={[{ name: "name" }, { name: "isMut", options: ["false", "true"] }, { name: "isSigner", options: ["false", "true"] }]}
+                        objConfig={[{ name: "name" }, { name: "isMut", options: "boolean" }, { name: "isSigner", options: "boolean" }]}
                     />
                 }
                 {
@@ -209,7 +206,7 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                     editProperty={editProperty}
                     addProperty={addProperty}
                     elements={IDL?.[instruction]?.[editingItem]?.fields}
-                    objConfig={[{ name: "name" }, { name: "type", options: type_args }, { name: "index", options: ["false", "true"] }]}
+                    objConfig={[{ name: "name" }, { name: "type", options: type_args }, { name: "index", options: "boolean" }]}
                 />
             </div>
         ),
@@ -257,7 +254,7 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                     editProperty={editProperty}
                     addProperty={addProperty}
                     elements={IDL?.[instruction]?.[editingItem]?.type?.variants}
-                    objConfig={[{ name: "name" }, { name: "type", options: type_args }, { name: "index", options: ["false", "true"] }]}
+                    objConfig={[{ name: "name" }, { name: "type", options: type_args }, { name: "index", options: "boolean" }]}
                 />
             }
             {

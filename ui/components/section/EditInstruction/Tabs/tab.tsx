@@ -13,14 +13,28 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
   const [propertyEditing, setPropertyEditing] = useState<any>({})
 
   useEffect(() => {
-    const defaultProperty = objConfig.reduce((acc: any, prop: any)=> {
+    const defaultProperty = objConfig.reduce((acc: any, prop: any) => {
       return {
         ...acc,
-        [prop.name]: prop?.options?.[0] || ""
+        [prop.name]: prop?.options === "boolean" ? false : prop?.options?.[0] || ""
       }
     }, {})
     setNewProperty(defaultProperty)
   }, [])
+
+  const handlerNewProperty = (e: any) => {
+    setNewProperty({
+      ...newProperty,
+      [e.target.id]: e.target.type === "checkbox" ? e.target.checked : e.target.value
+    })
+  }
+
+  const handlerEditProperty = (e: any) => {
+    setPropertyEditing({
+      ...propertyEditing,
+      [e.target.id]: e.target.value
+    })
+  }
 
   // const checkbox = useRef<any>()
   // const [checked, setChecked] = useState(false)
@@ -88,20 +102,25 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                 </td> */}
                 {
                   objConfig.map(({ disabled, name, options }: any) => {
-                    if (options) {
+                    if (options === "boolean") {
                       return (
-                        <td key={name} className='w-min'>
+                        <td key={name} className='w-min px-5'>
+                          <input
+                            id={name}
+                            type="checkbox"
+                            onChange={handlerNewProperty}
+                          />
+                        </td>
+                      )
+                    } else if (options?.length) {
+                      return (
+                        <td key={name} className='w-min pl-5'>
                           <select
                             className='bg-transparent'
                             id={name}
                             disabled={disabled}
-                            defaultValue={"false" || "bool"}
-                            onChange={(e) => {
-                              setNewProperty({
-                                ...newProperty,
-                                [e.target.id]: e.target.value
-                              })
-                            }}
+                            defaultValue={options[0]}
+                            onChange={handlerNewProperty}
                           >
                             {
                               options.map((op: any) => {
@@ -128,13 +147,8 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                             type='text'
                             id={name}
                             disabled={disabled}
-                            className='bg-transparent border-none'
-                            onChange={(e) => {
-                              setNewProperty({
-                                ...newProperty,
-                                [e.target.id]: e.target.value
-                              })
-                            }}
+                            className='bg-transparent border-none pl-5'
+                            onChange={handlerNewProperty}
                           />
                         </td>
                       )
@@ -158,7 +172,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                       </td> */}
                       {
                         objConfig.map(({ disabled, name, options }: any) => {
-                          if (options) {
+                          if (options?.length) {
                             return (
                               <td key={name} className='w-min'>
                                 <select
@@ -166,12 +180,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                                   id={name}
                                   defaultValue={property[name]}
                                   disabled={disabled}
-                                  onChange={(e) => {
-                                    setPropertyEditing({
-                                      ...propertyEditing,
-                                      [e.target.id]: e.target.value
-                                    })
-                                  }}
+                                  onChange={handlerEditProperty}
                                 >
                                   {
                                     options.map((op: any) => {
@@ -187,7 +196,16 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                                 </select>
                               </td>
                             )
-
+                          } else if (options === "boolean") {
+                            return (
+                              <td key={name} className='w-min px-5'>
+                                <input
+                                  id={name}
+                                  type='checkbox'
+                                  onChange={handlerEditProperty}
+                                />
+                              </td>
+                            )
                           } else {
                             return (
                               <td
@@ -199,13 +217,8 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                                   id={name}
                                   disabled={disabled}
                                   defaultValue={property[name]}
-                                  className='bg-transparent border-none'
-                                  onChange={(e) => {
-                                    setPropertyEditing({
-                                      ...propertyEditing,
-                                      [e.target.id]: e.target.value
-                                    })
-                                  }}
+                                  className='bg-transparent border-none pl-5'
+                                  onChange={handlerEditProperty}
                                 />
                               </td>
                             )
@@ -245,6 +258,16 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                       </td> */}
                       {
                         objConfig.map(({ name }: any) => {
+                          const value = () => {
+                            if(typeof property[name] === "object"){
+                              return JSON.stringify(property[name])
+                            } else if (typeof property[name] === "boolean"){
+
+                              return  property[name].toString()
+                            }
+                              
+                            return property[name]
+                          }
                           return (
                             <td
                               key={name}
@@ -254,10 +277,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                               )}
                             >
                               {
-                                typeof property[name] === "object" ?
-                                  JSON.stringify(property[name])
-                                  :
-                                  property[name]
+                                value()
                               }
                             </td>
 
