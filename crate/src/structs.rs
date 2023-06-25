@@ -95,6 +95,7 @@ pub struct Instruction {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Accounts {
+    #[serde(default)]
     pub(crate) name: String,
     #[serde(default)]
     #[serde(rename = "type")]
@@ -145,6 +146,7 @@ pub struct InstructionArgs {
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Type {
     pub(crate) kind: String,
+    #[serde(default)]
     pub(crate) fields: Vec<TypeFields>,
 }
 
@@ -206,6 +208,12 @@ pub enum InstructionType {
     option(OptionType),
 }
 
+impl Default for InstructionType {
+    fn default() -> Self {
+        InstructionType::String("".to_string())
+    }
+}
+
 #[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(untagged)]
 pub enum InstructionTypeVec {
@@ -244,6 +252,7 @@ pub struct Name {
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct TypeFields {
     pub(crate) name: String,
+    #[serde(default)]
     #[serde(rename = "type")]
     pub(crate) type_: InstructionType,
 }
