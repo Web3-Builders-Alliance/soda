@@ -22,6 +22,8 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
     setNewProperty(defaultProperty)
   }, [])
 
+  console.log(newProperty)
+
   const handlerNewProperty = (e: any) => {
     setNewProperty({
       ...newProperty,
