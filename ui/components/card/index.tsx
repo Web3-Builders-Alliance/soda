@@ -48,10 +48,6 @@ export const Card: FC<any> = ({ name, onClick, filter, instruction, index }) => 
       {
         showOptions &&
         <div className="flex">
-          {/* <CheckIcon
-            onClick={editNameInstruction}
-            className=" w-4 h-4"
-          /> */}
           <TrashIcon
             onClick={filter}
             className="text-white w-4 h-4"

@@ -18,7 +18,7 @@ const saveIDLFile = (setBaseFolder: Function, version: string | undefined, name:
             await message(`Output path: ${result}/idl.json`, "Project generated");
           })
           .catch(async (e) => {
-            await message(e, { title: "Error", type: "error" });
+            await message(e?.error ?? "generate_idl_file Error", { title: "Error", type: "error" });
           });
       } catch (e) {
         await message(`${e}`, {

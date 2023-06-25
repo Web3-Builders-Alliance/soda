@@ -10,7 +10,6 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
 
     useEffect(() => {
         if (IDL?.[instruction]?.[editingItem]?.type) {
-            console.log(IDL?.[instruction]?.[editingItem]?.type)
             setKind(IDL?.[instruction]?.[editingItem]?.type?.kind)
         } else {
             setKind("")
@@ -21,11 +20,15 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
         // const verifyProperty = isProperty(newProperty, tabConfig)
         // if (verifyProperty) {
         if (instruction === "errors") {
+            const errProperty = {
+                ...newProperty,
+                code: 6000 + (IDL[instruction].length)
+            }
             return setIDL({
                 ...IDL,
                 [instruction]: [
                     ...IDL[instruction],
-                    newProperty
+                    errProperty
                 ]
             })
         }
@@ -71,14 +74,74 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
         // }
     }
 
-    const editProperty = (propertyEdit: any) => {
-
+    const editProperty = (propertyEdit: any, indexProperty: number) => {
+        if (instruction === "errors") {
+            const editing = {
+                ...IDL,
+                [instruction]: IDL[instruction].map((prop: any, i: number) => {
+                    if (indexProperty === i) {
+                        return propertyEdit
+                    } else {
+                        prop
+                    }
+                })
+            }
+            return setIDL(editing)
+        }
         const editing = {
             ...IDL,
-            propertyEdit
+            [instruction]: IDL[instruction].map((inst: any, index: number) => {
+                if (index === editingItem) {
+                    if (instruction === "instructions" && !inst?.[tabConfig]?.includes(propertyEdit)) {
+                        return {
+                            ...inst,
+                            [tabConfig]: inst?.[tabConfig].map((prop: any, i: number) => {
+                                if (indexProperty === i) {
+                                    return propertyEdit
+                                } else {
+                                    prop
+                                }
+                            })
+                        }
+                    }
+                    if (instruction === "events" && !inst?.[tabConfig]?.includes(propertyEdit)) {
+                        return {
+                            ...inst,
+                            fields: inst?.fields.map((prop: any, i: number) => {
+                                if (indexProperty === i) {
+                                    return propertyEdit
+                                } else {
+                                    prop
+                                }
+                            })
+                        }
+                    }
+                    if (!inst?.types?.[tabConfig]?.includes(propertyEdit)) {
+                        return {
+                            ...inst,
+                            type: {
+                                kind: kind,
+                                [kind === "struct" ? "fields" : "variants"]: inst?.type?.[kind === "struct" ? "fields" : "variants"].map((prop: any, i: number) => {
+                                    if (indexProperty === i) {
+                                        return propertyEdit
+                                    } else {
+                                        prop
+                                    }
+                                })
+
+                            }
+                        }
+                    }
+                }
+                return inst
+            })
         }
-        setIDL(editing)
+        // const editing = {
+        //     ...IDL,
+        //     ...propertyEdit
         // }
+        setIDL(editing)
+
     }
 
     const render = {
@@ -112,7 +175,7 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                         editProperty={editProperty}
                         addProperty={addProperty}
                         elements={IDL?.[instruction]?.[editingItem]?.[tabConfig]}
-                        objConfig={[{ name: "name" }, { name: "isMut", options: ["true", "false"] }, { name: "isSigner", options: ["true", "false"] }]}
+                        objConfig={[{ name: "name" }, { name: "isMut", options: "boolean" }, { name: "isSigner", options: "boolean" }]}
                     />
                 }
                 {
@@ -132,7 +195,7 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                     editProperty={editProperty}
                     addProperty={addProperty}
                     elements={IDL?.[instruction]}
-                    objConfig={[{ name: "code" }, { name: "type" }, { name: "msg" }]}
+                    objConfig={[{ disabled: true, name: "code" }, { name: "name" }, { name: "msg" }]}
                 />
             </div>
         ),
@@ -143,101 +206,47 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                     editProperty={editProperty}
                     addProperty={addProperty}
                     elements={IDL?.[instruction]?.[editingItem]?.fields}
-                    objConfig={[{ name: "name" }, { name: "type", options: type_args }, { name: "index", options: ["true", "false"] }]}
+                    objConfig={[{ name: "name" }, { name: "type", options: type_args }, { name: "index", options: "boolean" }]}
                 />
             </div>
         ),
     }
 
-    // if (instruction === "instructions") {
-    //     return (
-    //         <div className="flex flex-col overflow-x-auto gap-4 h-full">
-    //             <div className=" flex w-full h-12 text-center -space-x-1">
-    //                 {
-    //                     ["accounts", "args"].map((name, index) => {
-    //                         return (
-    //                             <div
-    //                                 className={` ${tabConfig === name ? "z-20" : ""} self-end w-full`}
-    //                                 key={name}
-    //                             >
-    //                                 <div
-    //                                     className={`${tabConfig === name ? "text-white h-full shadow-tabSelected" : "text-slate-400 h-[90%] shadow-tab"} shadow-white flex px-6 items-center justify-center  rounded-t-xl bg-[#1E1E1E]`}
-    //                                     onClick={() => setTab(name)}
-    //                                 >
-    //                                     <p>
-    //                                         {name}
-    //                                     </p>
-    //                                 </div>
-    //                             </div>
-    //                         )
-    //                     })
-    //                 }
-    //             </div>
-    //             {
-    //                 tabConfig === "accounts" &&
-    //                 <Tab
-    //                     editProperty={editProperty}
-    //                     addProperty={addProperty}
-    //                     elements={IDL?.[instruction]?.[editingItem]?.[tabConfig]}
-    //                     objConfig={[{ name: "name" }, { name: "isMut", options: ["true", "false"] }, { name: "isSigner", options: ["true", "false"] }]}
-    //                 />
-    //             }
-    //             {
-    //                 tabConfig === "args" &&
-    //                 <Tab
-    //                     editProperty={editProperty}
-    //                     addProperty={addProperty}
-    //                     elements={IDL?.[instruction]?.[editingItem]?.[tabConfig]}
-    //                     objConfig={[{ name: "name" }, { name: "type", options: type_args }]}
-    //                 />
-    //             }
-    //         </div>
-    //     )
-    // } else if (instruction === "errors") {
-    //     return (
-    //         <div>
-
-    //         </div>
-    //     )
-    // } else if (instruction === "events") {
-    //     <div className="flex flex-col overflow-x-auto gap-4 h-full">
-    //         <Tab
-    //             editProperty={editProperty}
-    //             addProperty={addProperty}
-    //             elements={IDL?.[instruction]?.[editingItem]?.fields}
-    //             objConfig={[{ name: "name" }, { name: "type", options: type_args }, { name: "index", options: ["true", "false"] }]}
-    //         />
-    //     </div>
-    // }
     if (render[instruction as keyof typeof render]) return render[instruction as keyof typeof render]
     return (
         IDL?.[instruction]?.[editingItem] &&
         <div className="flex flex-col overflow-x-auto gap-4 h-full">
             {
-                !IDL?.[instruction]?.[editingItem]?.type &&
-                <select
-                    className='bg-transparent text-white'
-                    defaultValue={0}
-                    onChange={(e) => { setKind(e.target.value) }}
-                >
-                    <option
-                        value={0}
-                        disabled
+                !IDL?.[instruction]?.[editingItem]?.type ?
+                    <select
+                        className='bg-transparent text-white'
+                        defaultValue={0}
+                        onChange={(e) => { setKind(e.target.value) }}
                     >
-                        Select Kind
-                    </option>
-                    {
-                        ["struct", "enum"].map((op: any) => {
-                            return (
-                                <option key={op}>
-                                    {
-                                        op
-                                    }
-                                </option>
-                            )
-                        })
-                    }
-                </select>
+                        <option
+                            value={0}
+                            disabled
+                        >
+                            Select Kind
+                        </option>
+                        {
+                            ["struct", "enum"].map((op: any) => {
+                                return (
+                                    <option key={op}>
+                                        {
+                                            op
+                                        }
+                                    </option>
+                                )
+                            })
+                        }
+                    </select>
+                    :
+                    <p className="text-white text-xl">
+                        {
+                           `Kind: ${IDL?.[instruction]?.[editingItem]?.type.kind}`
+                        }
+                    </p>
             }
             {
                 kind === "enum" &&
@@ -245,7 +254,7 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                     editProperty={editProperty}
                     addProperty={addProperty}
                     elements={IDL?.[instruction]?.[editingItem]?.type?.variants}
-                    objConfig={[{ name: "name" }, { name: "type", options: type_args }, { name: "index", options: ["true", "false"] }]}
+                    objConfig={[{ name: "name" }, { name: "type", options: type_args }, { name: "index", options: "boolean" }]}
                 />
             }
             {

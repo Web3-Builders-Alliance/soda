@@ -38,28 +38,24 @@ export const isProperty = (item: PropertyTypes, property: string) => {
         case "args":
             if (isArgs(item)) {
                 // Realizar acciones para Args
-                // console.log("Args:", item);
                 return item;
             }
             break;
         case "fields":
             if (isFields(item)) {
                 // Realizar acciones para Fields
-                // console.log("Fields:", item);
                 return item;
             }
             break;
         case "variants":
             if (isVariants(item)) {
                 // Realizar acciones para Variants
-                // console.log("Variants:", item);
                 return item;
             }
             break;
         case "accounts":
             if (isAccounts(item)) {
                 // Realizar acciones para Accounts
-                // console.log("Accounts:", item);
                 return item;
             }
             break;

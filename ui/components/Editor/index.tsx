@@ -2,36 +2,30 @@ import { FC, useState } from "react";
 import { Section } from "@/components/section";
 import { useIDL } from "@/context/IDL";
 
-export const Editor: FC<any> = ({
-    // name,
-    // setName,
-    // instructions,
-    // setInstructions,
-    // accounts,
-    // setAccounts,
-    // types,
-    // setTypes,
-    // events,
-    // setEvents,
-    // errors,
-    // setErrors,
-}) => {
+export const Editor: FC<any> = ({generateIDL}) => {
 
     const [select, setSelect] = useState("instructions")
     const { IDL, setIDL } = useIDL()
 
     return (
         <div className=" flex flex-col gap-10 h-full font-mono p-10">
-            <input
-                placeholder="Project's Name"
-                value={IDL.name}
-                onChange={(e) => setIDL({
-                    ...IDL,
-                    name: e.target.value
-                })
-                }
-                className=" w-3/12 h-20 p-5 bg-[#102042] text-white text-base rounded-xl"
-            />
+            <div className="flex justify-between">
+                <input
+                    placeholder="Project's Name"
+                    value={IDL.name}
+                    onChange={(e) => setIDL({
+                        ...IDL,
+                        name: e.target.value
+                    })
+                    }
+                    className=" w-3/12 h-20 p-5 bg-[#102042] text-white text-base rounded-xl"
+                />
+                <div>
+                    <button className="text-white bg-[#387847] p-5 rounded-xl h-20" onClick={generateIDL}>
+                        Save IDL
+                    </button>
+                </div>
+            </div>
             <div className=" flex flex-col border border-white gap-2 h-[calc(100%_-_5rem)] rounded-xl overflow-hidden">
                 <div className=" flex w-full text-center -space-x-1 h-12">
                     {
