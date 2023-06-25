@@ -4,6 +4,7 @@
 )]
 #![allow(non_snake_case, non_camel_case_types)]
 
+use serde;
 use soda_sol::{generate_project, write_project_to_fs, get_template_from_fs, IDL, Template};
 use std::{io::Write, sync::Mutex};
 use tauri::{CustomMenuItem, Menu, MenuItem, Submenu, State};
@@ -108,7 +109,7 @@ fn main() {
 }
 
 #[tauri::command]
-fn generate(handle: tauri::AppHandle, state: State<AppState>) -> () {
+fn generate(handle: tauri::AppHandle, state: State<AppState>) -> Result<(), MyError> {
     let (idl_string, base_folder, template) = {
         let state = state.0.lock().unwrap();
         (
@@ -117,13 +118,21 @@ fn generate(handle: tauri::AppHandle, state: State<AppState>) -> () {
             &state.template.clone(),
         )
     };
-    let idl: IDL = serde_json::from_str(idl_string).expect("error while reading json");
-    let dinamyc_files = generate_project(template.clone(), &idl);
-    write_project_to_fs(dinamyc_files, idl, base_folder);
+    match serde_json::from_str::<IDL>(idl_string) {
+        Ok(idl) => {
+            let dinamyc_files = generate_project(template.clone(), &idl);
+            write_project_to_fs(dinamyc_files, idl, base_folder);
+            Ok(())
+        }
+        Err(e) => Err(MyError::CustomError {
+            message: e.to_string(),
+        }),
+    }
 }
 
+
 #[tauri::command]
-fn generate_idl_file(handle: tauri::AppHandle, state: State<AppState>) -> () {
+fn generate_idl_file(handle: tauri::AppHandle, state: State<AppState>) -> Result<(), MyError> {
     let (idl_string, base_folder) = {
         let state = state.0.lock().unwrap();
         (
@@ -131,10 +140,17 @@ fn generate_idl_file(handle: tauri::AppHandle, state: State<AppState>) -> () {
             &state.base_folder.clone(),
         )
     };
-    let idl: IDL = serde_json::from_str(idl_string).expect("error while reading json");
-    let mut file = std::fs::File::create(format!("{}/idl.json", base_folder)).unwrap();
-    file.write_all(serde_json::to_string_pretty(&idl).unwrap().as_bytes())
-        .unwrap();
+    match serde_json::from_str::<IDL>(idl_string) {
+        Ok(idl) => {
+            let mut file = std::fs::File::create(format!("{}/idl.json", base_folder)).unwrap();
+            file.write_all(serde_json::to_string_pretty(&idl).unwrap().as_bytes())
+                .unwrap();
+            Ok(())
+        }
+        Err(e) => Err(MyError::CustomError {
+            message: e.to_string(),
+        }),
+    }
 }
 
 #[tauri::command]
@@ -167,4 +183,28 @@ fn update_idl_string(idl: String, state: State<AppState>) -> Result<(), ()> {
     let mut state = state.0.lock().unwrap();
     state.idl_string = idl;
     Ok(())
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum MyError {
+    #[error("custom error: {message}")]
+    CustomError { message: String },
+}
+#[derive(serde::Serialize)]
+struct ErrorWrapper {
+    error: String,
+}
+impl serde::Serialize for MyError {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::ser::Serializer,
+    {
+        let error_message = match self {
+            MyError::CustomError { message } => message,
+        };
+        let wrapper = ErrorWrapper {
+            error: error_message.to_string(),
+        };
+        wrapper.serialize(serializer)
+    }
 }
