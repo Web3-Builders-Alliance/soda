@@ -3,30 +3,20 @@ import { useEffect, useState } from "react";
 import { Editor } from "@/components/Editor";
 import { TauriEvent, listen } from "@tauri-apps/api/event";
 import { about, cleanProject, generateProjectFiles, nameSetter, openIDLFile, saveIDLFile, selectTemplateFolder } from "@/helpers";
+import Layout from "@/components/Layout";
+import { useIDL } from "@/context/IDL";
 
 export default function Home() {
-  const [name, setName] = useState<string>("Project's Name");
-  const [instructions, setInstructions] = useState<any>([
-    {
-      name: "initialize",
-    },
-  ]);
-  const [accounts, setAccounts] = useState<any>([]);
-  const [types, setTypes] = useState<any>([]);
-  const [events, setEvents] = useState<any>([]);
-  const [errors, setErrors] = useState<any>([]);
+
+  const { IDL, setIDL } = useIDL()
   const [templateFolder, setTemplateFolder] = useState<any>(undefined);
   const [baseFolder, setBaseFolder] = useState<any>(undefined);
-  const [version, setVersion] = useState<string | undefined>("0.1.0");
-  const [metadata, setMetadata] = useState<any>(undefined);
-
-  const exportData = generateProjectFiles(version, name, instructions, accounts, types, events, errors, metadata, templateFolder, setTemplateFolder, setBaseFolder);
+  const exportData = generateProjectFiles(IDL.name, templateFolder, setTemplateFolder, setBaseFolder);
   const handleTemplateFolder = selectTemplateFolder(setTemplateFolder);
-  const openIDL = openIDLFile(setName, setInstructions, setAccounts, setTypes, setEvents, setErrors, setMetadata);
-  const newProject = cleanProject(setVersion, setName, setInstructions, setAccounts, setTypes, setEvents, setErrors, setMetadata);
-  const generateIDL = saveIDLFile(setBaseFolder, version, name, instructions, accounts, types, events, errors, metadata);
+  const openIDL = openIDLFile(IDL, setIDL);
+  const newProject = cleanProject(setIDL);
+  const generateIDL = saveIDLFile(setBaseFolder, IDL.version, IDL.name, IDL.instructions, IDL.accounts, IDL.types, IDL.events, IDL.errors, IDL.metadata);
 
-  const handleName = (name: string) => { nameSetter(name, setName) };
   useEffect(() => {
     (async () => {
       const unlisten = await listen(TauriEvent.MENU, (event) => {
@@ -68,61 +58,9 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <main className="bg-neutral-900 py-5 flex flex-col justify-center min-h-screen">
-        <div className="flex">
-          <button
-            type="button"
-            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200 "
-            onClick={openIDL}
-          >
-            Open IDL file
-          </button>
-          <button
-            type="button"
-            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200 "
-            onClick={newProject}
-          >
-            New IDL
-          </button>
-          <button
-            type="button"
-            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200 "
-            onClick={generateIDL}
-          >
-            Save IDL
-          </button>
-          <button
-            type="button"
-            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200"
-            onClick={handleTemplateFolder}
-          >
-            Select a template
-          </button>
-          <button
-            type="button"
-            className="mx-auto px-5 py-2 my-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200"
-            onClick={exportData}
-          >
-            Create Project
-          </button>
-        </div>
-        <Editor
-          name={name}
-          setName={handleName}
-          instructions={instructions}
-          setInstructions={setInstructions}
-          accounts={accounts}
-          setAccounts={setAccounts}
-          types={types}
-          setTypes={setTypes}
-          events={events}
-          setEvents={setEvents}
-          errors={errors}
-          setErrors={setErrors}
-        />
-
-      </main>
+      <Layout openIDL={openIDL} newProject={newProject} generateIDL={generateIDL} handleTemplateFolder={handleTemplateFolder} exportData={exportData}>
+        <Editor generateIDL={generateIDL}/>
+      </Layout>
     </>
   );
 }

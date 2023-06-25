@@ -7,7 +7,7 @@
   },
   "package": {
     "productName": "soda",
-    "version": "0.0.5"
+    "version": "0.0.6"
   },
   "tauri": {
     "allowlist": {
@@ -74,11 +74,12 @@
     },
     "windows": [
       {
-        "fullscreen": false,
-        "height": 600,
-        "resizable": true,
         "title": "soda",
-        "width": 800
+        "fullscreen": false,
+        "maximized": true,
+        "resizable": true,
+        "height": 700,
+        "width": 1000
       }
     ]
   }

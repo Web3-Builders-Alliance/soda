@@ -1,0 +1,39 @@
+import { FC, useEffect, useState } from "react";
+import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
+import type { NextPage } from "next";
+import Head from "next/head";
+import { useProgram } from "../utils/useProgram";
+import { useRouter } from "next/router"
+
+const Home: NextPage = (props) => {
+  const wallet = useAnchorWallet();
+  const { connection } = useConnection();
+  const { program } = useProgram({ connection, wallet });
+
+{{#each events}}
+  useEffect(() => {
+    if (!program) return;
+    const listener = program.addEventListener(
+      "{{name}}",
+      async (event, _slot, _sig) => {
+        console.log(event);
+      }
+    );
+
+    return () => {
+      program.removeEventListener(listener);
+    };
+  }, [program]);
+
+{{/each}}
+  return (
+    <>
+      <Head>
+        <title>{{name}}</title>
+        <meta name="description" content="{{name}}" />
+      </Head>
+    </>
+  );
+};
+
+export default Home;

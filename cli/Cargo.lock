@@ -553,8 +553,18 @@ dependencies = [
 ]
 
 [[package]]
-name = "soda"
-version = "0.1.0"
+name = "soda-cli"
+version = "0.0.1"
+dependencies = [
+ "clap",
+ "env_logger",
+ "serde_json",
+ "soda_sol",
+]
+
+[[package]]
+name = "soda_sol"
+version = "0.0.3"
 dependencies = [
  "env_logger",
  "handlebars",
@@ -562,16 +572,6 @@ dependencies = [
  "serde_derive",
  "serde_json",
  "walkdir",
-]
-
-[[package]]
-name = "soda-cli"
-version = "0.1.0"
-dependencies = [
- "clap",
- "env_logger",
- "serde_json",
- "soda",
 ]
 
 [[package]]

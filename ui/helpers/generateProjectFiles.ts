@@ -1,63 +1,30 @@
 import { message } from "@tauri-apps/api/dialog";
 import { open } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api/tauri";
+import handleBaseFolder from "./handleBaseFolder";
 
 const generateProjectFiles = (
-  version: string | undefined,
   name: string,
-  instructions: any,
-  accounts: any,
-  types: any,
-  events: any,
-  errors: any,
-  metadata: any,
   templateFolder: any,
   setTemplateFolder: Function,
   setBaseFolder: Function,
 ) => {
   return async () => {
-    const idl = JSON.stringify({
-      version,
-      name,
-      instructions,
-      accounts,
-      types,
-      events,
-      errors,
-      metadata,
-    });
-
     try {
-      let template = templateFolder;
-      if (templateFolder === undefined) {
-        await message(
-          "You need to select a template folder before generate the project",
-          "Select a Template folder"
-        );
-        template = await open({
-          multiple: false,
-          directory: true,
-          title: "Select a template folder",
-        });
-        setTemplateFolder(template);
-        await message(
-          "Select in wich folder you want to generate the project",
-          "Select a output folder"
-        );
-      }
       const result = await open({
         multiple: false,
         directory: true,
         title: "Select a target folder",
       });
-      setBaseFolder(result);
+      if (typeof result !== "string") return;
+      handleBaseFolder(result, setBaseFolder);
 
-      invoke("generate", { baseFolder: result, idl, templateFolder: template })
+      invoke("generate")
         .then(async () => {
           await message(`Output path: ${result}/${name}`, "Project generated");
         })
         .catch(async (e) => {
-          await message(e, { title: "Error", type: "error" });
+          await message(e?.error ?? "Error", { title: "Error while creating projects files", type: "error" });
         });
     } catch (e) {
       await message(`${e}`, {
