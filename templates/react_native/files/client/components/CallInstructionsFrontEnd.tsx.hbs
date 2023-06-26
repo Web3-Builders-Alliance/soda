@@ -1,0 +1,79 @@
+{{#each instructions}}
+import {
+  {{name}}
+} from '../utils/callInstructions'
+{{/each}}
+
+import React, { useEffect, useCallback , useState } from 'react';
+import { View, TextInput, Button } from 'react-native';
+
+
+export default function CallInstructionsFrontEnd() {   
+  // variables for accounts
+  const program = ""
+  const authority = ""
+  const systemProgram = ""
+  const clock = ""
+  
+  {{#each instructions}}
+  {{#each accounts}}
+  {{#if this.isMut}}
+  {{#unless this.isSigner}}
+  const {{name}}_for_{{../name}} = ""
+  {{/unless}} 
+  {{/if}}
+  {{/each}}
+  {{/each}}
+
+// React UseStates hooks for managing args 
+//Example -> (argsName_for_instructionName , setArgsName_for_instructionName)
+{{#each instructions}}
+//for {{name}} instructions
+{{#each args}}
+const [{{name}}_for_{{../name}} , set{{name}}_for_{{../name}}] = useState()
+{{/each}}
+{{/each}}
+
+
+//handler functions for inputs feilds
+{{#each instructions}}
+{{#each args}}
+const {{name}}handler_for_{{../name}} = (e:any) => {
+  set{{name}}_for_{{../name}}(e.target.value)
+}
+{{/each}}
+{{/each}}
+  
+  return (
+    <View>
+    {{#each instructions}}
+              // for {{name}}
+              {{#each args}}
+              <View>
+                <TextInput
+                placeholder="placeholder"
+                onChangeText= {
+                  {{name}}handler_for_{{../name}}
+                }
+                value={
+                  {{name}}_for_{{../name}}
+                }
+                />
+              </View>
+              {{/each}}
+              {{/each}}
+
+              // buttons for calling instructions
+              {{#each instructions}}
+              <View>
+              <Button 
+              title="Call_{{name}}_functions"
+              onPress = { () =>
+                {{name}}(program , {{#each args}}{{name}}_for_{{../name}} , {{/each}}{{#each accounts}} {{#if this.isMut}}{{#unless this.isSigner}}{{name}}_for_{{../name}}{{/unless}}{{/if}} {{#if (eq this.name "authority")}}{{name}}{{/if}} {{#if (eq this.name "systemProgram")}}{{name}}{{/if}} {{#if (eq this.name "clock")}}{{name}}{{/if}},{{/each}})
+              }
+              />
+              </View>
+              {{/each}}
+              </View>
+  )
+}
