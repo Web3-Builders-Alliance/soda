@@ -17,44 +17,44 @@ export default function Home() {
   const newProject = cleanProject(setIDL);
   const generateIDL = saveIDLFile(setBaseFolder, IDL.version, IDL.name, IDL.instructions, IDL.accounts, IDL.types, IDL.events, IDL.errors, IDL.metadata);
 
-  useEffect(() => {
-    (async () => {
-      const unlisten = await listen(TauriEvent.MENU, (event) => {
-        switch (event?.payload
-        ) {
-          case "new_project":
-            newProject();
-            break;
-          case "open_idl":
-            openIDL();
-            break;
-          case "change_template":
-            handleTemplateFolder();
-            break;
-          case "generate_project":
-            exportData();
-            break;
-          case "generate_idl":
-            generateIDL();
-            break;
-          case "about":
-            about();
-            break;
-          default:
-            break;
-        }
-      });
-      return () => {
-        unlisten();
-      };
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     const unlisten = await listen(TauriEvent.MENU, (event) => {
+  //       switch (event?.payload
+  //       ) {
+  //         case "new_project":
+  //           newProject();
+  //           break;
+  //         case "open_idl":
+  //           openIDL();
+  //           break;
+  //         case "change_template":
+  //           handleTemplateFolder();
+  //           break;
+  //         case "generate_project":
+  //           exportData();
+  //           break;
+  //         case "generate_idl":
+  //           generateIDL();
+  //           break;
+  //         case "about":
+  //           about();
+  //           break;
+  //         default:
+  //           break;
+  //       }
+  //     });
+  //     return () => {
+  //       unlisten();
+  //     };
+  //   })();
+  // }, []);
 
   return (
     <>
       <Head>
         <title>Soda</title>
-        <meta name="description" content="Generate your project from an UI" />
+        <meta name="description" content="Generate Solana projects from an UI" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
