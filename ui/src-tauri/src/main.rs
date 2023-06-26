@@ -121,7 +121,7 @@ fn generate(handle: tauri::AppHandle, state: State<AppState>) -> Result<(), MyEr
     match serde_json::from_str::<IDL>(idl_string) {
         Ok(idl) => {
             let dinamyc_files = generate_project(template.clone(), &idl);
-            write_project_to_fs(dinamyc_files, idl, base_folder);
+            write_project_to_fs(dinamyc_files, base_folder);
             Ok(())
         }
         Err(e) => Err(MyError::CustomError {

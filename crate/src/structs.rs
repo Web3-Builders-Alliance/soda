@@ -76,7 +76,6 @@ pub struct Template {
 pub struct TemplateFile {
     pub path: String,
     pub content: Content,
-    pub is_dir: bool,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
