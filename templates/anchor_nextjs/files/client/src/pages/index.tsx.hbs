@@ -21,15 +21,15 @@ const Home: NextPage = (props) => {
 {{#each instructions}}
 //for {{name}}
 {{#each args}} 
-const [{{name}} , set{{name}}] = useState()
+const [{{name}}_for_{{../name}} , set{{name}}_for_{{../name}}] = useState()
 {{/each}}
 {{/each}}
 
 //handler functions for inputs feilds
 {{#each instructions}}
 {{#each args}}
-const {{name}}handler = (e) => {
-  set{{name}}(e.target.value)
+const {{name}}handler_for_{{../name}} = (e) => {
+  set{{name}}_for_{{../name}}(e.target.value)
 }
 {{/each}}
 {{/each}}
@@ -43,7 +43,7 @@ const clock = ""
 {{#each accounts}}
 {{#if this.isMut}}
 {{#unless this.isSigner}}
-const {{name}} = ""
+const {{name}}_for_{{../name}} = ""
 {{/unless}}
 {{/if}}
 {{/each}}
@@ -79,10 +79,10 @@ const {{name}} = ""
       <input
       type="text"
       value={
-        {{name}}
+        {{name}}_for_{{../name}}
       }
       onChange={
-        {{name}}handler
+        {{name}}handler_for_{{../name}}
       }
       />
       {{/each}}
@@ -91,7 +91,7 @@ const {{name}} = ""
       // buttons for calling instructions
       {{#each instructions}}
       <button onclick={
-        {{name}}(program,{{#each args}}{{name}},{{/each}}{{#each accounts}} {{name}},{{/each}})
+        {{name}}(program , {{#each args}}{{name}}_for_{{../name}} , {{/each}}{{#each accounts}} {{#if this.isMut}}{{#unless this.isSigner}}{{name}}_for_{{../name}}{{/unless}}{{/if}} {{#if (eq this.name "authority")}}{{name}}{{/if}} {{#if (eq this.name "systemProgram")}}{{name}}{{/if}} {{#if (eq this.name "clock")}}{{name}}{{/if}},{{/each}})
       }>
         Call_{{name}}_functions
       </button>

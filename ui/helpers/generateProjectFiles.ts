@@ -24,7 +24,7 @@ const generateProjectFiles = (
           await message(`Output path: ${result}/${name}`, "Project generated");
         })
         .catch(async (e) => {
-          await message(e, { title: "Error", type: "error" });
+          await message(e?.error ?? "Error", { title: "Error while creating projects files", type: "error" });
         });
     } catch (e) {
       await message(`${e}`, {
