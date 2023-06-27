@@ -83,6 +83,7 @@ pub struct TemplateHelper {
     pub helper_name: String,
     pub script: String,
 }
+
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Instruction {
     pub(crate) name: String,

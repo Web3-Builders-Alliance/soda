@@ -12,14 +12,18 @@ use helpers::{apply_user_helpers, create_handlebars_registry};
 pub use structs::{Content, Data, Template, TemplateFile, TemplateHelper, IDL};
 
 pub fn generate_from_idl(base_path: &str, idl: IDL, template_path: &str) {
-    let template = get_template_from_fs(template_path);
+    let template = if PathBuf::from(template_path).is_file() {
+        load_template(template_path)
+    } else {
+        get_template_from_fs(template_path)
+    };
     let dinamyc_files = generate_project(template, &idl);
     write_project_to_fs(dinamyc_files, base_path);
 }
 
 pub fn write_project_to_fs(dinamyc_files: Vec<TemplateFile>, base_path: &str) {
     for TemplateFile { path, content } in dinamyc_files {
-let path_with_base = format!("{}/{}", base_path, path);
+        let path_with_base = format!("{}/{}", base_path, path);
         let prefix = std::path::Path::new(&path_with_base).parent().unwrap();
         create_dir_all(prefix).unwrap();
         let mut output_lib_file = File::create(path_with_base).unwrap();
@@ -41,7 +45,7 @@ pub fn get_template_from_fs(template_path: &str) -> Template {
         let path = &format!("{}", entry.path().display());
         let is_file = PathBuf::from(path).is_file();
         if is_file {
-            let content: Content = if PathBuf::from(path).extension().unwrap() == "hbs" {
+            let content: Content = if PathBuf::from(path).extension().is_some_and(|ext| ext == "hbs")  {
                 structs::Content::String(read_to_string(path.clone()).unwrap())
             } else {
                 structs::Content::Vec(read(path.clone()).unwrap())
@@ -61,7 +65,8 @@ pub fn get_template_from_fs(template_path: &str) -> Template {
         match entry {
             Ok(val) => {
                 let path = format!("{}", val.path().to_string_lossy());
-                if path.split('.').count() > 1 {
+                let is_file = PathBuf::from(&path).is_file();
+        if is_file {
                     let script = read_to_string(val.path()).unwrap();
                     let helper_name = path
                         .get(0..path.len() - 5)
@@ -131,7 +136,7 @@ pub fn generate_project(template: Template, idl: &IDL) -> Vec<TemplateFile> {
     let mut project: Vec<TemplateFile> = vec![];
     for (path, template, path_replacements) in dinamic_files {
         data.path_replacements = path_replacements;
-        let file_path = if PathBuf::from(&path).extension().unwrap() == "hbs" {
+        let file_path = if PathBuf::from(&path).extension().is_some_and(|ext| ext == "hbs"){
             handlebars
                 .render_template(path.get(0..path.len() - 4).unwrap(), &data)
                 .unwrap()
@@ -151,4 +156,17 @@ pub fn generate_project(template: Template, idl: &IDL) -> Vec<TemplateFile> {
         })
     }
     project
+}
+
+pub fn save_template(template: Template, path: &str) {
+    let serialized = serde_json::to_string(&template).unwrap();
+    let mut file = File::create(path).unwrap();
+    file.write_all(serialized.as_bytes()).unwrap();
+}
+
+pub fn load_template(path: &str) -> Template {
+    let file = File::open(path).unwrap();
+    let reader = std::io::BufReader::new(file);
+    let template: Template = serde_json::from_reader(reader).unwrap();
+    template
 }

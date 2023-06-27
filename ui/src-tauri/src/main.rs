@@ -5,8 +5,8 @@
 #![allow(non_snake_case, non_camel_case_types)]
 
 use serde;
-use soda_sol::{generate_project, write_project_to_fs, get_template_from_fs, IDL, Template};
-use std::{io::Write, sync::Mutex};
+use soda_sol::*;
+use std::{io::Write, sync::Mutex, path::PathBuf};
 use tauri::{CustomMenuItem, Menu, MenuItem, Submenu, State};
 mod default_template;
 use default_template::default_template;
@@ -171,9 +171,13 @@ fn update_base_folder_path(base: String, state: State<AppState>) -> Result<(), (
 }
 
 #[tauri::command]
-fn update_template(template_folder: String, state: State<AppState>) -> Result<(), ()> {
+fn update_template(template_path: String, state: State<AppState>) -> Result<(), ()> {
     let mut state = state.0.lock().unwrap();
-    let template = get_template_from_fs(&template_folder);
+    let template = if PathBuf::from(&template_path).is_file() {
+        load_template(&template_path)
+    } else {
+        get_template_from_fs(&template_path)
+    };
     state.template = template;
     Ok(())
 }
@@ -207,4 +211,11 @@ impl serde::Serialize for MyError {
         };
         wrapper.serialize(serializer)
     }
+}
+
+#[tauri::command]
+fn generate_template_json(path: String, state: State<AppState>) -> Result<(), MyError> {
+    let state = state.0.lock().unwrap();
+    save_template(state.template.clone(), &path);
+    Ok(())
 }
