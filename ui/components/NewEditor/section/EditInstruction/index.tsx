@@ -254,16 +254,16 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                     editProperty={editProperty}
                     addProperty={addProperty}
                     elements={IDL?.[instruction]?.[editingItem]?.type?.variants}
-                    objConfig={[{ name: "name" }, { name: "type", options: type_args }, { name: "index", options: "boolean" }]}
-                />
-            }
+                    objConfig={[{ name: "name" }]}
+                    />
+                }
             {
                 kind === "struct" &&
                 <Tab
-                    editProperty={editProperty}
-                    addProperty={addProperty}
-                    elements={IDL?.[instruction]?.[editingItem]?.type?.fields}
-                    objConfig={[{ name: "name" }]}
+                editProperty={editProperty}
+                addProperty={addProperty}
+                elements={IDL?.[instruction]?.[editingItem]?.type?.fields}
+                objConfig={[{ name: "name" }, { name: "type", options: type_args }, { name: "index", options: "boolean" }]}
                 />
             }
         </div>
