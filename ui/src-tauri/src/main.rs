@@ -130,7 +130,6 @@ fn generate(handle: tauri::AppHandle, state: State<AppState>) -> Result<(), MyEr
     }
 }
 
-
 #[tauri::command]
 fn generate_idl_file(handle: tauri::AppHandle, state: State<AppState>) -> Result<(), MyError> {
     let (idl_string, base_folder) = {
@@ -140,17 +139,9 @@ fn generate_idl_file(handle: tauri::AppHandle, state: State<AppState>) -> Result
             &state.base_folder.clone(),
         )
     };
-    match serde_json::from_str::<IDL>(idl_string) {
-        Ok(idl) => {
-            let mut file = std::fs::File::create(format!("{}/idl.json", base_folder)).unwrap();
-            file.write_all(serde_json::to_string_pretty(&idl).unwrap().as_bytes())
-                .unwrap();
-            Ok(())
-        }
-        Err(e) => Err(MyError::CustomError {
-            message: e.to_string(),
-        }),
-    }
+    let mut file = std::fs::File::create(format!("{}/idl.json", base_folder)).unwrap();
+    file.write_all(idl_string.as_bytes()).unwrap();
+    Ok(())
 }
 
 #[tauri::command]
