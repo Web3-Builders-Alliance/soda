@@ -15,6 +15,7 @@ export const Section: FC<any> = ({ instruction }) => {
     <section className={`flex p-5 relative gap-5 h-[calc(100%_-_3.5rem)]`}>
       
       <div className="flex flex-col gap-5 h-[calc(100%_-_6rem)]">
+
       {
         instruction !== "errors" &&
         <div
@@ -51,6 +52,7 @@ export const Section: FC<any> = ({ instruction }) => {
           instruction !== "errors" &&
           <div className=" flex flex-col gap-2 max-h-full w-56 w-80 pr-4 overflow-y-auto">
 
+
             {
               IDL[instruction]?.map(({ name }: { name: string; }, index: number) => (
                 <Card
@@ -58,7 +60,7 @@ export const Section: FC<any> = ({ instruction }) => {
                   name={name}
                   instruction={instruction}
                   index={index}
-                  filter={() => {
+                  deleteItem={() => {
                     const del = IDL[instruction].toSpliced(index, 1)
                     setIDL({
                       ...IDL,
@@ -71,8 +73,7 @@ export const Section: FC<any> = ({ instruction }) => {
                 />
               ))}
           </div>
-        }
-    
+        }  
       </div>
       <EditInstructions
           instruction={instruction}

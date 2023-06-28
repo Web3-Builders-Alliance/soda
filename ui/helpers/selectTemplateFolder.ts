@@ -10,7 +10,7 @@ const selectTemplateFolder = (setTemplateFolder: Function) => {
         directory: true,
         title: "Select a template folder",
       });
-        invoke("update_template", { templateFolder: result }).then(async () => {
+        invoke("update_template", { templatePath: result }).then(async () => {
           setTemplateFolder(result)
           await message(`Template path: ${result}`, "Template Seleccionado");
         });

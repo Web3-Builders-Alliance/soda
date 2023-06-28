@@ -24,6 +24,7 @@ export const NewEditor: FC<any> = ({generateIDL}) => {
                 />
                 <div>
                     <button className="text-slate-50 bg-[#387847] p-5 rounded-xl h-20" onClick={generateIDL}>
+
                         Save IDL
                     </button>
                     {/* <button className="text-white bg-[#387847] p-5 rounded-xl h-20" onClick={()=>setPopUpTemplates(!popUpTemplates)}>
@@ -36,6 +37,7 @@ export const NewEditor: FC<any> = ({generateIDL}) => {
                 }
             </div>
             <div className=" flex flex-col border border-slate-700 gap-2 h-[calc(100%_-_5rem)] rounded-xl overflow-hidden">
+
                 <div className=" flex w-full text-center -space-x-1 h-12">
                     {
                         Object.keys(IDL).map((name, index) => {
@@ -47,6 +49,7 @@ export const NewEditor: FC<any> = ({generateIDL}) => {
                                 >
                                     <div
                                         className={`${select === name ? "text-slate-50 h-full  rounded-b-xl bg-[#081635]" : "text-slate-500 h-[90%] hover:text-slate-400 cursor-pointer shadow-inner shadow-slate-800 bg-slate-900"} shadow-slate-600 flex px-6 items-center justify-center`}
+
                                         onClick={() => setSelect(name)}
                                     >
                                         <p>

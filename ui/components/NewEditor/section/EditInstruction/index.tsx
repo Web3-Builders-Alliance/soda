@@ -158,6 +158,7 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                                 >
                                     <div
                                         className={`${tabConfig === name ? "text-slate-50 h-full" : "text-slate-500 hover:text-slate-400 h-[90%] cursor-pointer border-b-2 border-slate-700"} flex px-6 items-center justify-center`}
+
                                         onClick={() => setTab(name)}
                                     >
                                         <p>
@@ -254,16 +255,16 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                     editProperty={editProperty}
                     addProperty={addProperty}
                     elements={IDL?.[instruction]?.[editingItem]?.type?.variants}
-                    objConfig={[{ name: "name" }, { name: "type", options: type_args }, { name: "index", options: "boolean" }]}
-                />
-            }
+                    objConfig={[{ name: "name" }]}
+                    />
+                }
             {
                 kind === "struct" &&
                 <Tab
-                    editProperty={editProperty}
-                    addProperty={addProperty}
-                    elements={IDL?.[instruction]?.[editingItem]?.type?.fields}
-                    objConfig={[{ name: "name" }]}
+                editProperty={editProperty}
+                addProperty={addProperty}
+                elements={IDL?.[instruction]?.[editingItem]?.type?.fields}
+                objConfig={[{ name: "name" }, { name: "type", options: type_args }, { name: "index", options: "boolean" }]}
                 />
             }
         </div>
