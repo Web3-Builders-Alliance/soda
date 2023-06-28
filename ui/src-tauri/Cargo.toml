@@ -19,7 +19,7 @@ tauri = { version = "1.2.5", features = ["dialog-all", "fs-create-dir", "fs-read
 serde_json = "1.0.93"
 serde = "1.0.164"
 thiserror = "1.0.40"
-soda_sol = "0.0.3"
+soda_sol = { path = "../../crate" }
 
 [features]
 # by default Tauri runs in production mode

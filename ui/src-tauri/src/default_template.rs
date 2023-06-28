@@ -1,4 +1,4 @@
-use soda_sol::{Content, Template, TemplateFile, TemplateHelper};
+use soda_sol::{Content, Template, TemplateFile, TemplateHelper, TemplateMetadata};
 pub(crate) fn default_template() -> Template {
     Template {
     files: [
@@ -140,6 +140,14 @@ pub(crate) fn default_template() -> Template {
         helper_name: String::from("len"),
         script: String::from("let name = params[0];\n\nname.len()")
       }
-    ].to_vec()
+    ].to_vec(),
+    metadata: TemplateMetadata{
+      name: String::from("Default Template"),
+      version: String::from("0.1.0"),
+      description: String::from("Anchor-NextJs Template"),
+      authors: String::from("Juan Patricio Marchetto"),
+      image: String::from(""),
+      tags: String::from(""),
+    }
   }
 }
