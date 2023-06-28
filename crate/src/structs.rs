@@ -76,7 +76,6 @@ pub struct Template {
 pub struct TemplateFile {
     pub path: String,
     pub content: Content,
-    pub is_dir: bool,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
@@ -84,6 +83,7 @@ pub struct TemplateHelper {
     pub helper_name: String,
     pub script: String,
 }
+
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Instruction {
     pub(crate) name: String,
@@ -95,7 +95,9 @@ pub struct Instruction {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Accounts {
+    #[serde(default)]
     pub(crate) name: String,
+    #[serde(default)]
     #[serde(rename = "type")]
     pub(crate) type_: Type,
 }
@@ -103,6 +105,7 @@ pub struct Accounts {
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Types {
     pub(crate) name: String,
+    #[serde(default)]
     #[serde(rename = "type")]
     pub(crate) type_: Kind,
 }
@@ -110,6 +113,7 @@ pub struct Types {
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Event {
     pub(crate) name: String,
+    #[serde(default)]
     pub(crate) fields: Vec<Field>,
 }
 
@@ -117,13 +121,16 @@ pub struct Event {
 pub struct ErrorDesc {
     pub(crate) code: u64,
     pub(crate) name: String,
+    #[serde(default)]
     pub(crate) msg: String,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct InstructionAccount {
     pub(crate) name: String,
+    #[serde(default)]
     pub(crate) isMut: bool,
+    #[serde(default)]
     pub(crate) isSigner: bool,
     #[serde(default)]
     pub(crate) pda: PDA,
@@ -139,7 +146,17 @@ pub struct InstructionArgs {
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Type {
     pub(crate) kind: String,
+    #[serde(default)]
     pub(crate) fields: Vec<TypeFields>,
+}
+
+impl Default for Type {
+    fn default() -> Self {
+        Type {
+            kind: "struct".to_string(),
+            fields: [].to_vec(),
+        }
+    }
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
@@ -147,6 +164,15 @@ pub struct Kind {
     pub(crate) kind: String,
     #[serde(default)]
     pub(crate) variants: Vec<Name>,
+}
+
+impl Default for Kind {
+    fn default() -> Self {
+        Kind {
+            kind: "struct".to_string(),
+            variants: [].to_vec(),
+        }
+    }
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
@@ -180,6 +206,12 @@ pub enum InstructionType {
     vec(InstructionTypeVec),
     defined(Defined),
     option(OptionType),
+}
+
+impl Default for InstructionType {
+    fn default() -> Self {
+        InstructionType::String("".to_string())
+    }
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
@@ -220,6 +252,7 @@ pub struct Name {
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct TypeFields {
     pub(crate) name: String,
+    #[serde(default)]
     #[serde(rename = "type")]
     pub(crate) type_: InstructionType,
 }

@@ -10,14 +10,6 @@ export const Section: FC<any> = ({ instruction }) => {
   const { IDL, setIDL } = useIDL()
   const [newIntructionName, setNewIntructionName] = useState<string>("");
   const [editingItem, setEditingItem] = useState(0);
-  const [editingName, setEditingName] = useState<number>()
-
-  // const editNameInstruction = (e) => {
-  //   setIDL({
-  //     ...IDL,
-  //     IDL[instruction][index].name = e.target.value
-  //   })
-  // }
 
   return (
     <section className={`flex flex-col p-5 relative gap-5 h-[calc(100%_-_3.5rem)]`}>
