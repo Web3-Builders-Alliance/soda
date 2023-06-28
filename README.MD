@@ -1,4 +1,4 @@
-![Soda](https://github.com/Web3-Builders-Alliance/soda/blob/main/ui/src-tauri/icons/icon.png?raw=true?width=100)
+![Soda](https://github.com/Web3-Builders-Alliance/soda/blob/main/ui/src-tauri/icons/icon.png?raw=true =250x250)
 
 # SODA: Ship a Solana program inferred from Solana data.
 
@@ -48,4 +48,4 @@ This code is unaudited.
 Use at your own risk.
 
 ## Powered by
-![The Solana Foundation](https://github.com/Web3-Builders-Alliance/soda/blob/main/ui/public/solana.svg?raw=true?width=100)
+![The Solana Foundation](https://github.com/Web3-Builders-Alliance/soda/blob/main/ui/public/solana.svg?raw=true)
