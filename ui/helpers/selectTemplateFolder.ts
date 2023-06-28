@@ -7,18 +7,16 @@ const selectTemplateFolder = (setTemplateFolder: Function) => {
     try {
       const result = await open({
         multiple: false,
-        directory: true,
-        title: "Select a template folder",
+        title: "Select a template file",
       });
-        invoke("update_template", { templateFolder: result }).then(async () => {
-          setTemplateFolder(result)
-          await message(`Template path: ${result}`, "Template Seleccionado");
-        });
-      
+      invoke("update_template", { templatePath: result }).then(async () => {
+        setTemplateFolder(result)
+        await message(`Template path: ${result}`, "Template Selected");
+      });
     }
     catch (e) {
       await message(`${e}`, {
-        title: "Something fail while tryng to open the template folder.",
+        title: "Something fail while tryng to open the template.",
         type: "error",
       });
     }

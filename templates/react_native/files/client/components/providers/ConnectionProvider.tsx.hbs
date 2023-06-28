@@ -24,7 +24,9 @@ export const ConnectionProvider: FC<ConnectionProviderProps> = ({
   );
 
   return (
-    <ConnectionContext.Provider value={{connection}}>
+    <ConnectionContext.Provider value={
+      {{connection}}
+    }>
       {children}
     </ConnectionContext.Provider>
   );

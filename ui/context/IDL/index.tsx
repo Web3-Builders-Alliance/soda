@@ -23,11 +23,7 @@ const IDLProvider = ({ children }: { children: ReactNode }) => {
   const [IDL, setIDL] = useState<any>({
     name: "",
     version: "0.1.0",
-    instructions: [
-      {
-        name: "initialize",
-      },
-    ],
+    instructions: [],
     accounts: [],
     types: [],
     events: [],

@@ -6,7 +6,7 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import {Colors} from './Colors';
+import {Colors} from '../components/Color';
 
 export function Header() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -14,7 +14,7 @@ export function Header() {
     <ImageBackground
       accessibilityRole="image"
       testID="new-app-screen-header"
-      source={require('../img/background.png')}
+      source={require('../img/background.jpg')}
       style={[
         styles.background,
         {

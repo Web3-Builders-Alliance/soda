@@ -5,8 +5,8 @@
 #![allow(non_snake_case, non_camel_case_types)]
 
 use serde;
-use soda_sol::{generate_project, write_project_to_fs, get_template_from_fs, IDL, Template};
-use std::{io::Write, sync::Mutex};
+use soda_sol::*;
+use std::{io::Write, sync::Mutex, path::PathBuf};
 use tauri::{CustomMenuItem, Menu, MenuItem, Submenu, State};
 mod default_template;
 use default_template::default_template;
@@ -29,6 +29,10 @@ fn main() {
         CustomMenuItem::new("generate_project".to_string(), "Generate Project's Files");
     let new_project = CustomMenuItem::new("new_project".to_string(), "New IDL");
     let change_template = CustomMenuItem::new("change_template".to_string(), "Select Template");
+    let template_from_folder =
+        CustomMenuItem::new("template_from_folder".to_string(), "Open a template Folder");
+    let save_template_file =
+        CustomMenuItem::new("save_template_file".to_string(), "Save Template File");
     let about = CustomMenuItem::new("about".to_string(), "About");
     let submenu = Submenu::new(
         "File",
@@ -38,9 +42,12 @@ fn main() {
             .add_item(generate_idl)
             .add_item(change_template)
             .add_item(generate_project)
+            .add_item(template_from_folder)
+            .add_item(save_template_file)
             .add_item(about)
-            .add_item(quit),
+            .add_item(quit)
     );
+
     let menu = Menu::new()
         .add_native_item(MenuItem::Copy)
         .add_item(CustomMenuItem::new("hide", "Hide"))
@@ -86,6 +93,18 @@ fn main() {
                     .emit("change_template", Some("change_template".to_string()))
                     .unwrap();
             }
+            "template_from_folder" => {
+                event
+                    .window()
+                    .emit("template_from_folder", Some("template_from_folder".to_string()))
+                    .unwrap();
+            }
+            "save_template_file" => {
+                event
+                    .window()
+                    .emit("save_template_file", Some("save_template_file".to_string()))
+                    .unwrap();
+            }
             "about" => {
                 event
                     .window()
@@ -103,6 +122,7 @@ fn main() {
             new_window,
             update_template,
             update_idl_string,
+            generate_template_file,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -121,7 +141,7 @@ fn generate(handle: tauri::AppHandle, state: State<AppState>) -> Result<(), MyEr
     match serde_json::from_str::<IDL>(idl_string) {
         Ok(idl) => {
             let dinamyc_files = generate_project(template.clone(), &idl);
-            write_project_to_fs(dinamyc_files, idl, base_folder);
+            write_project_to_fs(dinamyc_files, base_folder);
             Ok(())
         }
         Err(e) => Err(MyError::CustomError {
@@ -129,7 +149,6 @@ fn generate(handle: tauri::AppHandle, state: State<AppState>) -> Result<(), MyEr
         }),
     }
 }
-
 
 #[tauri::command]
 fn generate_idl_file(handle: tauri::AppHandle, state: State<AppState>) -> Result<(), MyError> {
@@ -140,17 +159,9 @@ fn generate_idl_file(handle: tauri::AppHandle, state: State<AppState>) -> Result
             &state.base_folder.clone(),
         )
     };
-    match serde_json::from_str::<IDL>(idl_string) {
-        Ok(idl) => {
-            let mut file = std::fs::File::create(format!("{}/idl.json", base_folder)).unwrap();
-            file.write_all(serde_json::to_string_pretty(&idl).unwrap().as_bytes())
-                .unwrap();
-            Ok(())
-        }
-        Err(e) => Err(MyError::CustomError {
-            message: e.to_string(),
-        }),
-    }
+    let mut file = std::fs::File::create(format!("{}/idl.json", base_folder)).unwrap();
+    file.write_all(idl_string.as_bytes()).unwrap();
+    Ok(())
 }
 
 #[tauri::command]
@@ -171,9 +182,13 @@ fn update_base_folder_path(base: String, state: State<AppState>) -> Result<(), (
 }
 
 #[tauri::command]
-fn update_template(template_folder: String, state: State<AppState>) -> Result<(), ()> {
+fn update_template(template_path: String, state: State<AppState>) -> Result<(), ()> {
     let mut state = state.0.lock().unwrap();
-    let template = get_template_from_fs(&template_folder);
+    let template = if PathBuf::from(&template_path).is_file() {
+        load_template(&template_path)
+    } else {
+        get_template_from_fs(&template_path)
+    };
     state.template = template;
     Ok(())
 }
@@ -207,4 +222,11 @@ impl serde::Serialize for MyError {
         };
         wrapper.serialize(serializer)
     }
+}
+
+#[tauri::command]
+fn generate_template_file(path: String, state: State<AppState>) -> Result<(), MyError> {
+    let state = state.0.lock().unwrap();
+    save_template(state.template.clone(), &path);
+    Ok(())
 }
