@@ -14,6 +14,10 @@ From an IDL to whatever you want.
 - **Template based: create your custom building blocks.**
 - **Lang and chain agnostic.**
 
+## Install Soda Desktop
+
+To install the Desktop App you need to [download the lastest release](https://github.com/Web3-Builders-Alliance/soda/releases)
+
 ## Install Soda CLI
 
 You can install the CLI using cargo or npm.
@@ -23,10 +27,6 @@ You can install the CLI using cargo or npm.
 
 - Using npm:
 ```npm i @use_soda/soda-cli```
-
-## Install Soda Desktop
-
-To install the Desktop App you need to [download the lastest release](https://github.com/Web3-Builders-Alliance/soda/releases)
 
 #### CLI Usage
 
