@@ -1,4 +1,4 @@
-![alt text](https://github.com/Web3-Builders-Alliance/soda/blob/main/ui/src-tauri/icons/icon.png?raw=true)
+![Soda](https://github.com/Web3-Builders-Alliance/soda/blob/main/ui/src-tauri/icons/icon.png?raw=true | width=100)
 
 # SODA: Ship a Solana program inferred from Solana data.
 
@@ -46,3 +46,6 @@ if no template path is provided, the CLI will try to read from a template.soda f
 Soda is in active development, so all is subject to change.
 This code is unaudited.
 Use at your own risk.
+
+## Powered by
+![The Solana Foundation](https://github.com/Web3-Builders-Alliance/soda/blob/main/ui/public/solana.svg?raw=true | width=100)
