@@ -152,12 +152,12 @@ export default function Home() {
                   <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-[#081635] px-6 pb-2">
                     <div className="flex h-16 shrink-0 items-center">
                       {/* <Image
-                                                height={25}
-                                                width={25}
-                                                className="h-8 w-auto"
-                                                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                                                alt="Your Company"
-                                            /> */}
+                          height={25}
+                          width={25}
+                          className="h-8 w-auto"
+                          src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                          alt="Your Company"
+                      /> */}
                     </div>
                     <nav className="flex flex-1 flex-col">
                       <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -193,19 +193,19 @@ export default function Home() {
           </Dialog>
         </Transition.Root>
 
-        <div className="sticky top-0 z-40 flex items-center justify-between gap-x-6 bg-[#081635] px-4 py-4 shadow-sm sm:px-6">
+        <div className="sticky top-0 z-40 h-20 flex items-center justify-between gap-x-6 bg-[#081635]  shadow-sm px-6">
           <button type="button" className="-m-2.5 p-2.5 text-white" onClick={() => setSidebarOpen(true)}>
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
           <div className="text-white flex gap-5">
-            <button onClick={()=>setSelectedUI("classic")} className={`${selectedUI === "classic" && "text-[#D6BA4D]"}`}>Classic</button>
-            <button onClick={()=>setSelectedUI("advanced")} className={`${selectedUI === "advanced" && "text-[#D6BA4D]"}`}>Advanced</button>
-            <button onClick={()=>setSelectedUI("json")} className={`${selectedUI === "json" && "text-[#D6BA4D]"}`}>Json</button>
+            <button onClick={() => setSelectedUI("classic")} className={`${selectedUI === "classic" && "text-[#D6BA4D]"}`}>Classic</button>
+            <button onClick={() => setSelectedUI("advanced")} className={`${selectedUI === "advanced" && "text-[#D6BA4D]"}`}>Advanced</button>
+            <button onClick={() => setSelectedUI("json")} className={`${selectedUI === "json" && "text-[#D6BA4D]"}`}>Json</button>
 
           </div>
         </div>
 
-        <main className="pb-10 h-full bg-[#081635]">
+        <main className=" h-[calc(100%_-_5rem)] bg-[#081635] overflow-auto">
           {render()}
         </main>
       </div>

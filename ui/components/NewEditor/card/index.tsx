@@ -1,10 +1,10 @@
 import { FC, useEffect, useRef, useState } from "react";
-import { TrashIcon, CheckIcon } from "@heroicons/react/24/solid"
+import { TrashIcon } from "@heroicons/react/24/solid"
 import { useIDL } from "@/context/IDL";
 
 
 
-export const Card: FC<any> = ({ name, onClick, filter, instruction, index }) => {
+export const Card: FC<any> = ({ name, onClick, deleteItem, instruction, index }) => {
   const { IDL, setIDL } = useIDL()
   const [showOptions, setShowOptions] = useState(false)
   const [newName, setNewName] = useState(name)
@@ -49,7 +49,7 @@ export const Card: FC<any> = ({ name, onClick, filter, instruction, index }) => 
         showOptions &&
         <div className="flex">
           <TrashIcon
-            onClick={filter}
+            onClick={deleteItem}
             className="text-white w-4 h-4"
           />
         </div>
