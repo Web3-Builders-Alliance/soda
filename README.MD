@@ -26,11 +26,18 @@ To install the Desktop App you need to [download the lastest release](https://gi
 
 #### CLI Usage
 
-`soda-cli`: from ./idl.json generates code using default template.
-
-`soda-cli <path>` from idl file or url in `<path>` generate project using default template.
-
-`soda-cli <path1> <path2>` from idl file or url in `<path1>` generate project using template in `<path2>`.
+`soda-cli create-project <idl_path> <output_path>`
+creates a new project from an IDL file.
+If no output path is provided, the project will be created in a template folder in the current directory.
+If no IDL path is provided, the CLI will try to open an idl.json file in the current directory.
+`soda-cli pack-template <template_path> <output_path>`
+creates a template file from a template folder.
+If no output path is provided, the template will be created in the current directory with the name template.soda
+if no template path is provided, the CLI will try to read from a template folder in the current directory.
+`soda-cli unpack-template <template_path> <output_path>`
+creates a template folder from a template file.
+If no output path is provided, the template will be created in the current directory with the name template.
+if no template path is provided, the CLI will try to read from a template.soda file in the current directory.
 
 ## Note
 
