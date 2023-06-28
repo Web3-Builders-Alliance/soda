@@ -9,7 +9,7 @@ use walkdir::WalkDir;
 mod helpers;
 pub mod structs;
 use helpers::{apply_user_helpers, create_handlebars_registry};
-pub use structs::{Content, Data, Template, TemplateFile, TemplateHelper, IDL};
+pub use structs::{Content, Data, Template, TemplateFile, TemplateHelper, IDL, TemplateMetadata};
 use bincode::{serialize, deserialize};
 
 pub fn generate_from_idl(base_path: &str, idl: IDL, template_path: &str) {
@@ -85,11 +85,18 @@ pub fn get_template_from_fs(template_path: &str) -> Template {
             Err(err) => println!("{}", err),
         }
     }
-    Template { files, helpers }
+    let metadata = if PathBuf::from(format!("{}/metadata.json", template_path)).is_file() {
+        let metadata: TemplateMetadata =
+            serde_json::from_str(&read_to_string(format!("{}/metadata.json", template_path)).unwrap()).unwrap();
+        metadata
+    } else {
+        TemplateMetadata::default()
+    };
+    Template { files, helpers, metadata }
 }
 
 pub fn generate_project(template: Template, idl: &IDL) -> Vec<TemplateFile> {
-    let Template { files, helpers } = template;
+    let Template { files, helpers, .. } = template;
     let mut handlebars = create_handlebars_registry();
     apply_user_helpers(helpers, &mut handlebars);
     let mut data: Data = idl.clone().into();
