@@ -57,7 +57,7 @@ export const Section: FC<any> = ({ instruction }) => {
                   name={name}
                   instruction={instruction}
                   index={index}
-                  filter={() => {
+                  deleteItem={() => {
                     const del = IDL[instruction].toSpliced(index, 1)
                     setIDL({
                       ...IDL,
