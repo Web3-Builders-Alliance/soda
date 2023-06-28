@@ -43,7 +43,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                     TEMPLATE_DEFAULT_PATH
                 };
                 let template = load_template(template_path);
-                write_project_to_fs(template.files, base_path);
+                write_project_to_fs(template.files, &format!("{}/files", base_path));
                 let mut helpers = vec![];
                 for helper in template.helpers {
                     helpers.push(TemplateFile {
