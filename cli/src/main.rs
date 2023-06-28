@@ -5,7 +5,7 @@ use std::error::Error;
 use std::fs::{canonicalize, File};
 
 const IDL_DEFAULT_PATH: &str = "./idl.json";
-const TEMPLATE_DEFAULT_PATH: &str = "./template.json";
+const TEMPLATE_DEFAULT_PATH: &str = "./template";
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -17,16 +17,16 @@ fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
     if !cli.paths.is_empty() {
         match &cli.paths[0] {
-            command if command == "template-to-json" => {
+            command if command == "pack-template" => {
                 let template_path = if cli.paths.len() > 1 {
                     &cli.paths[1]
                 } else {
                     TEMPLATE_DEFAULT_PATH
                 };
                 let template = get_template_from_fs(template_path);
-                serde_json::to_writer_pretty(File::create("template.json").unwrap(), &template)?;
+                save_template(template, "template.soda");
             }
-            command if command == "template-to-fs" => {
+            command if command == "unpack-template" => {
                 let template_path = if cli.paths.len() > 1 {
                     &cli.paths[1]
                 } else {
@@ -74,6 +74,6 @@ fn main() -> Result<(), Box<dyn Error>> {
 fn display_help() {
     println!("Commands:");
     println!("create-project <idl_path> <template_path>");
-    println!("template-to-json <template_path>");
-    println!("template-to-fs <template_path>");
+    println!("template-pack <template_path>");
+    println!("template-unpack <template_path>");
 }

@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useEffect, useState, Fragment } from "react";
 import { TauriEvent, listen } from "@tauri-apps/api/event";
-import { about, cleanProject, generateProjectFiles, nameSetter, openIDLFile, saveIDLFile, selectTemplateFolder } from "@/helpers";
+import { about, cleanProject, generateProjectFiles, nameSetter, openIDLFile, saveIDLFile, saveTemplateFile, selectTemplateFolder, templateFromFolder } from "@/helpers";
 import Layout from "@/components/Layout";
 import { useIDL } from "@/context/IDL";
 import { Section } from "@/components/ClassicEditor/section";
@@ -78,6 +78,11 @@ export default function Home() {
           case "about":
             about();
             break;
+          case "template_from_folder":
+            templateFromFolder();
+            break;
+          case "save_template_file":
+            saveTemplateFile()
           default:
             break;
         }
