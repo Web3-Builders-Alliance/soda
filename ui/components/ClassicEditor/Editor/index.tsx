@@ -27,6 +27,7 @@ const ClassicEditor: FC<any> = ({ exportData }) => {
                             instructions: del
                         })
                     }
+
                 },
                 {
                     name: "Accounts",
@@ -40,12 +41,14 @@ const ClassicEditor: FC<any> = ({ exportData }) => {
                             accounts: del
                         })
                     }
+
                 },
                 {
                     name: "Types",
                     item: IDL.types,
                     setItem: (newItem: any) => { setIDL({ ...IDL, types: [...IDL.types, newItem] }) },
                     initExpanded: false,
+
                     deleteItem: (index: any) => {
                         const del = IDL.types.toSpliced(index, 1)
                         setIDL({
