@@ -56,76 +56,38 @@ export default function Home() {
     },
   ]
 
-  const navigation = [
-    {
-      name: 'Open IDL file',
-      href: '#',
-      event: openIDL
-    },
-    {
-      name: 'New IDL',
-      href: '#',
-      event: newProject
-    },
-    {
-      name: 'Save IDL',
-      href: '#',
-      event: generateIDL
-    },
-    {
-      name: 'Select a template',
-      href: '#',
-      event: handleTemplateFolder
-    },
-    {
-      name: 'Create Project',
-      href: '#',
-      event: exportData
-    },
-  ]
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const unlisten = await listen(TauriEvent.MENU, (event) => {
-  //       switch (event?.payload
-  //       ) {
-  //         case "new_project":
-  //           newProject();
-  //           break;
-  //         case "open_idl":
-  //           openIDL();
-  //           break;
-  //         case "change_template":
-  //           handleTemplateFolder();
-  //           break;
-  //         case "generate_project":
-  //           exportData();
-  //           break;
-  //         case "generate_idl":
-  //           generateIDL();
-  //           break;
-  //         case "about":
-  //           about();
-  //           break;
-  //         default:
-  //           break;
-  //       }
-  //     });
-  //     return () => {
-  //       unlisten();
-  //     };
-  //   })();
-  // }, []);
-
-  const render = () => {
-    const view = {
-      classic: <ClassicEditor exportData={exportData} />,
-      advanced: <NewEditor generateIDL={generateIDL} />,
-      json: <JSONEditor />
-    }
-
-    return view[selectedUI as keyof typeof render]
-  }
+  useEffect(() => {
+     (async () => {
+       const unlisten = await listen(TauriEvent.MENU, (event) => {
+         switch (event?.payload
+         ) {
+           case "new_project":
+             newProject();
+             break;
+           case "open_idl":
+             openIDL();
+             break;
+           case "change_template":
+             handleTemplateFolder();
+             break;
+           case "generate_project":
+             exportData();
+             break;
+           case "generate_idl":
+             generateIDL();
+             break;
+           case "about":
+             about();
+             break;
+           default:
+             break;
+         }
+       });
+       return () => {
+         unlisten();
+       };
+     })();
+   }, []);
 
   const render = () => {
     const view = {
