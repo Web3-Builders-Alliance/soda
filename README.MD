@@ -1,3 +1,5 @@
+![alt text](https://github.com/Web3-Builders-Alliance/soda/blob/main/ui/src-tauri/icons/icon.png?raw=true)
+
 # SODA: Ship a Solana program inferred from Solana data.
 
 A tool for Solana development and audit that allows you to automate tasks and build Solana programs and clients from: IDLs, on-chain data, existing repos, input and output examples of each instruction, and naming conventions, among other possible resources.
