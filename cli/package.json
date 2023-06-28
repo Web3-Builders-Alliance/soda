@@ -1,6 +1,6 @@
 {
   "name": "@use_soda/soda-cli",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Generates Solana Projects from an IDL",
   "main": "start.js",
   "directories": {
