@@ -1,10 +1,12 @@
 import { FC, useState } from "react";
-import { Section } from "@/components/section";
+import { Section } from "@/components/NewEditor/section";
 import { useIDL } from "@/context/IDL";
+import SelectTemplate from "./SelectTemplate";
 
-export const Editor: FC<any> = ({generateIDL}) => {
+export const NewEditor: FC<any> = ({generateIDL}) => {
 
     const [select, setSelect] = useState("instructions")
+    const [popUpTemplates, setPopUpTemplates] = useState(false)
     const { IDL, setIDL } = useIDL()
 
     return (
@@ -24,7 +26,14 @@ export const Editor: FC<any> = ({generateIDL}) => {
                     <button className="text-slate-50 bg-[#387847] p-5 rounded-xl h-20" onClick={generateIDL}>
                         Save IDL
                     </button>
+                    {/* <button className="text-white bg-[#387847] p-5 rounded-xl h-20" onClick={()=>setPopUpTemplates(!popUpTemplates)}>
+                        Create Proyect
+                    </button> */}
                 </div>
+                {
+                    popUpTemplates &&
+                    <SelectTemplate />
+                }
             </div>
             <div className=" flex flex-col border border-slate-700 gap-2 h-[calc(100%_-_5rem)] rounded-xl overflow-hidden">
                 <div className=" flex w-full text-center -space-x-1 h-12">
@@ -33,7 +42,7 @@ export const Editor: FC<any> = ({generateIDL}) => {
                             if( name !== "name" && name !== "version" && name !== "metadata" )
                             return (
                                 <div
-                                    className={` ${select === name ? "z-20" : ""} self-end h-full w-full`}
+                                    className={`  self-end h-full w-full`}
                                     key={name}
                                 >
                                     <div
