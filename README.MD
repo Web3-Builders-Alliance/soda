@@ -1,4 +1,6 @@
-<img src="https://github.com/Web3-Builders-Alliance/soda/blob/main/ui/src-tauri/icons/icon.png?raw=true" width="250">
+<p align="center">
+    <img src="https://github.com/Web3-Builders-Alliance/soda/blob/main/ui/src-tauri/icons/icon.png?raw=true" width="100">
+</p>
 
 # SODA: Ship a Solana program inferred from Solana data.
 
