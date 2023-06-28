@@ -1,13 +1,13 @@
 [package]
-name = "app"
+name = "soda"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
-license = ""
-repository = ""
-default-run = "app"
+description = "Generates source code from an IDL"
+authors = ["Juan Patricio Marchetto"]
+license = "Apache-2.0"
+repository = "https://github.com/Web3-Builders-Alliance/soda"
+default-run = "soda"
 edition = "2021"
-rust-version = "1.59"
+rust-version = "1.70"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
