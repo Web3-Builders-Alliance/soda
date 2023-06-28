@@ -9,7 +9,8 @@ use walkdir::WalkDir;
 mod helpers;
 pub mod structs;
 use helpers::{apply_user_helpers, create_handlebars_registry};
-pub use structs::{Content, Data, Template, TemplateFile, TemplateHelper, IDL};
+pub use structs::{Content, Data, Template, TemplateFile, TemplateHelper, IDL, TemplateMetadata};
+use bincode::{serialize, deserialize};
 
 pub fn generate_from_idl(base_path: &str, idl: IDL, template_path: &str) {
     let template = if PathBuf::from(template_path).is_file() {
@@ -84,11 +85,18 @@ pub fn get_template_from_fs(template_path: &str) -> Template {
             Err(err) => println!("{}", err),
         }
     }
-    Template { files, helpers }
+    let metadata = if PathBuf::from(format!("{}/metadata.json", template_path)).is_file() {
+        let metadata: TemplateMetadata =
+            serde_json::from_str(&read_to_string(format!("{}/metadata.json", template_path)).unwrap()).unwrap();
+        metadata
+    } else {
+        TemplateMetadata::default()
+    };
+    Template { files, helpers, metadata }
 }
 
 pub fn generate_project(template: Template, idl: &IDL) -> Vec<TemplateFile> {
-    let Template { files, helpers } = template;
+    let Template { files, helpers, .. } = template;
     let mut handlebars = create_handlebars_registry();
     apply_user_helpers(helpers, &mut handlebars);
     let mut data: Data = idl.clone().into();
@@ -159,14 +167,12 @@ pub fn generate_project(template: Template, idl: &IDL) -> Vec<TemplateFile> {
 }
 
 pub fn save_template(template: Template, path: &str) {
-    let serialized = serde_json::to_string(&template).unwrap();
-    let mut file = File::create(path).unwrap();
-    file.write_all(serialized.as_bytes()).unwrap();
+    let mut file = std::fs::File::create(path).unwrap();
+    let encoded: Vec<u8> = serialize(&template).unwrap();
+    file.write_all(&encoded).unwrap();
 }
 
 pub fn load_template(path: &str) -> Template {
-    let file = File::open(path).unwrap();
-    let reader = std::io::BufReader::new(file);
-    let template: Template = serde_json::from_reader(reader).unwrap();
-    template
+    let decoded: Template = deserialize(&read(path).unwrap()).unwrap();
+    decoded
 }

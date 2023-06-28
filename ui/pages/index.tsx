@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useEffect, useState, Fragment } from "react";
 import { TauriEvent, listen } from "@tauri-apps/api/event";
-import { about, cleanProject, generateProjectFiles, nameSetter, openIDLFile, saveIDLFile, selectTemplateFolder } from "@/helpers";
+import { about, cleanProject, generateProjectFiles, nameSetter, openIDLFile, saveIDLFile, saveTemplateFile, selectTemplateFolder, templateFromFolder } from "@/helpers";
 import Layout from "@/components/Layout";
 import { useIDL } from "@/context/IDL";
 import { Section } from "@/components/ClassicEditor/section";
@@ -57,37 +57,42 @@ export default function Home() {
   ]
 
   useEffect(() => {
-     (async () => {
-       const unlisten = await listen(TauriEvent.MENU, (event) => {
-         switch (event?.payload
-         ) {
-           case "new_project":
-             newProject();
-             break;
-           case "open_idl":
-             openIDL();
-             break;
-           case "change_template":
-             handleTemplateFolder();
-             break;
-           case "generate_project":
-             exportData();
-             break;
-           case "generate_idl":
-             generateIDL();
-             break;
-           case "about":
-             about();
-             break;
-           default:
-             break;
-         }
-       });
-       return () => {
-         unlisten();
-       };
-     })();
-   }, []);
+    (async () => {
+      const unlisten = await listen(TauriEvent.MENU, (event) => {
+        switch (event?.payload
+        ) {
+          case "new_project":
+            newProject();
+            break;
+          case "open_idl":
+            openIDL();
+            break;
+          case "change_template":
+            handleTemplateFolder();
+            break;
+          case "generate_project":
+            exportData();
+            break;
+          case "generate_idl":
+            generateIDL();
+            break;
+          case "about":
+            about();
+            break;
+          case "template_from_folder":
+            templateFromFolder();
+            break;
+          case "save_template_file":
+            saveTemplateFile()
+          default:
+            break;
+        }
+      });
+      return () => {
+        unlisten();
+      };
+    })();
+  }, []);
 
   const render = () => {
     const view = {
