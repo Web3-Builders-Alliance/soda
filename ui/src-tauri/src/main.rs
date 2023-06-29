@@ -6,8 +6,8 @@
 
 use serde;
 use soda_sol::*;
-use std::{io::Write, sync::Mutex, path::PathBuf};
-use tauri::{CustomMenuItem, Menu, MenuItem, Submenu, State};
+use std::{io::Write, path::PathBuf, sync::Mutex};
+use tauri::{CustomMenuItem, Menu, MenuItem, State, Submenu};
 mod default_template;
 use default_template::default_template;
 
@@ -45,7 +45,7 @@ fn main() {
             .add_item(template_from_folder)
             .add_item(save_template_file)
             .add_item(about)
-            .add_item(quit)
+            .add_item(quit),
     );
 
     let menu = Menu::new()
@@ -142,10 +142,12 @@ fn generate(state: State<AppState>) -> Result<(), MyError> {
         Ok(idl) => {
             let dinamyc_files = generate_project(template.clone(), &idl);
             match write_project_to_fs(dinamyc_files, base_folder) {
-                Ok(_) => {},
-                Err(e) => return Err(MyError::CustomError {
-                    message: e.to_string(),
-                }),
+                Ok(_) => {}
+                Err(e) => {
+                    return Err(MyError::CustomError {
+                        message: e.to_string(),
+                    })
+                }
             };
             Ok(())
         }
@@ -159,20 +161,15 @@ fn generate(state: State<AppState>) -> Result<(), MyError> {
 fn generate_idl_file(state: State<AppState>) -> Result<(), MyError> {
     let (idl_string, base_folder) = {
         let state = state.0.lock().unwrap();
-        (
-            &state.idl_string.clone(),
-            &state.base_folder.clone(),
-        )
+        (&state.idl_string.clone(), &state.base_folder.clone())
     };
     match std::fs::File::create(format!("{}/idl.json", base_folder)) {
-        Ok(mut file) => {
-            match file.write_all(idl_string.as_bytes()) {
-                Ok(_) => Ok(()),
-                Err(e) => Err(MyError::CustomError {
-                    message: e.to_string(),
-                }),
-            }
-        }
+        Ok(mut file) => match file.write_all(idl_string.as_bytes()) {
+            Ok(_) => Ok(()),
+            Err(e) => Err(MyError::CustomError {
+                message: e.to_string(),
+            }),
+        },
         Err(e) => Err(MyError::CustomError {
             message: e.to_string(),
         }),
