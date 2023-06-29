@@ -15,6 +15,19 @@ module.exports = {
         'tabSelected': "0px 0px 4px -2px "
       }
     },
+    colors: {
+      'backg': '#081635',
+      'inputs': '#102042',
+      'blue': '#000031',
+      'sky': '#B1FCFE',
+      'red': '#ED7043',
+      'chok': '#B1FCFE',
+      'green': '#7DFBA2',
+      'yellow': '#FFFFA6',
+      'white': '#FFFFFF',
+      'border': '#334155',
+      'export': '#387847',
+    },
   },
   plugins: [
     // ...

@@ -66,7 +66,7 @@ const Layout: FC<any> = ({ children, openIDL, newProject, generateIDL, handleTem
                             leaveFrom="opacity-100"
                             leaveTo="opacity-0"
                         >
-                            <div className="fixed inset-0 bg-gray-900/80" />
+                            <div className="fixed inset-0 bg-blue" />
                         </Transition.Child>
 
                         <div className="fixed inset-0 flex ">
@@ -92,12 +92,12 @@ const Layout: FC<any> = ({ children, openIDL, newProject, generateIDL, handleTem
                                         <div className="absolute left-full top-0 flex w-16 justify-center pt-5">
                                             <button type="button" className="-m-2.5 p-2.5" onClick={() => setSidebarOpen(false)}>
                                                 <span className="sr-only">Close sidebar</span>
-                                                <XMarkIcon className="h-6 w-6 text-white" aria-hidden="true" />
+                                                <XMarkIcon className="h-6 w-6 text-chok" aria-hidden="true" />
                                             </button>
                                         </div>
                                     </Transition.Child>
                                     {/* Sidebar component, swap this element with another sidebar if you like */}
-                                    <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-[#081635] px-6 pb-2">
+                                    <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-backg px-6 pb-2">
                                         <div className="flex h-16 shrink-0 items-center">
                                             {/* <Image
                                                 height={25}
@@ -118,7 +118,7 @@ const Layout: FC<any> = ({ children, openIDL, newProject, generateIDL, handleTem
                                                             >
                                                                 <a
                                                                     href={item.href}
-                                                                    className={'text-white hover:text-indigo-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'}
+                                                                    className={'text-chok hover:text-chok hover:bg-sky group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'}
                                                                 >
                                                                     {/* <item.icon
                                                                         className={'text-gray-400 group-hover:text-indigo-600 h-6 w-6 shrink-0'}
@@ -139,13 +139,13 @@ const Layout: FC<any> = ({ children, openIDL, newProject, generateIDL, handleTem
                     </Dialog>
                 </Transition.Root>
 
-                <div className="sticky top-0 z-40 flex items-center gap-x-6 bg-[#081635] px-4 py-4 shadow-sm sm:px-6">
+                <div className="sticky top-0 z-40 flex items-center gap-x-6 bg-backg px-4 py-4 shadow-sm sm:px-6">
                     <button type="button" className="-m-2.5 p-2.5 text-white" onClick={() => setSidebarOpen(true)}>
                         <Bars3Icon className="h-6 w-6" aria-hidden="true" />
                     </button>
                 </div>
 
-                <main className="pb-10 h-full bg-[#081635]">
+                <main className="pb-10 h-full bg-backg">
                     {children}
                 </main>
             </div>
