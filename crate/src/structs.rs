@@ -100,7 +100,7 @@ impl Default for TemplateMetadata {
             image: "".to_string(),
             tags: "".to_string(),
         }
-    }    
+    }
 }
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct TemplateFile {

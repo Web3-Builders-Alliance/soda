@@ -1,7 +1,6 @@
 #![allow(non_snake_case, non_camel_case_types)]
 
 use std::{
-    f32::consts::E,
     fmt::Error,
     fs::{create_dir_all, read, read_to_string, File},
     io::Write,
@@ -19,19 +18,23 @@ pub fn generate_from_idl(base_path: &str, idl: IDL, template_path: &str) -> Resu
         match load_template(template_path) {
             Ok(template) => {
                 let dinamyc_files = generate_project(template, &idl);
-                write_project_to_fs(dinamyc_files, base_path);
-                Ok(())
+                match write_project_to_fs(dinamyc_files, base_path) {
+                    Ok(_) => Ok(()),
+                    Err(_err) => Err(Error),
+                }
             }
-            Err(err) => Err(Error),
+            Err(_err) => Err(Error),
         }
     } else {
         match get_template_from_fs(template_path) {
             Ok(template) => {
                 let dinamyc_files = generate_project(template, &idl);
-                write_project_to_fs(dinamyc_files, base_path);
-                Ok(())
+                match write_project_to_fs(dinamyc_files, base_path) {
+                    Ok(_) => Ok(()),
+                    Err(_err) => Err(Error),
+                }
             }
-            Err(err) => Err(Error),
+            Err(_err) => Err(Error),
         }
     }
 }
@@ -41,29 +44,20 @@ pub fn write_project_to_fs(dinamyc_files: Vec<TemplateFile>, base_path: &str) ->
         let path_with_base = format!("{}/{}", base_path, path);
         let prefix = std::path::Path::new(&path_with_base).parent().unwrap();
         match create_dir_all(prefix) {
-            Ok(_) => {
-                match File::create(path_with_base) {
-                    Ok(mut file) => {
-                        match content {
-                            Content::String(content) => {
-                                match file.write_all(content.as_bytes()) {
-                                    Ok(_) => {}
-                                    Err(err) => return Err(Error),
-                                }
-                            }
-                            Content::Vec(content) => {
-                                match file.write_all(&content) {
-                                    Ok(_) => {}
-                                    Err(err) => return Err(Error),
-                                }
-                            }
-                        }
-                    }
-                    Err(err) => return Err(Error),
-                }
-                
-            }
-            Err(err) => return Err(Error),
+            Ok(_) => match File::create(path_with_base) {
+                Ok(mut file) => match content {
+                    Content::String(content) => match file.write_all(content.as_bytes()) {
+                        Ok(_) => {}
+                        Err(_err) => return Err(Error),
+                    },
+                    Content::Vec(content) => match file.write_all(&content) {
+                        Ok(_) => {}
+                        Err(_err) => return Err(Error),
+                    },
+                },
+                Err(_err) => return Err(Error),
+            },
+            Err(_err) => return Err(Error),
         }
     }
     Ok(())
@@ -95,8 +89,7 @@ pub fn get_template_from_fs(template_path: &str) -> Result<Template, Error> {
                     });
                 }
             }
-
-            Err(err) => return Err(Error),
+            Err(_err) => return Err(Error),
         }
     }
     let mut helpers = vec![];
@@ -120,16 +113,16 @@ pub fn get_template_from_fs(template_path: &str) -> Result<Template, Error> {
                     });
                 }
             }
-            Err(err) => return Err(Error),
+            Err(_err) => return Err(Error),
         }
     }
     let metadata = if PathBuf::from(format!("{}/metadata.json", template_path)).is_file() {
         match read_to_string(format!("{}/metadata.json", template_path)) {
             Ok(val) => match serde_json::from_str(&val) {
                 Ok(decoded) => decoded,
-                Err(err) => TemplateMetadata::default(),
+                Err(_err) => TemplateMetadata::default(),
             },
-            Err(err) => TemplateMetadata::default(),
+            Err(_err) => TemplateMetadata::default(),
         }
     } else {
         TemplateMetadata::default()
@@ -217,18 +210,14 @@ pub fn generate_project(template: Template, idl: &IDL) -> Vec<TemplateFile> {
 
 pub fn save_template(template: Template, path: &str) -> Result<(), Error> {
     match std::fs::File::create(path) {
-        Ok(mut file) => {
-            match serialize(&template) {
-                Ok(encoded) => {
-                    match file.write_all(&encoded) {
-                        Err(err) => return Err(Error),
-                        Ok(_) => Ok(()),
-                    }
-                }
-                Err(err) => return Err(Error),
-            }
-        }
-        Err(err) => return Err(Error),
+        Ok(mut file) => match serialize(&template) {
+            Ok(encoded) => match file.write_all(&encoded) {
+                Err(_err) => Err(Error),
+                Ok(_) => Ok(()),
+            },
+            Err(_err) => Err(Error),
+        },
+        Err(_err) => Err(Error),
     }
 }
 
@@ -236,8 +225,8 @@ pub fn load_template(path: &str) -> Result<Template, Error> {
     match &read(path) {
         Ok(val) => match deserialize(val) {
             Ok(decoded) => Ok(decoded),
-            Err(err) => Err(Error),
+            Err(_err) => Err(Error),
         },
-        Err(err) => Err(Error),
+        Err(_err) => Err(Error),
     }
 }
