@@ -17,8 +17,6 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
     }, [editingItem])
 
     const addProperty = (newProperty: any) => {
-        // const verifyProperty = isProperty(newProperty, tabConfig)
-        // if (verifyProperty) {
         if (instruction === "errors") {
             const errProperty = {
                 ...newProperty,
@@ -71,7 +69,6 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                 return inst
             })
         })
-        // }
     }
 
     const editProperty = (propertyEdit: any, indexProperty: number) => {
@@ -91,6 +88,7 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
         const editing = {
             ...IDL,
             [instruction]: IDL[instruction].map((inst: any, index: number) => {
+                console.log(inst, indexProperty)
                 if (index === editingItem) {
                     if (instruction === "instructions" && !inst?.[tabConfig]?.includes(propertyEdit)) {
                         return {
@@ -99,7 +97,7 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                                 if (indexProperty === i) {
                                     return propertyEdit
                                 } else {
-                                    prop
+                                    return prop
                                 }
                             })
                         }
@@ -111,7 +109,7 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                                 if (indexProperty === i) {
                                     return propertyEdit
                                 } else {
-                                    prop
+                                    return prop
                                 }
                             })
                         }
@@ -125,7 +123,7 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                                     if (indexProperty === i) {
                                         return propertyEdit
                                     } else {
-                                        prop
+                                        return prop
                                     }
                                 })
 
@@ -136,10 +134,6 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                 return inst
             })
         }
-        // const editing = {
-        //     ...IDL,
-        //     ...propertyEdit
-        // }
         setIDL(editing)
 
     }

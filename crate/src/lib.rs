@@ -1,6 +1,7 @@
 #![allow(non_snake_case, non_camel_case_types)]
 
 use std::{
+    fmt::Error,
     fs::{create_dir_all, read, read_to_string, File},
     io::Write,
     path::PathBuf,
@@ -8,57 +9,87 @@ use std::{
 use walkdir::WalkDir;
 mod helpers;
 pub mod structs;
+use bincode::{deserialize, serialize};
 use helpers::{apply_user_helpers, create_handlebars_registry};
-pub use structs::{Content, Data, Template, TemplateFile, TemplateHelper, IDL, TemplateMetadata};
-use bincode::{serialize, deserialize};
+pub use structs::{Content, Data, Template, TemplateFile, TemplateHelper, TemplateMetadata, IDL};
 
-pub fn generate_from_idl(base_path: &str, idl: IDL, template_path: &str) {
-    let template = if PathBuf::from(template_path).is_file() {
-        load_template(template_path)
+pub fn generate_from_idl(base_path: &str, idl: IDL, template_path: &str) -> Result<(), Error> {
+    if PathBuf::from(template_path).is_file() {
+        match load_template(template_path) {
+            Ok(template) => {
+                let dinamyc_files = generate_project(template, &idl);
+                match write_project_to_fs(dinamyc_files, base_path) {
+                    Ok(_) => Ok(()),
+                    Err(_err) => Err(Error),
+                }
+            }
+            Err(_err) => Err(Error),
+        }
     } else {
-        get_template_from_fs(template_path)
-    };
-    let dinamyc_files = generate_project(template, &idl);
-    write_project_to_fs(dinamyc_files, base_path);
-}
-
-pub fn write_project_to_fs(dinamyc_files: Vec<TemplateFile>, base_path: &str) {
-    for TemplateFile { path, content } in dinamyc_files {
-        let path_with_base = format!("{}/{}", base_path, path);
-        let prefix = std::path::Path::new(&path_with_base).parent().unwrap();
-        create_dir_all(prefix).unwrap();
-        let mut output_lib_file = File::create(path_with_base).unwrap();
-        match content {
-            Content::String(content) => {
-                output_lib_file.write_all(content.as_bytes()).unwrap();
+        match get_template_from_fs(template_path) {
+            Ok(template) => {
+                let dinamyc_files = generate_project(template, &idl);
+                match write_project_to_fs(dinamyc_files, base_path) {
+                    Ok(_) => Ok(()),
+                    Err(_err) => Err(Error),
+                }
             }
-            Content::Vec(content) => {
-                output_lib_file.write_all(content.as_slice()).unwrap();
-            }
+            Err(_err) => Err(Error),
         }
     }
 }
 
-pub fn get_template_from_fs(template_path: &str) -> Template {
+pub fn write_project_to_fs(dinamyc_files: Vec<TemplateFile>, base_path: &str) -> Result<(), Error> {
+    for TemplateFile { path, content } in dinamyc_files {
+        let path_with_base = format!("{}/{}", base_path, path);
+        let prefix = std::path::Path::new(&path_with_base).parent().unwrap();
+        match create_dir_all(prefix) {
+            Ok(_) => match File::create(path_with_base) {
+                Ok(mut file) => match content {
+                    Content::String(content) => match file.write_all(content.as_bytes()) {
+                        Ok(_) => {}
+                        Err(_err) => return Err(Error),
+                    },
+                    Content::Vec(content) => match file.write_all(&content) {
+                        Ok(_) => {}
+                        Err(_err) => return Err(Error),
+                    },
+                },
+                Err(_err) => return Err(Error),
+            },
+            Err(_err) => return Err(Error),
+        }
+    }
+    Ok(())
+}
+
+pub fn get_template_from_fs(template_path: &str) -> Result<Template, Error> {
     let mut files = vec![];
     for entry in WalkDir::new(format!("{}/files/", template_path)) {
-        let entry = entry.unwrap();
-        let path = &format!("{}", entry.path().display());
-        let is_file = PathBuf::from(path).is_file();
-        if is_file {
-            let content: Content = if PathBuf::from(path).extension().is_some_and(|ext| ext == "hbs")  {
-                structs::Content::String(read_to_string(path.clone()).unwrap())
-            } else {
-                structs::Content::Vec(read(path.clone()).unwrap())
-            };
+        match entry {
+            Ok(val) => {
+                let path = &format!("{}", val.path().display());
+                let is_file = PathBuf::from(path).is_file();
+                if is_file {
+                    let content: Content = if PathBuf::from(path)
+                        .extension()
+                        .is_some_and(|ext| ext == "hbs")
+                    {
+                        structs::Content::String(read_to_string(path.clone()).unwrap())
+                    } else {
+                        structs::Content::Vec(read(path.clone()).unwrap())
+                    };
 
-            files.push(TemplateFile {
-                path: path
-                    .get(template_path.len() + 6..path.len())
-                    .unwrap()
-                    .to_string(),
-                content,
-            });
+                    files.push(TemplateFile {
+                        path: path
+                            .get(template_path.len() + 6..path.len())
+                            .unwrap()
+                            .to_string(),
+                        content,
+                    });
+                }
+            }
+            Err(_err) => return Err(Error),
         }
     }
     let mut helpers = vec![];
@@ -67,7 +98,7 @@ pub fn get_template_from_fs(template_path: &str) -> Template {
             Ok(val) => {
                 let path = format!("{}", val.path().to_string_lossy());
                 let is_file = PathBuf::from(&path).is_file();
-        if is_file {
+                if is_file {
                     let script = read_to_string(val.path()).unwrap();
                     let helper_name = path
                         .get(0..path.len() - 5)
@@ -82,17 +113,25 @@ pub fn get_template_from_fs(template_path: &str) -> Template {
                     });
                 }
             }
-            Err(err) => println!("{}", err),
+            Err(_err) => return Err(Error),
         }
     }
     let metadata = if PathBuf::from(format!("{}/metadata.json", template_path)).is_file() {
-        let metadata: TemplateMetadata =
-            serde_json::from_str(&read_to_string(format!("{}/metadata.json", template_path)).unwrap()).unwrap();
-        metadata
+        match read_to_string(format!("{}/metadata.json", template_path)) {
+            Ok(val) => match serde_json::from_str(&val) {
+                Ok(decoded) => decoded,
+                Err(_err) => TemplateMetadata::default(),
+            },
+            Err(_err) => TemplateMetadata::default(),
+        }
     } else {
         TemplateMetadata::default()
     };
-    Template { files, helpers, metadata }
+    Ok(Template {
+        files,
+        helpers,
+        metadata,
+    })
 }
 
 pub fn generate_project(template: Template, idl: &IDL) -> Vec<TemplateFile> {
@@ -144,7 +183,10 @@ pub fn generate_project(template: Template, idl: &IDL) -> Vec<TemplateFile> {
     let mut project: Vec<TemplateFile> = vec![];
     for (path, template, path_replacements) in dinamic_files {
         data.path_replacements = path_replacements;
-        let file_path = if PathBuf::from(&path).extension().is_some_and(|ext| ext == "hbs"){
+        let file_path = if PathBuf::from(&path)
+            .extension()
+            .is_some_and(|ext| ext == "hbs")
+        {
             handlebars
                 .render_template(path.get(0..path.len() - 4).unwrap(), &data)
                 .unwrap()
@@ -166,13 +208,25 @@ pub fn generate_project(template: Template, idl: &IDL) -> Vec<TemplateFile> {
     project
 }
 
-pub fn save_template(template: Template, path: &str) {
-    let mut file = std::fs::File::create(path).unwrap();
-    let encoded: Vec<u8> = serialize(&template).unwrap();
-    file.write_all(&encoded).unwrap();
+pub fn save_template(template: Template, path: &str) -> Result<(), Error> {
+    match std::fs::File::create(path) {
+        Ok(mut file) => match serialize(&template) {
+            Ok(encoded) => match file.write_all(&encoded) {
+                Err(_err) => Err(Error),
+                Ok(_) => Ok(()),
+            },
+            Err(_err) => Err(Error),
+        },
+        Err(_err) => Err(Error),
+    }
 }
 
-pub fn load_template(path: &str) -> Template {
-    let decoded: Template = deserialize(&read(path).unwrap()).unwrap();
-    decoded
+pub fn load_template(path: &str) -> Result<Template, Error> {
+    match &read(path) {
+        Ok(val) => match deserialize(val) {
+            Ok(decoded) => Ok(decoded),
+            Err(_err) => Err(Error),
+        },
+        Err(_err) => Err(Error),
+    }
 }

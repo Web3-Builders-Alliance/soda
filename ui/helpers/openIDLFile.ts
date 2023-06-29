@@ -16,15 +16,7 @@ const openIDLFile = (IDL: any, setIDL: Function) => {
           },
         ],
       });
-      if (typeof result !== "string") {
-        await message(
-          `The type resulted of the selection is ${typeof result}`,
-          {
-            title: "Something fail while tryng to open an IDL File.",
-            type: "error",
-          }
-        );
-      } else {
+      if (typeof result === "string") {
         const idl = await readTextFile(result);
         console.log(idl);
         const parsed = JSON.parse(idl);
@@ -38,34 +30,6 @@ const openIDLFile = (IDL: any, setIDL: Function) => {
           errors: parsed.errors ? parsed.errors : [],
           metadata: parsed.metadata
         })
-        // if (parsed.name) setIDL({
-        //   ...IDL,
-        //   name: parsed.name
-        // });
-        // if (parsed.instructions) setIDL({
-        //   ...IDL,
-        //   instructions: parsed.instructions
-        // });
-        // if (parsed.accounts) setIDL({
-        //   ...IDL,
-        //   accounts: parsed.accounts
-        // });
-        // if (parsed.types) setIDL({
-        //   ...IDL,
-        //   types: parsed.types
-        // });
-        // if (parsed.events) setIDL({
-        //   ...IDL,
-        //   events: parsed.events
-        // });
-        // if (parsed.errors) setIDL({
-        //   ...IDL,
-        //   errors: parsed.errors
-        // });
-        // if(parsed.metadata) setIDL({
-        //   ...IDL,
-        //   errors: parsed.errors
-        // });
       }
     } catch (e) {
       await message(`${e}`, {

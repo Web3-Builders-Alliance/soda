@@ -36,51 +36,13 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
     })
   }
 
-  // const checkbox = useRef<any>()
-  // const [checked, setChecked] = useState(false)
-  // const [indeterminate, setIndeterminate] = useState<any>(false)
-
-  // useLayoutEffect(() => {
-  //   const isIndeterminate = selectedProperty.length > 0 && selectedProperty.length < elements.length
-  //   setChecked(selectedProperty.length === elements?.length)
-  //   setIndeterminate(isIndeterminate)
-  //   checkbox.current.indeterminate = isIndeterminate
-  // }, [selectedProperty])
-
-  // function toggleAll() {
-  //   setSelectedProperties(checked || indeterminate ? [] : elements)
-  //   setChecked(!checked && !indeterminate)
-  //   setIndeterminate(false)
-  // }
-
   return (
     <div className="flex flex-col gap-4 w-full overflow-x-auto h-full  overflow-y-auto">
       <div className="inline-block w-full align-middle">
         <div className="relative">
-          {/* {
-            selectedProperty.length > 0 && (
-              <div className="absolute left-14 top-0 flex h-12 items-center space-x-3 bg-white sm:left-12">
-                <button
-                  type="button"
-                  className="inline-flex items-center rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white"
-                >
-                  Delete all
-                </button>
-              </div>
-            )
-          } */}
           <table className="w-full max-w-full">
             <thead>
               <tr className='py-2'>
-                {/* <th scope="col" className="relative px-7 sm:w-12 sm:px-6">
-                  <input
-                    type="checkbox"
-                    className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                    ref={checkbox}
-                    checked={checked}
-                    onChange={toggleAll}
-                  />
-                </th> */}
                 {
                   objConfig.map(({ name }: { name: string }) => {
                     return (
@@ -98,8 +60,6 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
             </thead>
             <tbody className="text-chok divide-y divide-border bg-backg">
               <tr className='py-2'>
-                {/* <td className="relative px-5">
-                </td> */}
                 {
                   objConfig.map(({ disabled, name, options }: any) => {
                     if (options === "boolean") {
@@ -169,11 +129,19 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                 elements?.map((property: any, index: number) => {
                   return propertySelectedEdit === index ?
                     <tr key={property.name} className='py-2'>
-                      {/* <td className="relative px-5">
-                      </td> */}
                       {
                         objConfig.map(({ disabled, name, options }: any) => {
-                          if (options?.length) {
+                          if (options === "boolean") {
+                            return (
+                              <td key={name} className='w-min px-5'>
+                                <input
+                                  id={name}
+                                  type='checkbox'
+                                  onChange={handlerEditProperty}
+                                />
+                              </td>
+                            )
+                          } else if (options?.length) {
                             return (
                               <td key={name} className='w-min'>
                                 <select
@@ -184,7 +152,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                                   onChange={handlerEditProperty}
                                 >
                                   {
-                                    options.map((op: any) => {
+                                    options?.map((op: any) => {
                                       return (
                                         <option key={op}>
                                           {
@@ -197,17 +165,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                                 </select>
                               </td>
                             )
-                          } else if (options === "boolean") {
-                            return (
-                              <td key={name} className='w-min px-5'>
-                                <input
-                                  id={name}
-                                  type='checkbox'
-                                  onChange={handlerEditProperty}
-                                />
-                              </td>
-                            )
-                          } else {
+                          } else  {
                             return (
                               <td
                                 key={name}
@@ -217,8 +175,10 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                                   type='text'
                                   id={name}
                                   disabled={disabled}
-                                  defaultValue={property[name]}
                                   className='bg-inputs border-none pl-5'
+
+                                  defaultValue={property?.[name]}
+
                                   onChange={handlerEditProperty}
                                 />
                               </td>
@@ -240,34 +200,17 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                     </tr>
                     :
                     <tr key={property.name} className={`${selectedProperty.includes(property) ? 'bg-gray-50' : undefined} `}>
-                      {/* <td className="relative px-7 sm:w-12 sm:px-6">
-                        {selectedProperty.includes(property) && (
-                          <div className="absolute inset-y-0 left-0 w-0.5 bg-indigo-600" />
-                        )}
-                        <input
-                          type="checkbox"
-                          className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                          checked={selectedProperty.includes(property)}
-                          onChange={(e) =>
-                            setSelectedProperties(
-                              e.target.checked
-                                ? [...selectedProperty, property]
-                                : selectedProperty.filter((p: any) => p !== property)
-                            )
-                          }
-                        />
-                      </td> */}
                       {
                         objConfig.map(({ name }: any) => {
                           const value = () => {
-                            if(typeof property[name] === "object"){
-                              return JSON.stringify(property[name])
-                            } else if (typeof property[name] === "boolean"){
+                            if(typeof property?.[name] === "object"){
+                              return JSON.stringify(property?.[name])
+                            } else if (typeof property?.[name] === "boolean"){
 
-                              return  property[name].toString()
+                              return  property?.[name].toString()
                             }
                               
-                            return property[name]
+                            return property?.[name]
                           }
                           return (
                             <td

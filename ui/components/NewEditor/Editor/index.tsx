@@ -30,6 +30,7 @@ export const NewEditor: FC<any> = ({generateIDL}) => {
                     {/* <button className="text-white bg-[#387847] p-5 rounded-xl h-20" onClick={()=>setPopUpTemplates(!popUpTemplates)}>
                         Create Proyect
                     </button> */}
+
                 </div>
                 {
                     popUpTemplates &&

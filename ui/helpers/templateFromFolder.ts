@@ -9,9 +9,12 @@ const templateFromFolder = async () => {
             multiple: false,
             title: "Select a template file",
         });
-        invoke("update_template", { templatePath: result }).then(async () => {
-            await message(`Template path: ${result}`, "Template Selected");
-        });
+        invoke("update_template", { templatePath: result })
+            .then(async () => {
+                await message(`Template path: ${result}`, "Template Selected");
+            }).catch(async (e) => {
+                await message(e?.error ?? "update_template Error", { title: "Error Trying to open the selected folder as a template", type: "error" });
+            });
     }
     catch (e) {
         await message(`${e}`, {

@@ -2,8 +2,6 @@ import Image from "next/image"
 
 const CardTemplate = ({ template }: { template: any }) => {
 
-    console.log(template)
-
     return (
         <div className={` flex flex-col  bg-backg p-5 h-min w-60 rounded-3xl shadow-md shadow-black  text-white gap-6 justify-between items-center`}>
             <div className=" flex text-sm justify-between w-full">

@@ -1,7 +1,5 @@
 import { FC } from "react";
-
 import { TrashIcon } from "@heroicons/react/24/solid"
-
 
 export const Card: FC<any> = ({name, onClick, deleteItem}) => (
     <div
