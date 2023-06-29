@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useEffect, useState, Fragment } from "react";
 import { TauriEvent, listen } from "@tauri-apps/api/event";
-import { about, cleanProject, generateProjectFiles, nameSetter, openIDLFile, saveIDLFile, selectTemplateFolder } from "@/helpers";
+import { about, cleanProject, generateProjectFiles, nameSetter, openIDLFile, saveIDLFile, saveTemplateFile, selectTemplateFolder, templateFromFolder } from "@/helpers";
 import Layout from "@/components/Layout";
 import { useIDL } from "@/context/IDL";
 import { Section } from "@/components/ClassicEditor/section";
@@ -26,6 +26,7 @@ export default function Home() {
   const newProject = cleanProject(setIDL);
   const generateIDL = saveIDLFile(setBaseFolder, IDL.version, IDL.name, IDL.instructions, IDL.accounts, IDL.types, IDL.events, IDL.errors, IDL.metadata);
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
 
   const navigation = [
     {
@@ -78,6 +79,11 @@ export default function Home() {
           case "about":
             about();
             break;
+          case "template_from_folder":
+            templateFromFolder();
+            break;
+          case "save_template_file":
+            saveTemplateFile()
           default:
             break;
         }
@@ -102,7 +108,7 @@ export default function Home() {
     <>
       <Head>
         <title>Soda</title>
-        <meta name="description" content="Generate your project from an UI" />
+        <meta name="description" content="Generate Solana projects from an UI" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -152,6 +158,10 @@ export default function Home() {
                   <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-[#081635] px-6 pb-2">
                     <div className="flex h-16 shrink-0 items-center">
                       {/* <Image
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5df348159ada6f3a5e0d62aa91df69fe1a1c0c43
                           height={25}
                           width={25}
                           className="h-8 w-auto"
@@ -174,9 +184,9 @@ export default function Home() {
                                     className={'text-white hover:text-indigo-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'}
                                   >
                                     {/* <item.icon
-                                                                        className={'text-gray-400 group-hover:text-indigo-600 h-6 w-6 shrink-0'}
-                                                                        aria-hidden="true"
-                                                                    /> */}
+                                         className={'text-gray-400 group-hover:text-indigo-600 h-6 w-6 shrink-0'}
+                                         aria-hidden="true"
+                                    /> */}
                                     {item.name}
                                   </a>
                                 </li>
@@ -192,7 +202,6 @@ export default function Home() {
             </div>
           </Dialog>
         </Transition.Root>
-
         <div className="sticky top-0 z-40 h-20 flex items-center justify-between gap-x-6 bg-[#081635]  shadow-sm px-6">
           <button type="button" className="-m-2.5 p-2.5 text-white" onClick={() => setSidebarOpen(true)}>
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
@@ -201,7 +210,6 @@ export default function Home() {
             <button onClick={() => setSelectedUI("classic")} className={`${selectedUI === "classic" && "text-[#D6BA4D]"}`}>Classic</button>
             <button onClick={() => setSelectedUI("advanced")} className={`${selectedUI === "advanced" && "text-[#D6BA4D]"}`}>Advanced</button>
             <button onClick={() => setSelectedUI("json")} className={`${selectedUI === "json" && "text-[#D6BA4D]"}`}>Json</button>
-
           </div>
         </div>
 

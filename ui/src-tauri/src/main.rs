@@ -29,6 +29,10 @@ fn main() {
         CustomMenuItem::new("generate_project".to_string(), "Generate Project's Files");
     let new_project = CustomMenuItem::new("new_project".to_string(), "New IDL");
     let change_template = CustomMenuItem::new("change_template".to_string(), "Select Template");
+    let template_from_folder =
+        CustomMenuItem::new("template_from_folder".to_string(), "Open a template Folder");
+    let save_template_file =
+        CustomMenuItem::new("save_template_file".to_string(), "Save Template File");
     let about = CustomMenuItem::new("about".to_string(), "About");
     let submenu = Submenu::new(
         "File",
@@ -38,9 +42,12 @@ fn main() {
             .add_item(generate_idl)
             .add_item(change_template)
             .add_item(generate_project)
+            .add_item(template_from_folder)
+            .add_item(save_template_file)
             .add_item(about)
-            .add_item(quit),
+            .add_item(quit)
     );
+
     let menu = Menu::new()
         .add_native_item(MenuItem::Copy)
         .add_item(CustomMenuItem::new("hide", "Hide"))
@@ -86,6 +93,18 @@ fn main() {
                     .emit("change_template", Some("change_template".to_string()))
                     .unwrap();
             }
+            "template_from_folder" => {
+                event
+                    .window()
+                    .emit("template_from_folder", Some("template_from_folder".to_string()))
+                    .unwrap();
+            }
+            "save_template_file" => {
+                event
+                    .window()
+                    .emit("save_template_file", Some("save_template_file".to_string()))
+                    .unwrap();
+            }
             "about" => {
                 event
                     .window()
@@ -103,6 +122,7 @@ fn main() {
             new_window,
             update_template,
             update_idl_string,
+            generate_template_file,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -205,7 +225,7 @@ impl serde::Serialize for MyError {
 }
 
 #[tauri::command]
-fn generate_template_json(path: String, state: State<AppState>) -> Result<(), MyError> {
+fn generate_template_file(path: String, state: State<AppState>) -> Result<(), MyError> {
     let state = state.0.lock().unwrap();
     save_template(state.template.clone(), &path);
     Ok(())

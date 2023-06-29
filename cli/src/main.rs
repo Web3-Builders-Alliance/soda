@@ -3,9 +3,11 @@ use clap::Parser;
 use soda_sol::*;
 use std::error::Error;
 use std::fs::{canonicalize, File};
+use std::io::Write;
 
 const IDL_DEFAULT_PATH: &str = "./idl.json";
-const TEMPLATE_DEFAULT_PATH: &str = "./template.json";
+const TEMPLATE_DEFAULT_PATH: &str = "./template";
+const TEMPLATE_FILE_NAME: &str = "template.soda";
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -17,23 +19,33 @@ fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
     if !cli.paths.is_empty() {
         match &cli.paths[0] {
-            command if command == "template-to-json" => {
+            command if command == "pack-template" => {
                 let template_path = if cli.paths.len() > 1 {
                     &cli.paths[1]
                 } else {
                     TEMPLATE_DEFAULT_PATH
                 };
+                let file_path = if cli.paths.len() > 2 {
+                    &cli.paths[2]
+                } else {
+                    TEMPLATE_FILE_NAME                };
                 let template = get_template_from_fs(template_path);
-                serde_json::to_writer_pretty(File::create("template.json").unwrap(), &template)?;
+                save_template(template, file_path );
+                println!("Template File Generated!");
             }
-            command if command == "template-to-fs" => {
+            command if command == "unpack-template" => {
                 let template_path = if cli.paths.len() > 1 {
                     &cli.paths[1]
+                } else {
+                    TEMPLATE_FILE_NAME
+                };
+                let base_path = if cli.paths.len() > 2 {
+                    &cli.paths[2]
                 } else {
                     TEMPLATE_DEFAULT_PATH
                 };
                 let template = load_template(template_path);
-                write_project_to_fs(template.files, ".");
+                write_project_to_fs(template.files, &format!("{}/files", base_path));
                 let mut helpers = vec![];
                 for helper in template.helpers {
                     helpers.push(TemplateFile {
@@ -41,8 +53,11 @@ fn main() -> Result<(), Box<dyn Error>> {
                         content: Content::String(helper.script),
                     });
                 }
-                write_project_to_fs(helpers, ".");
-                println!("Template Generated!");
+                write_project_to_fs(helpers, base_path);
+                let metadata = serde_json::to_string(&template.metadata).unwrap();
+                let mut metadata_file = File::create(format!("{}/metadata.json", base_path)).unwrap();
+                metadata_file.write_all(metadata.as_bytes()).unwrap();
+                println!("Template Unpacked!");
             }
             command if command == "create-project" => {
                 let idl_path = if cli.paths.len() > 1 {
@@ -73,7 +88,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 fn display_help() {
     println!("Commands:");
-    println!("create-project <idl_path> <template_path>");
-    println!("template-to-json <template_path>");
-    println!("template-to-fs <template_path>");
+    println!("  create-project [idl_path] [template_path]");
+    println!("  pack-template [template_path] [file_path]");
+    println!("  unpack-template [template_path]");
 }

@@ -2,8 +2,6 @@ import { FC, useEffect, useRef, useState } from "react";
 import { TrashIcon } from "@heroicons/react/24/solid"
 import { useIDL } from "@/context/IDL";
 
-
-
 export const Card: FC<any> = ({ name, onClick, deleteItem, instruction, index }) => {
   const { IDL, setIDL } = useIDL()
   const [showOptions, setShowOptions] = useState(false)

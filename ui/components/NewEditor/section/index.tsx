@@ -12,7 +12,10 @@ export const Section: FC<any> = ({ instruction }) => {
   const [editingItem, setEditingItem] = useState(0);
 
   return (
-    <section className={`flex flex-col p-5 relative gap-5 h-[calc(100%_-_3.5rem)]`}>
+    <section className={`flex p-5 relative gap-5 h-[calc(100%_-_3.5rem)]`}>
+      
+      <div className="flex flex-col gap-5 h-[calc(100%_-_6rem)]">
+
       {
         instruction !== "errors" &&
         <div
@@ -45,10 +48,10 @@ export const Section: FC<any> = ({ instruction }) => {
           </div>
         </div>
       }
-      <div className="flex gap-5 h-[calc(100%_-_6rem)] w-full">
-        {
+        { 
           instruction !== "errors" &&
-          <div className=" flex flex-col gap-2 max-h-full w-56 min-w-[14rem] pr-4 overflow-y-auto">
+          <div className=" flex flex-col gap-2 max-h-full w-56 w-80 pr-4 overflow-y-auto">
+
 
             {
               IDL[instruction]?.map(({ name }: { name: string; }, index: number) => (
@@ -70,12 +73,12 @@ export const Section: FC<any> = ({ instruction }) => {
                 />
               ))}
           </div>
-        }
-        <EditInstructions
+        }  
+      </div>
+      <EditInstructions
           instruction={instruction}
           editingItem={editingItem}
         />
-      </div>
     </section>
   );
 };

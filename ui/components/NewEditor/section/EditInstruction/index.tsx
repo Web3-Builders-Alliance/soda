@@ -158,7 +158,8 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                                     key={name}
                                 >
                                     <div
-                                        className={`${tabConfig === name ? "text-white h-full shadow-tabSelected" : "text-slate-400 h-[90%] shadow-tab"} shadow-white flex px-6 items-center justify-center  rounded-t-xl bg-[#1E1E1E]`}
+                                        className={`${tabConfig === name ? "text-slate-50 h-full" : "text-slate-500 hover:text-slate-400 h-[90%] cursor-pointer border-b-2 border-slate-700"} flex px-6 items-center justify-center`}
+
                                         onClick={() => setTab(name)}
                                     >
                                         <p>
