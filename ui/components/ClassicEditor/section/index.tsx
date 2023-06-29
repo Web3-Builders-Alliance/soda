@@ -22,10 +22,6 @@ export const Section: FC<any> = ({ name, content, setContent, initExpanded = fal
             <Card
               key={item.name}
               name={item.name}
-              // onClick={() => {
-              //   setEditingItem(index)
-              //   setIsModalOpen(true)
-              // }}
               deleteItem={()=>{ deleteItem(index) }}
             />
           ))
