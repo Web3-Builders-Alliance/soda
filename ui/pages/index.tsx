@@ -158,7 +158,10 @@ export default function Home() {
                   <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-[#081635] px-6 pb-2">
                     <div className="flex h-16 shrink-0 items-center">
                       {/* <Image
+<<<<<<< HEAD
+=======
 
+>>>>>>> 5df348159ada6f3a5e0d62aa91df69fe1a1c0c43
                           height={25}
                           width={25}
                           className="h-8 w-auto"
@@ -199,8 +202,6 @@ export default function Home() {
             </div>
           </Dialog>
         </Transition.Root>
-
-
         <div className="sticky top-0 z-40 h-20 flex items-center justify-between gap-x-6 bg-[#081635]  shadow-sm px-6">
           <button type="button" className="-m-2.5 p-2.5 text-white" onClick={() => setSidebarOpen(true)}>
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
