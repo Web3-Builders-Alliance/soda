@@ -30,10 +30,10 @@ You can install the CLI using cargo or npm.
 
 #### CLI Usage
 
-```soda-cli create-project <idl_path> <output_path>```
+```soda-cli create-project <idl_path> <template_path>```
 
 creates a new project from an IDL file.
-If no output path is provided, the project will be created in a template folder in the current directory.
+If no template path is provided, the project will be try to use a template.soda file in the current directory.
 If no IDL path is provided, the CLI will try to open an idl.json file in the current directory.
 
 ```soda-cli pack-template <template_path> <output_path>```
@@ -45,7 +45,7 @@ if no template path is provided, the CLI will try to read from a template folder
 ```soda-cli unpack-template <template_path> <output_path>```
 
 creates a template folder from a template file.
-If no output path is provided, the template will be created in the current directory with the name template.
+If no output path is provided, the template folder will be created in the current directory with the name template.
 if no template path is provided, the CLI will try to read from a template.soda file in the current directory.
 
 ## Note
