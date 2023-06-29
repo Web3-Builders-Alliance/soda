@@ -167,12 +167,22 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
               {
                 elements?.map((property: any, index: number) => {
                   return propertySelectedEdit === index ?
-                    <tr key={property.name} className='py-2'>
+                    <tr key={property?.name} className='py-2'>
                       {/* <td className="relative px-5">
                       </td> */}
                       {
                         objConfig.map(({ disabled, name, options }: any) => {
-                          if (options?.length) {
+                          if (options === "boolean") {
+                            return (
+                              <td key={name} className='w-min px-5'>
+                                <input
+                                  id={name}
+                                  type='checkbox'
+                                  onChange={handlerEditProperty}
+                                />
+                              </td>
+                            )
+                          } else if (options?.length) {
                             return (
                               <td key={name} className='w-min'>
                                 <select
@@ -183,7 +193,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                                   onChange={handlerEditProperty}
                                 >
                                   {
-                                    options.map((op: any) => {
+                                    options?.map((op: any) => {
                                       return (
                                         <option key={op}>
                                           {
@@ -196,17 +206,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                                 </select>
                               </td>
                             )
-                          } else if (options === "boolean") {
-                            return (
-                              <td key={name} className='w-min px-5'>
-                                <input
-                                  id={name}
-                                  type='checkbox'
-                                  onChange={handlerEditProperty}
-                                />
-                              </td>
-                            )
-                          } else {
+                          } else  {
                             return (
                               <td
                                 key={name}
@@ -216,7 +216,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                                   type='text'
                                   id={name}
                                   disabled={disabled}
-                                  defaultValue={property[name]}
+                                  defaultValue={property?.[name]}
                                   className='bg-transparent border-none pl-5'
                                   onChange={handlerEditProperty}
                                 />
@@ -238,7 +238,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                       </td>
                     </tr>
                     :
-                    <tr key={property.name} className={`${selectedProperty.includes(property) ? 'bg-gray-50' : undefined} `}>
+                    <tr key={property?.name} className={`${selectedProperty.includes(property) ? 'bg-gray-50' : undefined} `}>
                       {/* <td className="relative px-7 sm:w-12 sm:px-6">
                         {selectedProperty.includes(property) && (
                           <div className="absolute inset-y-0 left-0 w-0.5 bg-indigo-600" />
@@ -259,14 +259,14 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                       {
                         objConfig.map(({ name }: any) => {
                           const value = () => {
-                            if(typeof property[name] === "object"){
-                              return JSON.stringify(property[name])
-                            } else if (typeof property[name] === "boolean"){
+                            if(typeof property?.[name] === "object"){
+                              return JSON.stringify(property?.[name])
+                            } else if (typeof property?.[name] === "boolean"){
 
-                              return  property[name].toString()
+                              return  property?.[name].toString()
                             }
                               
-                            return property[name]
+                            return property?.[name]
                           }
                           return (
                             <td
