@@ -8,7 +8,14 @@ pub mod {{name}} {
 
     // Instructions
     {{#each instructions}}
-    pub fn {{snakecase this.name}}(ctx: Context<{{pascalcase this.name}}>) -> Result<()> {
+    pub fn {{snakecase this.name}}(
+        ctx: Context<{{pascalcase this.name}}>,
+        {{#each this.args}}
+        {{snakecase this.name}}: {{{type_from_account_field this.type}}},
+        {{/each}}
+    ) -> Result<()> {
+        // Your code here
+
         Ok(())
     }
 
@@ -21,7 +28,7 @@ pub mod {{name}} {
 pub struct {{pascalcase this.name}}<'info> {
     {{#each this.accounts}}
     #[account(mut)]
-    pub {{this.name}}: AccountInfo<'info>,
+    pub {{snakecase this.name}}: AccountInfo<'info>,
     {{/each}}
 }
 
@@ -40,7 +47,7 @@ pub struct {{this.name}} {
 {{#each types}}
 #[derive(Debug, Clone, AnchorSerialize, AnchorDeserialize)]
 pub struct {{this.name}} {
-    {{#each this.type.fields}}
+    {{#each this.type_.fields}}
     pub {{this.name}}: {{this.type}},
     {{/each}}
 }

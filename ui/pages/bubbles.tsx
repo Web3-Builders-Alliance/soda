@@ -39,11 +39,11 @@ export default function Bubbles() {
   });
 
   return (
-    <main className="bg-neutral-900 flex min-h-screen min-w-screen overflow-hidden max-h-screen max-w-screen p-5">
+    <main className="bg-[black] flex min-h-screen min-w-screen overflow-hidden max-h-screen max-w-screen p-5">
       <div className="min-w-full min-h-full relative">
         <h1
           className={`absolute transform -translate-x-1/2 -translate-y-1/2 duration-1000 text-5xl top-[2%] left-[90%] ${
-            isPlaying ? "text-green-500" : "text-red-700"
+            isPlaying ? "text-green" : "text-red"
           }`}
         >
           {count}
@@ -64,13 +64,13 @@ export default function Bubbles() {
                 setCount(count + 1);
               }}
             >
-              <div className="w-5 h-5 p-5 rounded-full bg-[#9ff] border border-blue-300"></div>
+              <div className="w-5 h-5 p-5 rounded-full bg-[#9ff] border border-[#77f]"></div>
             </div>
           ))
         ) : (
           <div className="flex justify-center items-center">
             <button
-              className="px-5 py-2 mt-5 bg-green-600 rounded text-green-200 font-semibold hover:text-green-100 hover:ring-2 hover:ring-green-200"
+              className="px-5 py-2 mt-5 bg-green rounded text-[#222] font-semibold hover:ring-2 hover:ring-green"
               onClick={() => {
                 setIsPlaying(true);
                 setCount(0);
