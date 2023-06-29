@@ -512,7 +512,7 @@ dependencies = [
 
 [[package]]
 name = "soda-cli"
-version = "0.0.4"
+version = "0.0.5"
 dependencies = [
  "clap",
  "serde_json",
@@ -522,6 +522,8 @@ dependencies = [
 [[package]]
 name = "soda_sol"
 version = "0.0.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9cdb481f532f7205f3024ba8069fea66414462799295b1b7957e76587512f13c"
 dependencies = [
  "bincode",
  "handlebars",
