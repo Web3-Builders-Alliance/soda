@@ -12,7 +12,7 @@ export default function About() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="bg-neutral-900 flex flex-col justify-center min-h-screen text-white">
+      <main className="bg-[black] flex flex-col justify-center min-h-screen text-white">
         <Image
           src="/soda.svg"
           alt="soda"
