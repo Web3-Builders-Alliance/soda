@@ -10,7 +10,7 @@ export const NewEditor: FC<any> = ({generateIDL}) => {
     const { IDL, setIDL } = useIDL()
 
     return (
-        <div className=" flex flex-col gap-10 h-full font-mono p-10">
+        <div className="flex flex-col gap-10 m-5 h-full font-mono">
             <div className="flex justify-between">
                 <input
                     placeholder="Project's Name"
@@ -20,13 +20,13 @@ export const NewEditor: FC<any> = ({generateIDL}) => {
                         name: e.target.value
                     })
                     }
-                    className=" w-3/12 h-20 p-5 bg-inputs text-chok text-base rounded-xl"
+                    className="w-3/12 h-20 p-5 bg-inputs text-chok text-base rounded-xl"
                 />
                 <div>
-                    <button className="text-chok bg-export p-5 rounded-xl h-20" onClick={generateIDL}>
+                    {/* <button className="text-chok bg-export p-5 rounded-xl h-20" onClick={generateIDL}>
 
                         Save IDL
-                    </button>
+                    </button> */}
                     {/* <button className="text-white bg-[#387847] p-5 rounded-xl h-20" onClick={()=>setPopUpTemplates(!popUpTemplates)}>
                         Create Proyect
                     </button> */}
@@ -48,7 +48,7 @@ export const NewEditor: FC<any> = ({generateIDL}) => {
                                     key={name}
                                 >
                                     <div
-                                        className={`${select === name ? "text-chok h-full bg-backg underline" : "text-border h-[90%] hover:text-chok cursor-pointer shadow-inner shadow-inputs bg-backg border-b-2 border-border"} shadow-inputs flex px-6 items-center justify-center`}
+                                        className={`${select === name ? "text-chok h-full bg-backg border-b-2 border-chok" : "text-border h-[100%] hover:text-chok cursor-pointer shadow-inner shadow-inputs bg-backg border-b-2 border-border"} shadow-inputs flex px-6 items-center justify-center`}
 
                                         onClick={() => setSelect(name)}
                                     >

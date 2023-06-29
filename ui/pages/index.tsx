@@ -9,8 +9,11 @@ import { NewEditor } from "@/components/NewEditor/Editor";
 import ClassicEditor from "@/components/ClassicEditor/Editor";
 import { Dialog, Transition } from '@headlessui/react'
 import {
-  Bars3Icon,
-  XMarkIcon
+  PlusIcon,
+  FolderOpenIcon,
+  XMarkIcon,
+  ArrowDownTrayIcon,
+  FolderArrowDownIcon
 } from '@heroicons/react/24/outline'
 import JSONEditor from "@/components/JSONEditor";
 
@@ -200,13 +203,24 @@ export default function Home() {
           </Dialog>
         </Transition.Root>
         <div className="sticky top-0 z-40 h-20 flex items-center justify-between gap-x-6 bg-backg  shadow-sm px-6">
-          <button type="button" className="-m-2.5 p-2.5 text-white" onClick={() => setSidebarOpen(true)}>
-            <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-          </button>
+          <div className="flex gap-8 justify-center items-center">                  
+              <button type="button" className="-m-2.5 p-2.5 text-chok text-sm inline-flex items-center gap-x-1.5 rounded-md border border-border hover:bg-inputs focus:bg-inputs active:outline-none active:ring active:ring-border" onClick={newProject}>
+                <PlusIcon className="h-5 w-5" aria-hidden="true" />New
+              </button>
+              <button type="button" className="-m-2.5 p-2.5 text-chok text-sm inline-flex items-center gap-x-1.5 rounded-md border border-border hover:bg-inputs focus:bg-inputs active:outline-none active:ring active:ring-border" onClick={openIDL}>
+                <FolderOpenIcon className="h-5 w-5" aria-hidden="true" />Open
+              </button>
+              <button type="button" className="-m-2.5 p-2.5 text-chok text-sm inline-flex items-center gap-x-1.5 rounded-md border border-border hover:bg-inputs focus:bg-inputs active:outline-none active:ring active:ring-border" onClick={generateIDL}>
+                <ArrowDownTrayIcon className="h-5 w-5" aria-hidden="true" />Save
+              </button>
+              <button type="button" className="-m-2.5 p-2.5 text-chok text-sm inline-flex items-center gap-x-1.5 rounded-md border border-border hover:bg-inputs focus:bg-inputs active:outline-none active:ring active:ring-border" onClick={exportData}>
+                <FolderArrowDownIcon className="h-5 w-5" aria-hidden="true" />Export
+              </button>
+          </div>                 
           <div className="text-chok flex gap-5">
             <p className="text-border">Views:</p> 
-            <button onClick={() => setSelectedUI("classic")} className={`${selectedUI === "classic" && "text-green underline"}`}>Cards</button>
-            <button onClick={() => setSelectedUI("advanced")} className={`${selectedUI === "advanced" && "text-green underline"}`}>Advance</button>
+            <button onClick={() => setSelectedUI("classic")} className={`${selectedUI === "classic" && "text-green underline"}`}>cards</button>
+            <button onClick={() => setSelectedUI("advanced")} className={`${selectedUI === "advanced" && "text-green underline"}`}>tables</button>
             <button onClick={() => setSelectedUI("json")} className={`${selectedUI === "json" && "text-green underline"}`}>JSON</button>
           </div>
         </div>

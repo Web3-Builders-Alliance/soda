@@ -13,15 +13,15 @@ const ClassicEditor: FC<any> = ({ exportData }) => {
                 placeholder="Project's Name"
                 value={IDL.name}
                 onChange={(e) => setIDL({ ...IDL, name: e.target.value })}
-                className="p-5 mb-5 m-5 w-3/12 h-20 p-5 bg-inputs text-chak text-base rounded-xl"
+                className="p-5 mb-5 m-5 w-3/12 h-20 bg-inputs text-chok text-base rounded-xl"
             />
-             <button
+             {/* <button
                 type="button"
                 className="w-2/12 h-20 mx-5 px-5 py-2 my-5 bg-export rounded-xl text-chok font-semibold hover:text-blue hover:ring-2 hover:ring-sky"
                 onClick={exportData}
             >
                 Create Project
-            </button>
+            </button> */}
             </div>
             {[
                 {
