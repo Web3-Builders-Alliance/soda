@@ -30,7 +30,7 @@ export const Card: FC<any> = ({ name, onClick, deleteItem, instruction, index })
 
   return (
     <div
-      className="flex h-12 min-h-[3rem] items-center justify-between px-4 text-[#D6BA4D] rounded-xl bg-[#102042] border border-[#D9D9D9] cursor-pointer"
+      className="flex h-12 min-h-[3rem] items-center justify-between px-4 text-yellow rounded-xl bg-inputs border border-border cursor-pointer"
       onClick={onClick}
       onMouseOver={() => { setShowOptions(true) }}
       onMouseOut={() => { setShowOptions(false) }}
@@ -41,14 +41,14 @@ export const Card: FC<any> = ({ name, onClick, deleteItem, instruction, index })
         onChange={(e) => {
           setNewName(e.target.value)
         }}
-        className=" w-full bg-transparent focus:outline-none"
+        className=" w-full bg-inputs focus:outline-none"
       />
       {
         showOptions &&
         <div className="flex">
           <TrashIcon
             onClick={deleteItem}
-            className="text-white w-4 h-4"
+            className="text-red w-4 h-4"
           />
         </div>
       }

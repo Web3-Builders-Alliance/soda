@@ -19,7 +19,7 @@ const JSONEditor = () => {
     }
     return (
         <div>
-            <p className='text-red-600'>{errorIDL}</p>
+            <p className='text-red'>{errorIDL}</p>
             <CodeMirror
                 value={JSON.stringify(IDL, null, "\t")}
                 onChange={handlerIDL}

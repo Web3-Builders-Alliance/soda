@@ -7,7 +7,7 @@ export const NewItem: FC<any> = ({ name, onClick }) => (
     onClick={onClick}
   >
     <input
-      className="bg-transparent"
+      className="bg-inputs"
       type="text" name="" id="" placeholder={`add ${name} name`}
     />
     <PlusIcon 
