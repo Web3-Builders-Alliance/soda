@@ -129,7 +129,7 @@ fn main() {
 }
 
 #[tauri::command]
-fn generate(handle: tauri::AppHandle, state: State<AppState>) -> Result<(), MyError> {
+fn generate(state: State<AppState>) -> Result<(), MyError> {
     let (idl_string, base_folder, template) = {
         let state = state.0.lock().unwrap();
         (
@@ -156,7 +156,7 @@ fn generate(handle: tauri::AppHandle, state: State<AppState>) -> Result<(), MyEr
 }
 
 #[tauri::command]
-fn generate_idl_file(handle: tauri::AppHandle, state: State<AppState>) -> Result<(), MyError> {
+fn generate_idl_file(state: State<AppState>) -> Result<(), MyError> {
     let (idl_string, base_folder) = {
         let state = state.0.lock().unwrap();
         (
