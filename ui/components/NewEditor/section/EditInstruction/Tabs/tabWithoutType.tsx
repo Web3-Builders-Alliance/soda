@@ -29,54 +29,6 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
   }
 
 
-  // const addProperty = () => {
-  //   const verifyProperty = isProperty(newProperty, property)
-  //   if (verifyProperty) {
-  //     setIDL({
-  //       ...IDL,
-  //       [instruction]: IDL[instruction].map((inst: any, index: any) => {
-  //         if (index === editingInstruction && !inst?.[property]?.includes(newProperty)) {
-
-  //           return {
-  //             ...inst,
-  //             [property]: [
-  //               ...inst?.[property] || [],
-  //               newProperty
-  //             ]
-  //           }
-
-  //         }
-  //         return inst
-  //       })
-  //     })
-  //   }
-  // }
-
-  // const editProperty = () => {
-  //   const verifyProperty = isProperty(propertyEditing, property)
-  //   if (verifyProperty) {
-  //     const newProperty ={
-  //     ...IDL,
-  //     [instruction]: IDL[instruction].map((inst: any, index: any) => {
-  //       if (index === editingInstruction) {
-  //         return {
-  //           ...inst,
-  //           [property]: inst[property].map((prop: any, index: number) => {
-  //             if (index === propertySelectedEdit) {
-  //               return propertyEditing
-  //             } else {
-  //               return prop
-  //             }
-  //           })
-  //         }
-  //       }
-  //       return inst
-  //     })
-  //   }
-  //     setIDL(newProperty)
-  //   }
-  //   setPropertySelectedEdit(undefined)
-  // }
 
 
   return (

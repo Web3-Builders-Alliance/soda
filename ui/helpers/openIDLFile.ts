@@ -38,34 +38,6 @@ const openIDLFile = (IDL: any, setIDL: Function) => {
           errors: parsed.errors ? parsed.errors : [],
           metadata: parsed.metadata
         })
-        // if (parsed.name) setIDL({
-        //   ...IDL,
-        //   name: parsed.name
-        // });
-        // if (parsed.instructions) setIDL({
-        //   ...IDL,
-        //   instructions: parsed.instructions
-        // });
-        // if (parsed.accounts) setIDL({
-        //   ...IDL,
-        //   accounts: parsed.accounts
-        // });
-        // if (parsed.types) setIDL({
-        //   ...IDL,
-        //   types: parsed.types
-        // });
-        // if (parsed.events) setIDL({
-        //   ...IDL,
-        //   events: parsed.events
-        // });
-        // if (parsed.errors) setIDL({
-        //   ...IDL,
-        //   errors: parsed.errors
-        // });
-        // if(parsed.metadata) setIDL({
-        //   ...IDL,
-        //   errors: parsed.errors
-        // });
       }
     } catch (e) {
       await message(`${e}`, {

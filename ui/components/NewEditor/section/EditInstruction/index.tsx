@@ -17,8 +17,6 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
     }, [editingItem])
 
     const addProperty = (newProperty: any) => {
-        // const verifyProperty = isProperty(newProperty, tabConfig)
-        // if (verifyProperty) {
         if (instruction === "errors") {
             const errProperty = {
                 ...newProperty,
@@ -71,7 +69,6 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                 return inst
             })
         })
-        // }
     }
 
     const editProperty = (propertyEdit: any, indexProperty: number) => {
@@ -136,10 +133,6 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                 return inst
             })
         }
-        // const editing = {
-        //     ...IDL,
-        //     ...propertyEdit
-        // }
         setIDL(editing)
 
     }

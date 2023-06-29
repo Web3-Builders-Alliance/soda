@@ -11,7 +11,6 @@ const SelectTemplate = () => {
     const { templates } = useTemplates()
     const router = useRouter()
 
-    console.log(templates)
     return (
         <div className="fixed z-50 top-0 left-0 h-screen w-screen">
             <div className=" absolute h-[70%] w-11/12 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-10 overflow-auto rounded-3xl bg-[#242f34] [&::-webkit-scrollbar]:hidden">

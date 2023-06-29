@@ -4,7 +4,6 @@ import { TauriEvent, listen } from "@tauri-apps/api/event";
 import { about, cleanProject, generateProjectFiles, nameSetter, openIDLFile, saveIDLFile, saveTemplateFile, selectTemplateFolder, templateFromFolder } from "@/helpers";
 import Layout from "@/components/Layout";
 import { useIDL } from "@/context/IDL";
-import { Section } from "@/components/ClassicEditor/section";
 import { NewEditor } from "@/components/NewEditor/Editor";
 import ClassicEditor from "@/components/ClassicEditor/Editor";
 import { Dialog, Transition } from '@headlessui/react'
@@ -154,17 +153,8 @@ export default function Home() {
                       </button>
                     </div>
                   </Transition.Child>
-                  {/* Sidebar component, swap this element with another sidebar if you like */}
                   <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-[#081635] px-6 pb-2">
                     <div className="flex h-16 shrink-0 items-center">
-                      {/* <Image
-
-                          height={25}
-                          width={25}
-                          className="h-8 w-auto"
-                          src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                          alt="Your Company"
-                      /> */}
                     </div>
                     <nav className="flex flex-1 flex-col">
                       <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -180,10 +170,6 @@ export default function Home() {
                                     href={item.href}
                                     className={'text-white hover:text-indigo-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'}
                                   >
-                                    {/* <item.icon
-                                         className={'text-gray-400 group-hover:text-indigo-600 h-6 w-6 shrink-0'}
-                                         aria-hidden="true"
-                                    /> */}
                                     {item.name}
                                   </a>
                                 </li>

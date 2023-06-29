@@ -17,9 +17,6 @@ const JSONEditor = () => {
         }
 
     }
-
-    console.log(errorIDL)
-
     return (
         <div>
             <p className='text-red-600'>{errorIDL}</p>
