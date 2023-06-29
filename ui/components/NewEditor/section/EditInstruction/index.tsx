@@ -141,8 +141,8 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
     const render = {
         instructions: (
             IDL?.[instruction]?.[editingItem] &&
-            <div className="flex flex-col overflow-x-auto gap-4 h-full">
-                <div className=" flex w-full h-12 text-center -space-x-1">
+            <div className="flex flex-col overflow-x-auto gap-4 h-full bg-backg rounded-md shadow-md shadow-inputs mt-20">
+                <div className="flex w-full h-12 text-center -space-x-1 shadow-inner shadow-inputs bg-backg">
                     {
                         ["accounts", "args"].map((name, index) => {
                             return (
@@ -151,7 +151,7 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                                     key={name}
                                 >
                                     <div
-                                        className={`${tabConfig === name ? "text-slate-50 h-full" : "text-slate-500 hover:text-slate-400 h-[90%] cursor-pointer border-b-2 border-slate-700"} flex px-6 items-center justify-center`}
+                                        className={`${tabConfig === name ? "text-chok h-full border-b border-chok" : "text-border hover:text-chok h-[90%] cursor-pointer border-b border-border"} flex px-6 items-center justify-center`}
 
                                         onClick={() => setTab(name)}
                                     >
@@ -196,7 +196,7 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
         ),
         events: (
             IDL?.[instruction]?.[editingItem] &&
-            <div className="flex flex-col w-full overflow-x-auto gap-4 h-full">
+            <div className="flex flex-col w-full overflow-x-auto gap-4 h-full mt-20">
                 <Tab
                     editProperty={editProperty}
                     addProperty={addProperty}
@@ -210,11 +210,11 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
     if (render[instruction as keyof typeof render]) return render[instruction as keyof typeof render]
     return (
         IDL?.[instruction]?.[editingItem] &&
-        <div className="flex flex-col overflow-x-auto gap-4 h-full">
+        <div className="flex flex-col overflow-x-auto gap-4 h-full mt-20">
             {
                 !IDL?.[instruction]?.[editingItem]?.type ?
                     <select
-                        className='bg-transparent text-white'
+                        className='bg-inputs rounded-md text-chok'
                         defaultValue={0}
                         onChange={(e) => { setKind(e.target.value) }}
                     >
@@ -237,7 +237,7 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                         }
                     </select>
                     :
-                    <p className="text-white text-xl">
+                    <p className="text-chok text-xl">
                         {
                            `Kind: ${IDL?.[instruction]?.[editingItem]?.type.kind}`
                         }

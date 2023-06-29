@@ -49,7 +49,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                       <th
                         key={name}
                         scope="col"
-                        className="w-min text-white text-left text-sm font-semibold"
+                        className="w-min text-chok text-left text-sm font-semibold "
                       >
                         {name}
                       </th>
@@ -58,7 +58,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                 }
               </tr>
             </thead>
-            <tbody className="text-white divide-y divide-gray-200 bg-[#102042] ">
+            <tbody className="text-chok divide-y divide-border bg-backg">
               <tr className='py-2'>
                 {
                   objConfig.map(({ disabled, name, options }: any) => {
@@ -66,6 +66,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                       return (
                         <td key={name} className='w-min px-5'>
                           <input
+                            className='bg-inputs rounded-md'
                             id={name}
                             type="checkbox"
                             onChange={handlerNewProperty}
@@ -76,7 +77,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                       return (
                         <td key={name} className='w-min pl-5'>
                           <select
-                            className='bg-transparent'
+                            className='bg-inputs rounded-md'
                             id={name}
                             disabled={disabled}
                             defaultValue={options[0]}
@@ -107,7 +108,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                             type='text'
                             id={name}
                             disabled={disabled}
-                            className='bg-transparent border-none pl-5'
+                            className='bg-inputs rounded-md pl-5'
                             onChange={handlerNewProperty}
                           />
                         </td>
@@ -118,7 +119,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                 <td className="whitespace-nowrap w-24 text-center text-sm font-medium">
                   <button
                     onClick={() => addProperty(newProperty)}
-                    className="text-indigo-600 hover:text-indigo-900 p-2"
+                    className="text-chok hover:text-green p-2"
                   >
                     Add Property
                   </button>
@@ -144,7 +145,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                             return (
                               <td key={name} className='w-min'>
                                 <select
-                                  className='bg-transparent'
+                                  className='bg-inputs rounded-md'
                                   id={name}
                                   defaultValue={property[name]}
                                   disabled={disabled}
@@ -174,8 +175,10 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                                   type='text'
                                   id={name}
                                   disabled={disabled}
+                                  className='bg-inputs border-none pl-5'
+
                                   defaultValue={property?.[name]}
-                                  className='bg-transparent border-none pl-5'
+
                                   onChange={handlerEditProperty}
                                 />
                               </td>
@@ -189,7 +192,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                             editProperty(propertyEditing, index)
                             setPropertySelectedEdit(undefined)
                           }}
-                          className="text-indigo-600 hover:text-indigo-900 p-2"
+                          className="text-chok hover:text-green p-2"
                         >
                           Confirm Edit
                         </button>
@@ -214,7 +217,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                               key={name}
                               className={classNames(
                                 'whitespace-nowrap py-4 pr-3 text-sm font-medium',
-                                selectedProperty.includes(property) ? 'text-indigo-600' : ''
+                                selectedProperty.includes(property) ? 'text-chok' : ''
                               )}
                             >
                               {
@@ -231,7 +234,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                             setPropertySelectedEdit(index)
                             setPropertyEditing(property)
                           }}
-                          className="text-indigo-600 hover:text-indigo-900"
+                          className="text-chok hover:text-green"
                         >
                           Edit
                         </button>

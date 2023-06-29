@@ -19,17 +19,17 @@ export const Section: FC<any> = ({ instruction }) => {
       {
         instruction !== "errors" &&
         <div
-          className=" flex bg-[#102042] h-14 justify-between w-80 rounded-xl py-4 px-6 text-white cursor-pointer"
+          className=" flex bg-inputs h-14 justify-between w-80 rounded-xl py-4 px-6 text-chok cursor-pointer"
         >
           <input
             placeholder={`Add ${instruction}'s Name`}
             value={newIntructionName}
             onChange={(e) => setNewIntructionName(e.target.value)}
-            className=" w-full bg-transparent focus:outline-none"
+            className=" w-full bg-inputs focus:outline-none"
           />
           <div className="flex gap-2">
             <CheckIcon
-              className="w-5 h-5 text-white"
+              className="w-5 h-5 text-white hover:text-green"
               onClick={() => {
                 if (!IDL[instruction].find((inst: any) => inst.name === newIntructionName)) {
                   setIDL({

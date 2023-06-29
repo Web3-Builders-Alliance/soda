@@ -10,9 +10,9 @@ export const Section: FC<any> = ({ name, content, setContent, initExpanded = fal
 
   useEffect(() => console.log(isModalOpen), [isModalOpen])
   return (
-    <section className={`flex p-5 m-5 border border-neutral-700 bg-black rounded-md relative`}>
+    <section className={`flex p-5 m-5 border border-border bg-backg rounded-md relative`}>
       <div
-        className="absolute flex left-5 top-0 transform -translate-y-1/2 text-white justify-center items-center font-mono font-thin"
+        className="absolute flex left-5 top-0 transform -translate-y-1/2 text-chok justify-center items-center font-mono font-thin"
       >
         {name}
       </div>
@@ -36,7 +36,7 @@ export const Section: FC<any> = ({ name, content, setContent, initExpanded = fal
       </div>
       <button
         type="button"
-        className="absolute flex left-1/2 bottom-0 border border-neutral-500 bg-black rounded-full w-8 h-8 transform -translate-x-1/2 translate-y-1/2 text-white justify-center items-center"
+        className="absolute flex left-1/2 bottom-0 border border-border bg-inputs rounded-full w-8 h-8 transform -translate-x-1/2 translate-y-1/2 text-yellow justify-center items-center hover:bg-backg"
         onClick={() => {
           setExpanded(!expanded);
         }}
@@ -45,22 +45,22 @@ export const Section: FC<any> = ({ name, content, setContent, initExpanded = fal
       </button>
       {
         isModalOpen && (
-          <div className="flex flex-col p-5 text-white text-center rounded-md bg-black border-2 border-neutral-900 absolute left-5 top-5 right-5 bottom-5">
+          <div className="flex flex-col justify-center p-5 text-center rounded-md bg-backg border-2 border-border absolute left-5 top-5 right-5 bottom-5">
             <input
               placeholder="Instruction's Name"
               value={newIntructionName}
               onChange={(e) => setNewIntructionName(e.target.value)}
-              className="p-5 mb-5 text-center bg-black rounded-md ring-2 ring-green-400 text-white"
+              className="p-5 mb-5 text-center bg-inputs text-yellow rounded-md ring-1 ring-chok"
             />
             <div>
               <button
-                className="p-2 m-2 mx-auto bg-neutral-900 text-white rounded-md mt-5"
+                className="p-2 m-2 mx-auto bg-backg text-chok rounded-md mt-5 hover:bg-inputs"
                 onClick={() => setIsModalOpen(false)}
               >
                 Cancel
               </button>
               <button
-                className="p-2 m-2 mx-auto bg-green-600 text-white rounded-md mt-5 ml-5 ring-2 ring-black"
+                className="p-2 m-2 mx-auto text-green rounded-md mt-5 ml-5 ring-2 ring-inputs hover:bg-inputs"
                 onClick={() => {
                   setIsModalOpen(false)
                   setContent(
