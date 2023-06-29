@@ -141,7 +141,12 @@ fn generate(handle: tauri::AppHandle, state: State<AppState>) -> Result<(), MyEr
     match serde_json::from_str::<IDL>(idl_string) {
         Ok(idl) => {
             let dinamyc_files = generate_project(template.clone(), &idl);
-            write_project_to_fs(dinamyc_files, base_folder);
+            match write_project_to_fs(dinamyc_files, base_folder) {
+                Ok(_) => {},
+                Err(e) => return Err(MyError::CustomError {
+                    message: e.to_string(),
+                }),
+            };
             Ok(())
         }
         Err(e) => Err(MyError::CustomError {
@@ -159,9 +164,19 @@ fn generate_idl_file(handle: tauri::AppHandle, state: State<AppState>) -> Result
             &state.base_folder.clone(),
         )
     };
-    let mut file = std::fs::File::create(format!("{}/idl.json", base_folder)).unwrap();
-    file.write_all(idl_string.as_bytes()).unwrap();
-    Ok(())
+    match std::fs::File::create(format!("{}/idl.json", base_folder)) {
+        Ok(mut file) => {
+            match file.write_all(idl_string.as_bytes()) {
+                Ok(_) => Ok(()),
+                Err(e) => Err(MyError::CustomError {
+                    message: e.to_string(),
+                }),
+            }
+        }
+        Err(e) => Err(MyError::CustomError {
+            message: e.to_string(),
+        }),
+    }
 }
 
 #[tauri::command]
@@ -182,15 +197,29 @@ fn update_base_folder_path(base: String, state: State<AppState>) -> Result<(), (
 }
 
 #[tauri::command]
-fn update_template(template_path: String, state: State<AppState>) -> Result<(), ()> {
+fn update_template(template_path: String, state: State<AppState>) -> Result<(), MyError> {
     let mut state = state.0.lock().unwrap();
-    let template = if PathBuf::from(&template_path).is_file() {
-        load_template(&template_path)
+    if PathBuf::from(&template_path).is_file() {
+        match load_template(&template_path) {
+            Ok(template) => {
+                state.template = template;
+                Ok(())
+            }
+            Err(err) => Err(MyError::CustomError {
+                message: err.to_string(),
+            }),
+        }
     } else {
-        get_template_from_fs(&template_path)
-    };
-    state.template = template;
-    Ok(())
+        match get_template_from_fs(&template_path) {
+            Ok(template) => {
+                state.template = template;
+                Ok(())
+            }
+            Err(err) => Err(MyError::CustomError {
+                message: err.to_string(),
+            }),
+        }
+    }
 }
 
 #[tauri::command]
@@ -227,6 +256,10 @@ impl serde::Serialize for MyError {
 #[tauri::command]
 fn generate_template_file(path: String, state: State<AppState>) -> Result<(), MyError> {
     let state = state.0.lock().unwrap();
-    save_template(state.template.clone(), &path);
-    Ok(())
+    match save_template(state.template.clone(), &path) {
+        Ok(_) => Ok(()),
+        Err(e) => Err(MyError::CustomError {
+            message: e.to_string(),
+        }),
+    }
 }

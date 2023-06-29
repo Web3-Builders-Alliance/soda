@@ -52,18 +52,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "224afbd727c3d6e4b90103ece64b8d1b67fbb1973b1046c2281eed3f3803f800"
 
 [[package]]
-name = "app"
-version = "0.1.0"
-dependencies = [
- "serde",
- "serde_json",
- "soda_sol",
- "tauri",
- "tauri-build",
- "thiserror",
-]
-
-[[package]]
 name = "atk"
 version = "0.15.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2366,16 +2354,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "soda"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "soda_sol",
+ "tauri",
+ "tauri-build",
+ "thiserror",
+]
+
+[[package]]
 name = "soda_sol"
 version = "0.0.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "657a53c14d460970817c63ca7f617b36af651ed46c33449259e3f2bf8dc84cad"
 dependencies = [
  "bincode",
  "handlebars",
  "serde",
  "serde_derive",
  "serde_json",
+ "thiserror",
  "walkdir",
 ]
 
