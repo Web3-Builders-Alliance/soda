@@ -15,7 +15,7 @@ const saveTemplateFile = async () => {
             await message(`Output path: ${result}/template.soda`, "Template generated");
           })
           .catch(async (e) => {
-            await message(e?.error ?? "generate_idl_file Error", { title: "Error", type: "error" });
+            await message(e?.error ?? "generate_idl_file Error", { title: "Error while trying to save a template file in the selected location", type: "error" });
           });
       } catch (e) {
         await message(`${e}`, {
