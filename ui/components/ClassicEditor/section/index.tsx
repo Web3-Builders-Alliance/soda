@@ -17,7 +17,6 @@ export const Section: FC<any> = ({ name, content, setContent, initExpanded = fal
         {name}
       </div>
       <div className={`mini-scrollbar flex transition-all duration-500 ease-in-out overflow-x-auto overflow-y-hidden ${expanded ? "h-64" : " overflow-x-hidden h-4"}`}>
-
         {
           content.map((item: { name: string; }, index: number) => (
             <Card

@@ -88,6 +88,7 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
         const editing = {
             ...IDL,
             [instruction]: IDL[instruction].map((inst: any, index: number) => {
+                console.log(inst, indexProperty)
                 if (index === editingItem) {
                     if (instruction === "instructions" && !inst?.[tabConfig]?.includes(propertyEdit)) {
                         return {
@@ -96,7 +97,7 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                                 if (indexProperty === i) {
                                     return propertyEdit
                                 } else {
-                                    prop
+                                    return prop
                                 }
                             })
                         }
@@ -108,7 +109,7 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                                 if (indexProperty === i) {
                                     return propertyEdit
                                 } else {
-                                    prop
+                                    return prop
                                 }
                             })
                         }
@@ -122,7 +123,7 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                                     if (indexProperty === i) {
                                         return propertyEdit
                                     } else {
-                                        prop
+                                        return prop
                                     }
                                 })
 

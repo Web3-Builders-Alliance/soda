@@ -185,8 +185,6 @@ export default function Home() {
             </div>
           </Dialog>
         </Transition.Root>
-
-
         <div className="sticky top-0 z-40 h-20 flex items-center justify-between gap-x-6 bg-[#081635]  shadow-sm px-6">
           <button type="button" className="-m-2.5 p-2.5 text-white" onClick={() => setSidebarOpen(true)}>
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />

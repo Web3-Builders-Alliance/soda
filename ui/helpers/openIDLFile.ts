@@ -16,15 +16,7 @@ const openIDLFile = (IDL: any, setIDL: Function) => {
           },
         ],
       });
-      if (typeof result !== "string") {
-        await message(
-          `The type resulted of the selection is ${typeof result}`,
-          {
-            title: "Something fail while tryng to open an IDL File.",
-            type: "error",
-          }
-        );
-      } else {
+      if (typeof result === "string") {
         const idl = await readTextFile(result);
         console.log(idl);
         const parsed = JSON.parse(idl);
