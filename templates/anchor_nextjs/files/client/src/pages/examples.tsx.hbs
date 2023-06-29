@@ -12,7 +12,7 @@ import {
 {{/each}}
 
 
-const Home: NextPage = (props) => {
+const Examples: NextPage = (props) => {
   const wallet = useAnchorWallet();
   const { connection } = useConnection();
   const { program } = useProgram({ connection, wallet });
@@ -72,8 +72,41 @@ const {{name}}_for_{{../name}} = ""
         <title>{{name}}</title>
         <meta name="description" content="{{name}}" />
       </Head>
+
+      {{#each instructions}}
+      <div className="text-white flex flex-col text-2xl m-5 p-2 border border-gray-600">
+      for  {{name}}
+      {{#each args}}
+      <div className="text-white flex flex-row text-base p-2">
+      {{name}}
+      <input
+      type="text"
+      className="bg-gray-600"
+      value={
+        {{name}}_for_{{../name}}
+      }
+      onChange={
+        {{name}}handler_for_{{../name}}
+      }
+      />
+      </div>
+      {{/each}}
+      </div>
+      {{/each}}
+
+      // buttons for calling instructions
+      {{#each instructions}}
+      <button
+        className="bg-green-600 text-white p-2 m-2"
+        onClick={
+          ()=>{{name}}(program , {{#each args}}{{name}}_for_{{../name}} , {{/each}}{{#each accounts}} {{#if this.isMut}}{{#unless this.isSigner}}{{name}}_for_{{../name}}{{/unless}}{{/if}} {{#if (eq this.name "authority")}}{{name}}{{/if}} {{#if (eq this.name "systemProgram")}}{{name}}{{/if}} {{#if (eq this.name "clock")}}{{name}}{{/if}},{{/each}})
+        }
+      >
+        Call_{{name}}_functions
+      </button>
+      {{/each}}
     </>
   );
 };
 
-export default Home;
+export default Examples;
