@@ -12,7 +12,11 @@ const selectTemplateFolder = (setTemplateFolder: Function) => {
       invoke("update_template", { templatePath: result }).then(async () => {
         setTemplateFolder(result)
         await message(`Template path: ${result}`, "Template Selected");
-      });
+      })
+      .catch(async (e) => {
+        await message(e?.error ?? "update_template Error", { title: "Error Trying to open selected file as a template", type: "error" });
+    });
+      ;
     }
     catch (e) {
       await message(`${e}`, {

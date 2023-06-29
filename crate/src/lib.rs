@@ -3,7 +3,7 @@
 use std::{
     fs::{create_dir_all, read, read_to_string, File},
     io::Write,
-    path::PathBuf,
+    path::PathBuf, fmt::Error, f32::consts::E,
 };
 use walkdir::WalkDir;
 mod helpers;
@@ -12,14 +12,30 @@ use helpers::{apply_user_helpers, create_handlebars_registry};
 pub use structs::{Content, Data, Template, TemplateFile, TemplateHelper, IDL, TemplateMetadata};
 use bincode::{serialize, deserialize};
 
-pub fn generate_from_idl(base_path: &str, idl: IDL, template_path: &str) {
-    let template = if PathBuf::from(template_path).is_file() {
-        load_template(template_path)
+pub fn generate_from_idl(base_path: &str, idl: IDL, template_path: &str) -> Result<(), Error> {
+    if PathBuf::from(template_path).is_file() {
+        match load_template(template_path) {
+            Ok(template) => {
+                let dinamyc_files = generate_project(template, &idl);
+                write_project_to_fs(dinamyc_files, base_path);
+                Ok(())
+            }
+            Err(err) => {
+                Err(Error)
+            }
+        }
     } else {
-        get_template_from_fs(template_path)
-    };
-    let dinamyc_files = generate_project(template, &idl);
-    write_project_to_fs(dinamyc_files, base_path);
+        match get_template_from_fs(template_path) {
+            Ok(template) => {
+                let dinamyc_files = generate_project(template, &idl);
+                write_project_to_fs(dinamyc_files, base_path);
+                Ok(())
+            }
+            Err(err) => {
+                Err(Error)
+            }
+        }
+    }
 }
 
 pub fn write_project_to_fs(dinamyc_files: Vec<TemplateFile>, base_path: &str) {
@@ -39,26 +55,32 @@ pub fn write_project_to_fs(dinamyc_files: Vec<TemplateFile>, base_path: &str) {
     }
 }
 
-pub fn get_template_from_fs(template_path: &str) -> Template {
+pub fn get_template_from_fs(template_path: &str) -> Result<Template, Error> {
     let mut files = vec![];
     for entry in WalkDir::new(format!("{}/files/", template_path)) {
-        let entry = entry.unwrap();
-        let path = &format!("{}", entry.path().display());
-        let is_file = PathBuf::from(path).is_file();
-        if is_file {
-            let content: Content = if PathBuf::from(path).extension().is_some_and(|ext| ext == "hbs")  {
-                structs::Content::String(read_to_string(path.clone()).unwrap())
-            } else {
-                structs::Content::Vec(read(path.clone()).unwrap())
-            };
+        match entry {
+            Ok(val) => {
+                let path = &format!("{}", val.path().display());
+                let is_file = PathBuf::from(path).is_file();
+                if is_file {
+                    let content: Content = if PathBuf::from(path).extension().is_some_and(|ext| ext == "hbs")  {
+                        structs::Content::String(read_to_string(path.clone()).unwrap())
+                    } else {
+                        structs::Content::Vec(read(path.clone()).unwrap())
+                    };
+        
+                    files.push(TemplateFile {
+                        path: path
+                            .get(template_path.len() + 6..path.len())
+                            .unwrap()
+                            .to_string(),
+                        content,
+                    });
+            }
+        }
 
-            files.push(TemplateFile {
-                path: path
-                    .get(template_path.len() + 6..path.len())
-                    .unwrap()
-                    .to_string(),
-                content,
-            });
+            Err(err)=> return Err(Error)
+        
         }
     }
     let mut helpers = vec![];
@@ -82,17 +104,28 @@ pub fn get_template_from_fs(template_path: &str) -> Template {
                     });
                 }
             }
-            Err(err) => println!("{}", err),
+            Err(err)=> return Err(Error)
         }
     }
     let metadata = if PathBuf::from(format!("{}/metadata.json", template_path)).is_file() {
-        let metadata: TemplateMetadata =
-            serde_json::from_str(&read_to_string(format!("{}/metadata.json", template_path)).unwrap()).unwrap();
-        metadata
+        match read_to_string(format!("{}/metadata.json", template_path))
+        {
+            Ok(val) => {
+                match serde_json::from_str(&val) {
+                    Ok(decoded) => decoded,
+                    Err(err) => {
+                        TemplateMetadata::default()
+                    }
+                }
+            }
+            Err(err) => {
+                TemplateMetadata::default()
+            }
+        }
     } else {
         TemplateMetadata::default()
     };
-    Template { files, helpers, metadata }
+    Ok(Template { files, helpers, metadata })
 }
 
 pub fn generate_project(template: Template, idl: &IDL) -> Vec<TemplateFile> {
@@ -172,7 +205,16 @@ pub fn save_template(template: Template, path: &str) {
     file.write_all(&encoded).unwrap();
 }
 
-pub fn load_template(path: &str) -> Template {
-    let decoded: Template = deserialize(&read(path).unwrap()).unwrap();
-    decoded
+pub fn load_template(path: &str) -> Result<Template, Error> {
+    match &read(path) {
+        Ok(val) => {
+            match deserialize(val) {
+                Ok(decoded) => Ok(decoded),
+                Err(err) => Err(Error)
+            }
+        }
+        Err(err) => {
+            Err(Error)
+        }
+    }
 }

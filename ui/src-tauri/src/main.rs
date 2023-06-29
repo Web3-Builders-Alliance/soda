@@ -182,15 +182,29 @@ fn update_base_folder_path(base: String, state: State<AppState>) -> Result<(), (
 }
 
 #[tauri::command]
-fn update_template(template_path: String, state: State<AppState>) -> Result<(), ()> {
+fn update_template(template_path: String, state: State<AppState>) -> Result<(), MyError> {
     let mut state = state.0.lock().unwrap();
-    let template = if PathBuf::from(&template_path).is_file() {
-        load_template(&template_path)
+    if PathBuf::from(&template_path).is_file() {
+        match load_template(&template_path) {
+            Ok(template) => {
+                state.template = template;
+                Ok(())
+            }
+            Err(err) => Err(MyError::CustomError {
+                message: err.to_string(),
+            }),
+        }
     } else {
-        get_template_from_fs(&template_path)
-    };
-    state.template = template;
-    Ok(())
+        match get_template_from_fs(&template_path) {
+            Ok(template) => {
+                state.template = template;
+                Ok(())
+            }
+            Err(err) => Err(MyError::CustomError {
+                message: err.to_string(),
+            }),
+        }
+    }
 }
 
 #[tauri::command]
