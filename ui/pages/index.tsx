@@ -158,10 +158,7 @@ export default function Home() {
                   <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-[#081635] px-6 pb-2">
                     <div className="flex h-16 shrink-0 items-center">
                       {/* <Image
-<<<<<<< HEAD
-=======
 
->>>>>>> 5df348159ada6f3a5e0d62aa91df69fe1a1c0c43
                           height={25}
                           width={25}
                           className="h-8 w-auto"
