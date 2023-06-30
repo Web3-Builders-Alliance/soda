@@ -41,7 +41,7 @@ To install the Desktop App you need to [download the lastest release](https://gi
 ## Install Soda CLI
 
 You can install the CLI using cargo or npm.
-- Using cargo:
+- Using cargo (recommended):
 ```cargo install soda-cli```
 
 - Using npm:
@@ -51,7 +51,7 @@ You can install the CLI using cargo or npm.
 
 ```soda-cli create-project <idl_path> <template_path>```
 Creates a new project from an IDL file.
-If no template path is provided, the project will be try to use a template.soda file in the current directory.
+If no template path is provided, the project will try to use a template.soda file in the current directory.
 If no IDL path is provided, the CLI will try to open an idl.json file in the current directory.
 
 ```soda-cli pack-template <template_path> <output_path>```
