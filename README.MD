@@ -1,10 +1,8 @@
-
 <p  align="center">
   <img  src="https://github.com/Web3-Builders-Alliance/soda/blob/main/assets/soda.png?raw=true"  width="100">
-</p>
-  
+</p>  
 
-# SODA: Ship a Solana program inferred from Solana data
+# Ship a Solana program inferred from Solana data
 
 
  **Note: Soda is in active development, so all is subject to change. This code is unaudited. Use at your own risk.**
