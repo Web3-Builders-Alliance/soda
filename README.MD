@@ -1,7 +1,7 @@
 
 <p  align="center">
 
-<img  src="https://github.com/Web3-Builders-Alliance/soda/blob/main/ui/src-tauri/icons/icon.png?raw=true"  width="100">
+<img  src="https://github.com/Web3-Builders-Alliance/soda/blob/main/assets/soda.png?raw=true"  width="100">
 
 </p>
   
