@@ -1,3 +1,5 @@
+#![allow(non_snake_case, non_camel_case_types)]
+
 use serde_derive::{self, Deserialize, Serialize};
 use std::convert::From;
 #[derive(Deserialize, Serialize, Debug, Clone)]

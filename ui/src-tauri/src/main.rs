@@ -140,16 +140,8 @@ fn generate(state: State<AppState>) -> Result<(), MyError> {
     };
     match serde_json::from_str::<IDL>(idl_string) {
         Ok(idl) => {
-            let dinamyc_files = generate_project(template.clone(), &idl);
-            match write_project_to_fs(dinamyc_files, base_folder) {
-                Ok(_) => {}
-                Err(e) => {
-                    return Err(MyError::CustomError {
-                        message: e.to_string(),
-                    })
-                }
-            };
-            Ok(())
+            let dinamyc_files = generate_project(template.clone(), &idl)?;
+            write_project_to_fs(dinamyc_files, base_folder).map_err(|e| e.into())
         }
         Err(e) => Err(MyError::CustomError {
             message: e.to_string(),
@@ -226,6 +218,17 @@ fn update_idl_string(idl: String, state: State<AppState>) -> Result<(), ()> {
     Ok(())
 }
 
+#[tauri::command]
+fn generate_template_file(path: String, state: State<AppState>) -> Result<(), MyError> {
+    let state = state.0.lock().unwrap();
+    match save_template(state.template.clone(), &path) {
+        Ok(_) => Ok(()),
+        Err(e) => Err(MyError::CustomError {
+            message: e.to_string(),
+        }),
+    }
+}
+
 #[derive(thiserror::Error, Debug)]
 pub enum MyError {
     #[error("custom error: {message}")]
@@ -250,13 +253,10 @@ impl serde::Serialize for MyError {
     }
 }
 
-#[tauri::command]
-fn generate_template_file(path: String, state: State<AppState>) -> Result<(), MyError> {
-    let state = state.0.lock().unwrap();
-    match save_template(state.template.clone(), &path) {
-        Ok(_) => Ok(()),
-        Err(e) => Err(MyError::CustomError {
-            message: e.to_string(),
-        }),
+impl From<soda_sol::error::MyError> for MyError {
+    fn from(err: soda_sol::MyError) -> MyError {
+        MyError::CustomError {
+            message: err.to_string(),
+        }
     }
 }
