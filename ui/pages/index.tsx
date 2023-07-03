@@ -1,16 +1,18 @@
 import Head from "next/head";
 import { useEffect, useState, Fragment } from "react";
 import { TauriEvent, listen } from "@tauri-apps/api/event";
-import { about, cleanProject, generateProjectFiles, nameSetter, openIDLFile, saveIDLFile, selectTemplateFolder } from "@/helpers";
+import { about, cleanProject, generateProjectFiles, nameSetter, openIDLFile, saveIDLFile, saveTemplateFile, selectTemplateFolder, templateFromFolder } from "@/helpers";
 import Layout from "@/components/Layout";
 import { useIDL } from "@/context/IDL";
-import { Section } from "@/components/ClassicEditor/section";
 import { NewEditor } from "@/components/NewEditor/Editor";
 import ClassicEditor from "@/components/ClassicEditor/Editor";
 import { Dialog, Transition } from '@headlessui/react'
 import {
-  Bars3Icon,
-  XMarkIcon
+  PlusIcon,
+  FolderOpenIcon,
+  XMarkIcon,
+  ArrowDownTrayIcon,
+  FolderArrowDownIcon
 } from '@heroicons/react/24/outline'
 import JSONEditor from "@/components/JSONEditor";
 
@@ -26,6 +28,7 @@ export default function Home() {
   const newProject = cleanProject(setIDL);
   const generateIDL = saveIDLFile(setBaseFolder, IDL.version, IDL.name, IDL.instructions, IDL.accounts, IDL.types, IDL.events, IDL.errors, IDL.metadata);
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
 
   const navigation = [
     {
@@ -78,6 +81,11 @@ export default function Home() {
           case "about":
             about();
             break;
+          case "template_from_folder":
+            templateFromFolder();
+            break;
+          case "save_template_file":
+            saveTemplateFile()
           default:
             break;
         }
@@ -102,7 +110,7 @@ export default function Home() {
     <>
       <Head>
         <title>Soda</title>
-        <meta name="description" content="Generate your project from an UI" />
+        <meta name="description" content="Generate Solana projects from an UI" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -118,7 +126,7 @@ export default function Home() {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <div className="fixed inset-0 bg-gray-900/80" />
+              <div className="fixed inset-0" />
             </Transition.Child>
 
             <div className="fixed inset-0 flex ">
@@ -148,16 +156,9 @@ export default function Home() {
                       </button>
                     </div>
                   </Transition.Child>
-                  {/* Sidebar component, swap this element with another sidebar if you like */}
-                  <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-[#081635] px-6 pb-2">
+                  <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-blue px-6 pb-2">
+
                     <div className="flex h-16 shrink-0 items-center">
-                      {/* <Image
-                                                height={25}
-                                                width={25}
-                                                className="h-8 w-auto"
-                                                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                                                alt="Your Company"
-                                            /> */}
                     </div>
                     <nav className="flex flex-1 flex-col">
                       <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -171,12 +172,8 @@ export default function Home() {
                                 >
                                   <a
                                     href={item.href}
-                                    className={'text-white hover:text-indigo-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'}
+                                    className={'text-chok hover:text-inputs hover:bg-chok group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'}
                                   >
-                                    {/* <item.icon
-                                                                        className={'text-gray-400 group-hover:text-indigo-600 h-6 w-6 shrink-0'}
-                                                                        aria-hidden="true"
-                                                                    /> */}
                                     {item.name}
                                   </a>
                                 </li>
@@ -192,20 +189,30 @@ export default function Home() {
             </div>
           </Dialog>
         </Transition.Root>
-
-        <div className="sticky top-0 z-40 flex items-center justify-between gap-x-6 bg-[#081635] px-4 py-4 shadow-sm sm:px-6">
-          <button type="button" className="-m-2.5 p-2.5 text-white" onClick={() => setSidebarOpen(true)}>
-            <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-          </button>
-          <div className="text-white flex gap-5">
-            <button onClick={()=>setSelectedUI("classic")} className={`${selectedUI === "classic" && "text-[#D6BA4D]"}`}>Classic</button>
-            <button onClick={()=>setSelectedUI("advanced")} className={`${selectedUI === "advanced" && "text-[#D6BA4D]"}`}>Advanced</button>
-            <button onClick={()=>setSelectedUI("json")} className={`${selectedUI === "json" && "text-[#D6BA4D]"}`}>Json</button>
+        <div className="sticky top-0 z-40 h-20 flex items-center justify-between gap-x-6 bg-backg  shadow-sm px-6">
+          <div className="flex gap-8 justify-center items-center">                  
+              <button type="button" className="-m-2.5 p-2.5 text-chok text-sm inline-flex items-center gap-x-1.5 rounded-md border border-border hover:bg-inputs focus:bg-inputs active:outline-none active:ring active:ring-border" onClick={newProject}>
+                <PlusIcon className="h-5 w-5" aria-hidden="true" />New
+              </button>
+              <button type="button" className="-m-2.5 p-2.5 text-chok text-sm inline-flex items-center gap-x-1.5 rounded-md border border-border hover:bg-inputs focus:bg-inputs active:outline-none active:ring active:ring-border" onClick={openIDL}>
+                <FolderOpenIcon className="h-5 w-5" aria-hidden="true" />Open
+              </button>
+              <button type="button" className="-m-2.5 p-2.5 text-chok text-sm inline-flex items-center gap-x-1.5 rounded-md border border-border hover:bg-inputs focus:bg-inputs active:outline-none active:ring active:ring-border" onClick={generateIDL}>
+                <ArrowDownTrayIcon className="h-5 w-5" aria-hidden="true" />Save
+              </button>
+              <button type="button" className="-m-2.5 p-2.5 text-chok text-sm inline-flex items-center gap-x-1.5 rounded-md border border-border hover:bg-inputs focus:bg-inputs active:outline-none active:ring active:ring-border" onClick={exportData}>
+                <FolderArrowDownIcon className="h-5 w-5" aria-hidden="true" />Export
+              </button>
+          </div>                 
+          <div className="text-chok flex gap-5">
+            <p className="text-border">Views:</p> 
+            <button onClick={() => setSelectedUI("classic")} className={`${selectedUI === "classic" && "text-green underline"}`}>cards</button>
+            <button onClick={() => setSelectedUI("advanced")} className={`${selectedUI === "advanced" && "text-green underline"}`}>tables</button>
+            <button onClick={() => setSelectedUI("json")} className={`${selectedUI === "json" && "text-green underline"}`}>JSON</button>
 
           </div>
         </div>
-
-        <main className="pb-10 h-full bg-[#081635]">
+        <main className=" h-[calc(100%_-_5rem)] bg-backg overflow-auto">
           {render()}
         </main>
       </div>

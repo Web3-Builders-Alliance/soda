@@ -12,7 +12,7 @@ export default function About() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="bg-neutral-900 flex flex-col justify-center min-h-screen text-white">
+      <main className="bg-[black] flex flex-col justify-center min-h-screen text-white">
         <Image
           src="/soda.svg"
           alt="soda"
@@ -71,7 +71,7 @@ export default function About() {
             }}
             className="cursor-pointer"
           >
-            <strong>Ahzam Akhtar</strong> Constributor
+            <strong>Ahzam Akhtar</strong> Contributor
           </div>
 
           <div
@@ -80,7 +80,7 @@ export default function About() {
             }}
             className="cursor-pointer"
           >
-            <strong>Mike Hale</strong> Constributor
+            <strong>Mike Hale</strong> Contributor
           </div>
 
           <h4 className="text-xl mt-5">Incubators</h4>
