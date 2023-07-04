@@ -1,4 +1,4 @@
-use std::sync::{PoisonError, MutexGuard};
+use std::sync::{MutexGuard, PoisonError};
 
 use crate::StateStruct;
 

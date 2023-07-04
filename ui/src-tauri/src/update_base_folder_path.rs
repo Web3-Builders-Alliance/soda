@@ -1,4 +1,4 @@
-use crate::{AppState, State, Error};
+use crate::{AppState, Error, State};
 
 #[tauri::command]
 pub fn update_base_folder_path(base: String, state: State<AppState>) -> Result<(), Error> {
