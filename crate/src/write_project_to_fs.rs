@@ -6,8 +6,10 @@ use std::{
 
 pub fn write_project_to_fs(dinamyc_files: Vec<TemplateFile>, base_path: &str) -> Result<(), Error> {
     for TemplateFile { path, content } in dinamyc_files {
-        let path_with_base = format!("{}/{}", base_path, path);
-        let prefix = std::path::Path::new(&path_with_base).parent().unwrap();
+        let path_with_base = format!("{}/{}", &base_path, path);
+        let prefix = std::path::Path::new(&path_with_base)
+            .parent()
+            .unwrap_or(std::path::Path::new(&base_path));
         create_dir_all(prefix)?;
         let mut file = File::create(path_with_base)?;
         match content {

@@ -1,3 +1,7 @@
+use std::sync::{PoisonError, MutexGuard};
+
+use crate::StateStruct;
+
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
     #[error("custom error: {message}")]
@@ -26,6 +30,30 @@ impl serde::Serialize for Error {
 
 impl From<soda_sol::error::Error> for Error {
     fn from(err: soda_sol::Error) -> Error {
+        Error::CustomError {
+            message: err.to_string(),
+        }
+    }
+}
+
+impl From<PoisonError<MutexGuard<'_, StateStruct>>> for Error {
+    fn from(err: PoisonError<MutexGuard<'_, StateStruct>>) -> Error {
+        Error::CustomError {
+            message: err.to_string(),
+        }
+    }
+}
+
+impl From<serde_json::Error> for Error {
+    fn from(err: serde_json::Error) -> Error {
+        Error::CustomError {
+            message: err.to_string(),
+        }
+    }
+}
+
+impl From<tauri::Error> for Error {
+    fn from(err: tauri::Error) -> Error {
         Error::CustomError {
             message: err.to_string(),
         }

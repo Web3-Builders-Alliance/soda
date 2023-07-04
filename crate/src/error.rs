@@ -1,3 +1,5 @@
+use std::sync::{PoisonError, MutexGuard};
+
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
     #[error("soda_sol crate error: {message}")]
@@ -73,6 +75,14 @@ impl From<serde_json::Error> for Error {
 
 impl From<handlebars::RenderError> for Error {
     fn from(err: handlebars::RenderError) -> Error {
+        Error::CustomError {
+            message: err.to_string(),
+        }
+    }
+}
+
+impl<T> From<PoisonError<MutexGuard<'_, T>>> for Error {
+    fn from(err: PoisonError<MutexGuard<'_, T>>) -> Error {
         Error::CustomError {
             message: err.to_string(),
         }
