@@ -1,5 +1,5 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
-
+import Examples from './examples'
 class MyDocument extends Document {
   render() {
     return (
@@ -33,6 +33,7 @@ class MyDocument extends Document {
         <body className="bg-gray-900 max-w-screen mx-auto overflow-x-hidden">
           <Main />
           <NextScript />
+          <Examples/>
         </body>
       </Html>
     );
