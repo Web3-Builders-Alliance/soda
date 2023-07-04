@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use crate::*;
 use helpers::{apply_user_helpers, create_handlebars_registry};
 
-pub fn generate_project(template: Template, idl: &IDL) -> Result<Vec<TemplateFile>, MyError> {
+pub fn generate_project(template: Template, idl: &IDL) -> Result<Vec<TemplateFile>, Error> {
     let Template { files, helpers, .. } = template;
     let mut handlebars = create_handlebars_registry();
     apply_user_helpers(helpers, &mut handlebars)?;

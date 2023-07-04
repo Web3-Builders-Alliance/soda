@@ -1,4 +1,4 @@
-use crate::{structs, MyError};
+use crate::{structs, Error};
 use handlebars::{handlebars_helper, Handlebars};
 use structs::{InstructionType, InstructionTypeVec, TemplateHelper, VecEnum, IDL};
 
@@ -61,7 +61,7 @@ pub(crate) fn create_handlebars_registry() -> Handlebars<'static> {
 pub fn apply_user_helpers(
     helpers: Vec<TemplateHelper>,
     handlebars: &mut handlebars::Handlebars,
-) -> Result<(), MyError> {
+) -> Result<(), Error> {
     for TemplateHelper {
         helper_name,
         script,
@@ -70,7 +70,7 @@ pub fn apply_user_helpers(
         match handlebars.register_script_helper(&helper_name, &script) {
             Ok(_) => {}
             Err(err) => {
-                return Err(MyError::CustomError {
+                return Err(Error::CustomError {
                     message: format!("Error registering helper: {}", err),
                 })
             }

@@ -1,11 +1,11 @@
-use crate::{Content, MyError, Template, TemplateFile, TemplateHelper, TemplateMetadata};
+use crate::{Content, Error, Template, TemplateFile, TemplateHelper, TemplateMetadata};
 use std::{
     fs::{read, read_to_string},
     path::PathBuf,
 };
 use walkdir::WalkDir;
 
-pub fn get_template_from_fs(template_path: &str) -> Result<Template, MyError> {
+pub fn get_template_from_fs(template_path: &str) -> Result<Template, Error> {
     let mut files = vec![];
     for entry in WalkDir::new(format!("{}/files/", template_path)) {
         match entry {
@@ -32,7 +32,7 @@ pub fn get_template_from_fs(template_path: &str) -> Result<Template, MyError> {
                 }
             }
             Err(err) => {
-                return Err(MyError::CustomError {
+                return Err(Error::CustomError {
                     message: err.to_string(),
                 })
             }
@@ -60,7 +60,7 @@ pub fn get_template_from_fs(template_path: &str) -> Result<Template, MyError> {
                 }
             }
             Err(err) => {
-                return Err(MyError::CustomError {
+                return Err(Error::CustomError {
                     message: err.to_string(),
                 })
             }

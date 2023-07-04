@@ -129,7 +129,7 @@ fn main() {
 }
 
 #[tauri::command]
-fn generate(state: State<AppState>) -> Result<(), MyError> {
+fn generate(state: State<AppState>) -> Result<(), Error> {
     let (idl_string, base_folder, template) = {
         let state = state.0.lock().unwrap();
         (
@@ -143,14 +143,14 @@ fn generate(state: State<AppState>) -> Result<(), MyError> {
             let dinamyc_files = generate_project(template.clone(), &idl)?;
             write_project_to_fs(dinamyc_files, base_folder).map_err(|e| e.into())
         }
-        Err(e) => Err(MyError::CustomError {
+        Err(e) => Err(Error::CustomError {
             message: e.to_string(),
         }),
     }
 }
 
 #[tauri::command]
-fn generate_idl_file(state: State<AppState>) -> Result<(), MyError> {
+fn generate_idl_file(state: State<AppState>) -> Result<(), Error> {
     let (idl_string, base_folder) = {
         let state = state.0.lock().unwrap();
         (&state.idl_string.clone(), &state.base_folder.clone())
@@ -158,11 +158,11 @@ fn generate_idl_file(state: State<AppState>) -> Result<(), MyError> {
     match std::fs::File::create(format!("{}/idl.json", base_folder)) {
         Ok(mut file) => match file.write_all(idl_string.as_bytes()) {
             Ok(_) => Ok(()),
-            Err(e) => Err(MyError::CustomError {
+            Err(e) => Err(Error::CustomError {
                 message: e.to_string(),
             }),
         },
-        Err(e) => Err(MyError::CustomError {
+        Err(e) => Err(Error::CustomError {
             message: e.to_string(),
         }),
     }
@@ -186,7 +186,7 @@ fn update_base_folder_path(base: String, state: State<AppState>) -> Result<(), (
 }
 
 #[tauri::command]
-fn update_template(template_path: String, state: State<AppState>) -> Result<(), MyError> {
+fn update_template(template_path: String, state: State<AppState>) -> Result<(), Error> {
     let mut state = state.0.lock().unwrap();
     if PathBuf::from(&template_path).is_file() {
         match load_template(&template_path) {
@@ -194,7 +194,7 @@ fn update_template(template_path: String, state: State<AppState>) -> Result<(), 
                 state.template = template;
                 Ok(())
             }
-            Err(err) => Err(MyError::CustomError {
+            Err(err) => Err(Error::CustomError {
                 message: err.to_string(),
             }),
         }
@@ -204,7 +204,7 @@ fn update_template(template_path: String, state: State<AppState>) -> Result<(), 
                 state.template = template;
                 Ok(())
             }
-            Err(err) => Err(MyError::CustomError {
+            Err(err) => Err(Error::CustomError {
                 message: err.to_string(),
             }),
         }
@@ -219,18 +219,18 @@ fn update_idl_string(idl: String, state: State<AppState>) -> Result<(), ()> {
 }
 
 #[tauri::command]
-fn generate_template_file(path: String, state: State<AppState>) -> Result<(), MyError> {
+fn generate_template_file(path: String, state: State<AppState>) -> Result<(), Error> {
     let state = state.0.lock().unwrap();
     match save_template(state.template.clone(), &path) {
         Ok(_) => Ok(()),
-        Err(e) => Err(MyError::CustomError {
+        Err(e) => Err(Error::CustomError {
             message: e.to_string(),
         }),
     }
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum MyError {
+pub enum Error {
     #[error("custom error: {message}")]
     CustomError { message: String },
 }
@@ -238,13 +238,13 @@ pub enum MyError {
 struct ErrorWrapper {
     error: String,
 }
-impl serde::Serialize for MyError {
+impl serde::Serialize for Error {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::ser::Serializer,
     {
         let error_message = match self {
-            MyError::CustomError { message } => message,
+            Error::CustomError { message } => message,
         };
         let wrapper = ErrorWrapper {
             error: error_message.to_string(),
@@ -253,9 +253,9 @@ impl serde::Serialize for MyError {
     }
 }
 
-impl From<soda_sol::error::MyError> for MyError {
-    fn from(err: soda_sol::MyError) -> MyError {
-        MyError::CustomError {
+impl From<soda_sol::error::Error> for Error {
+    fn from(err: soda_sol::Error) -> Error {
+        Error::CustomError {
             message: err.to_string(),
         }
     }

@@ -1,7 +1,7 @@
 use crate::*;
 use std::path::PathBuf;
 
-pub fn generate_from_idl(base_path: &str, idl: IDL, template_path: &str) -> Result<(), MyError> {
+pub fn generate_from_idl(base_path: &str, idl: IDL, template_path: &str) -> Result<(), Error> {
     let template = if PathBuf::from(template_path).is_file() {
         load_template(template_path)?
     } else {

@@ -1,4 +1,4 @@
-use crate::{Content, MyError, TemplateFile};
+use crate::{Content, Error, TemplateFile};
 use std::{
     fs::{create_dir_all, File},
     io::Write,
@@ -7,7 +7,7 @@ use std::{
 pub fn write_project_to_fs(
     dinamyc_files: Vec<TemplateFile>,
     base_path: &str,
-) -> Result<(), MyError> {
+) -> Result<(), Error> {
     for TemplateFile { path, content } in dinamyc_files {
         let path_with_base = format!("{}/{}", base_path, path);
         let prefix = std::path::Path::new(&path_with_base).parent().unwrap();
