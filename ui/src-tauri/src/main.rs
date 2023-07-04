@@ -4,7 +4,6 @@
 )]
 #![allow(non_snake_case, non_camel_case_types)]
 
-use serde;
 use soda_sol::*;
 use std::{io::Write, path::PathBuf, sync::Mutex};
 use tauri::{CustomMenuItem, Menu, MenuItem, State, Submenu};
