@@ -56,8 +56,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 }
                 write_project_to_fs(helpers, base_path)?;
                 let metadata = serde_json::to_string(&template.metadata)?;
-                let mut metadata_file =
-                    File::create(format!("{}/metadata.json", base_path))?;
+                let mut metadata_file = File::create(format!("{}/metadata.json", base_path))?;
                 metadata_file.write_all(metadata.as_bytes())?;
                 println!("Template Unpacked!");
             }
