@@ -1,4 +1,4 @@
-use crate::{State, AppState, Error, save_template};
+use crate::{save_template, AppState, Error, State};
 
 #[tauri::command]
 pub fn generate_template_file(path: String, state: State<AppState>) -> Result<(), Error> {

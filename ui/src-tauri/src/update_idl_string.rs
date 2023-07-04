@@ -1,4 +1,4 @@
-use crate::{State, AppState};
+use crate::{AppState, State};
 
 #[tauri::command]
 pub fn update_idl_string(idl: String, state: State<AppState>) -> Result<(), ()> {
