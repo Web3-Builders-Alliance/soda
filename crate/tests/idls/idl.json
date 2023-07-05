@@ -1,0 +1,26 @@
+{
+  "version": "0.1.0",
+  "name": "",
+  "instructions": [
+    {
+      "name": "initialize",
+      "accounts": [],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "dgd",
+      "type": {
+        "kind": "struct",
+        "fields": []
+      }
+    }
+  ],
+  "types": [],
+  "events": [],
+  "errors": [],
+  "metadata": {
+    "address": ""
+  }
+}

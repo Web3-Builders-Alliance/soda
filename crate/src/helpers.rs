@@ -1,4 +1,4 @@
-use crate::structs;
+use crate::{structs, Error};
 use handlebars::{handlebars_helper, Handlebars};
 use structs::{InstructionType, InstructionTypeVec, TemplateHelper, VecEnum, IDL};
 
@@ -14,13 +14,13 @@ pub(crate) fn create_handlebars_registry() -> Handlebars<'static> {
     );
 
     handlebars_helper!(pascalcase: |name: String|{
-            let mut passcalcaseChars: Vec<char> = name.chars().collect();
-            if passcalcaseChars.is_empty() {
+            let mut passcalcase_chars: Vec<char> = name.chars().collect();
+            if passcalcase_chars.is_empty() {
                 "".to_string()
             } else {
-            let first: Vec<char> = passcalcaseChars[0].to_uppercase().to_string().chars().collect();
-            passcalcaseChars[0] = *first.first().unwrap();
-            let passcalcase: String = passcalcaseChars.into_iter().collect();
+            let first: Vec<char> = passcalcase_chars[0].to_uppercase().to_string().chars().collect();
+            passcalcase_chars[0] = *first.first().unwrap_or(&' ');
+            let passcalcase: String = passcalcase_chars.into_iter().collect();
             passcalcase
             }
         }
@@ -47,7 +47,7 @@ pub(crate) fn create_handlebars_registry() -> Handlebars<'static> {
         .replace("string", "String")
     );
 
-    handlebars_helper!(debug_idl: |idl: IDL|serde_json::to_string(&idl).unwrap());
+    handlebars_helper!(debug_idl: |idl: IDL|serde_json::to_string(&idl).unwrap_or("".to_string()));
 
     let mut handlebars = Handlebars::new();
 
@@ -58,14 +58,23 @@ pub(crate) fn create_handlebars_registry() -> Handlebars<'static> {
     handlebars
 }
 
-pub fn apply_user_helpers(helpers: Vec<TemplateHelper>, handlebars: &mut handlebars::Handlebars) {
+pub fn apply_user_helpers(
+    helpers: Vec<TemplateHelper>,
+    handlebars: &mut handlebars::Handlebars,
+) -> Result<(), Error> {
     for TemplateHelper {
         helper_name,
         script,
     } in helpers
     {
-        handlebars
-            .register_script_helper(&helper_name, &script)
-            .unwrap();
+        match handlebars.register_script_helper(&helper_name, &script) {
+            Ok(_) => {}
+            Err(err) => {
+                return Err(Error::CustomError {
+                    message: format!("Error registering helper: {}", err),
+                })
+            }
+        }
     }
+    Ok(())
 }

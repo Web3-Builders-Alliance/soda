@@ -30,8 +30,8 @@ fn main() -> Result<(), Box<dyn Error>> {
                 } else {
                     TEMPLATE_FILE_NAME
                 };
-                let template = get_template_from_fs(template_path).unwrap();
-                save_template(template, file_path).unwrap();
+                let template = get_template_from_fs(template_path)?;
+                save_template(template, file_path)?;
                 println!("Template File Generated!");
             }
             command if command == "unpack-template" => {
@@ -45,8 +45,8 @@ fn main() -> Result<(), Box<dyn Error>> {
                 } else {
                     TEMPLATE_DEFAULT_PATH
                 };
-                let template = load_template(template_path).unwrap();
-                write_project_to_fs(template.files, &format!("{}/files", base_path)).unwrap();
+                let template = load_template(template_path)?;
+                write_project_to_fs(template.files, &format!("{}/files", base_path))?;
                 let mut helpers = vec![];
                 for helper in template.helpers {
                     helpers.push(TemplateFile {
@@ -54,11 +54,10 @@ fn main() -> Result<(), Box<dyn Error>> {
                         content: Content::String(helper.script),
                     });
                 }
-                write_project_to_fs(helpers, base_path).unwrap();
-                let metadata = serde_json::to_string(&template.metadata).unwrap();
-                let mut metadata_file =
-                    File::create(format!("{}/metadata.json", base_path)).unwrap();
-                metadata_file.write_all(metadata.as_bytes()).unwrap();
+                write_project_to_fs(helpers, base_path)?;
+                let metadata = serde_json::to_string(&template.metadata)?;
+                let mut metadata_file = File::create(format!("{}/metadata.json", base_path))?;
+                metadata_file.write_all(metadata.as_bytes())?;
                 println!("Template Unpacked!");
             }
             command if command == "create-project" => {
@@ -72,10 +71,10 @@ fn main() -> Result<(), Box<dyn Error>> {
                 } else {
                     TEMPLATE_FILE_NAME
                 };
-                let json_file_path = canonicalize(idl_path).unwrap();
-                let file = File::open(json_file_path).unwrap();
+                let json_file_path = canonicalize(idl_path)?;
+                let file = File::open(json_file_path)?;
                 let idl: IDL = serde_json::from_reader(file).expect("error while reading json");
-                generate_from_idl(".", idl, template_path).unwrap();
+                generate_from_idl(".", idl, template_path)?;
                 println!("Project Generated!");
             }
             _ => {

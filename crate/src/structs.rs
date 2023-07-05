@@ -1,20 +1,22 @@
+#![allow(non_snake_case, non_camel_case_types)]
+
 use serde_derive::{self, Deserialize, Serialize};
 use std::convert::From;
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct IDL {
-    pub(crate) version: String,
-    pub(crate) name: String,
-    pub(crate) instructions: Vec<Instruction>,
+    pub version: String,
+    pub name: String,
+    pub instructions: Vec<Instruction>,
     #[serde(default)]
-    pub(crate) accounts: Vec<Accounts>,
+    pub accounts: Vec<Accounts>,
     #[serde(default)]
-    pub(crate) types: Vec<Types>,
+    pub types: Vec<Types>,
     #[serde(default)]
-    pub(crate) events: Vec<Event>,
+    pub events: Vec<Event>,
     #[serde(default)]
-    pub(crate) errors: Vec<ErrorDesc>,
+    pub errors: Vec<ErrorDesc>,
     #[serde(default)]
-    pub(crate) metadata: Metadata,
+    pub metadata: Metadata,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -289,7 +291,7 @@ pub struct TypeFields {
 
 #[derive(Deserialize, Serialize, Debug, Clone, Default)]
 pub struct Metadata {
-    pub(crate) address: String,
+    pub address: String,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
