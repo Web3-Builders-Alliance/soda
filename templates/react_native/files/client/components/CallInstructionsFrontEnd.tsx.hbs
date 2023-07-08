@@ -9,21 +9,23 @@ import { View, TextInput, Button } from 'react-native';
 
 
 export default function CallInstructionsFrontEnd() {   
-  // variables for accounts
-  const program = ""
-  const authority = ""
-  const systemProgram = ""
-  const clock = ""
-  
-  {{#each instructions}}
-  {{#each accounts}}
-  {{#if this.isMut}}
-  {{#unless this.isSigner}}
-  const {{name}}_for_{{../name}} = ""
-  {{/unless}} 
-  {{/if}}
-  {{/each}}
-  {{/each}}
+// variables for account 
+const program = ""
+const authority = ""
+const systemProgram = ""
+const clock = ""
+{{#each instructions}}  
+{{#each accounts}}
+{{#unless (eq this.name "systemProgram")}}
+{{#unless (eq this.name "authority")}}
+{{#unless (eq this.name "clock")}}
+const {{name}}_for_{{../name}} = ""
+{{/unless}}
+{{/unless}}
+{{/unless}}
+{{/each}}
+{{/each}}
+
 
 // React UseStates hooks for managing args 
 //Example -> (argsName_for_instructionName , setArgsName_for_instructionName)
@@ -69,7 +71,7 @@ const {{name}}handler_for_{{../name}} = (e:any) => {
               <Button 
               title="Call_{{name}}_functions"
               onPress = { () =>
-                {{name}}(program , {{#each args}}{{name}}_for_{{../name}} , {{/each}}{{#each accounts}} {{#if this.isMut}}{{#unless this.isSigner}}{{name}}_for_{{../name}}{{/unless}}{{/if}} {{#if (eq this.name "authority")}}{{name}}{{/if}} {{#if (eq this.name "systemProgram")}}{{name}}{{/if}} {{#if (eq this.name "clock")}}{{name}}{{/if}},{{/each}})
+                 ()=>{{name}}(program , {{#each args}}{{name}}_for_{{../name}} , {{/each}}{{#each accounts}} {{#unless (eq this.name "systemProgram")}}{{#unless (eq this.name "authority")}}{{#unless (eq this.name "clock")}}{{name}}_for_{{../name}}{{/unless}}{{/unless}}{{/unless}} {{#if (eq this.name "authority")}}{{name}}{{/if}} {{#if (eq this.name "systemProgram")}}{{name}}{{/if}} {{#if (eq this.name "clock")}}{{name}}{{/if}},{{/each}})
               }
               />
               </View>
