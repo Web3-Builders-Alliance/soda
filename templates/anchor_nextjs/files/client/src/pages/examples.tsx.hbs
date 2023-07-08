@@ -34,18 +34,19 @@ const {{name}}handler_for_{{../name}} = (e) => {
 {{/each}}
 {{/each}}
 
-// variables for accounts
+// variables for account 
 const authority = ""
 const systemProgram = ""
 const clock = ""
-
-{{#each instructions}}
+{{#each instructions}}  
 {{#each accounts}}
-{{#if this.isMut}}
-{{#unless this.isSigner}}
+{{#unless (eq this.name "systemProgram")}}
+{{#unless (eq this.name "authority")}}
+{{#unless (eq this.name "clock")}}
 const {{name}}_for_{{../name}} = ""
 {{/unless}}
-{{/if}}
+{{/unless}}
+{{/unless}}
 {{/each}}
 {{/each}}
 
@@ -126,7 +127,7 @@ const {{name}}_for_{{../name}} = ""
                     <button 
                     className="bg-blue-500 flex justify-center items-center w-full text-white px-3 text-xl py-1 rounded-md focus:outline-none"
                     onClick={
-                      ()=>{{name}}(program , {{#each args}}{{name}}_for_{{../name}} , {{/each}}{{#each accounts}} {{#if this.isMut}}{{#unless this.isSigner}}{{name}}_for_{{../name}}{{/unless}}{{/if}} {{#if (eq this.name "authority")}}{{name}}{{/if}} {{#if (eq this.name "systemProgram")}}{{name}}{{/if}} {{#if (eq this.name "clock")}}{{name}}{{/if}},{{/each}})
+                      ()=>{{name}}(program , {{#each args}}{{name}}_for_{{../name}} , {{/each}}{{#each accounts}} {{#unless (eq this.name "systemProgram")}}{{#unless (eq this.name "authority")}}{{#unless (eq this.name "clock")}}{{name}}_for_{{../name}}{{/unless}}{{/unless}}{{/unless}} {{#if (eq this.name "authority")}}{{name}}{{/if}} {{#if (eq this.name "systemProgram")}}{{name}}{{/if}} {{#if (eq this.name "clock")}}{{name}}{{/if}},{{/each}})
                     }
                     >
                        Call_{{name}}_instruction
