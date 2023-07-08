@@ -34,20 +34,22 @@ const {{name}}handler_for_{{../name}} = (e) => {
 {{/each}}
 {{/each}}
 
-// variables for accounts
+// variables for account 
 const authority = ""
 const systemProgram = ""
 const clock = ""
-
-{{#each instructions}}
+{{#each instructions}}  
 {{#each accounts}}
-{{#if this.isMut}}
-{{#unless this.isSigner}}
+{{#unless (eq this.name "systemProgram")}}
+{{#unless (eq this.name "authority")}}
+{{#unless (eq this.name "clock")}}
 const {{name}}_for_{{../name}} = ""
 {{/unless}}
-{{/if}}
+{{/unless}}
+{{/unless}}
 {{/each}}
 {{/each}}
+
 
 
 {{#each events}}
