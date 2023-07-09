@@ -34,20 +34,22 @@ const {{name}}handler_for_{{../name}} = (e) => {
 {{/each}}
 {{/each}}
 
-// variables for accounts
+// variables for account 
 const authority = ""
 const systemProgram = ""
 const clock = ""
-
-{{#each instructions}}
+{{#each instructions}}  
 {{#each accounts}}
-{{#if this.isMut}}
-{{#unless this.isSigner}}
+{{#unless (eq this.name "systemProgram")}}
+{{#unless (eq this.name "authority")}}
+{{#unless (eq this.name "clock")}}
 const {{name}}_for_{{../name}} = ""
 {{/unless}}
-{{/if}}
+{{/unless}}
+{{/unless}}
 {{/each}}
 {{/each}}
+
 
 
 {{#each events}}
@@ -72,30 +74,6 @@ const {{name}}_for_{{../name}} = ""
         <title>{{name}}</title>
         <meta name="description" content="{{name}}" />
       </Head>
-
-      {{#each instructions}}
-      // for  {{name}}
-      {{#each args}}
-      <input
-      type="text"
-      value={
-        {{name}}_for_{{../name}}
-      }
-      onChange={
-        {{name}}handler_for_{{../name}}
-      }
-      />
-      {{/each}}
-      {{/each}}
-
-      // buttons for calling instructions
-      {{#each instructions}}
-      <button onclick={
-        {{name}}(program , {{#each args}}{{name}}_for_{{../name}} , {{/each}}{{#each accounts}} {{#if this.isMut}}{{#unless this.isSigner}}{{name}}_for_{{../name}}{{/unless}}{{/if}} {{#if (eq this.name "authority")}}{{name}}{{/if}} {{#if (eq this.name "systemProgram")}}{{name}}{{/if}} {{#if (eq this.name "clock")}}{{name}}{{/if}},{{/each}})
-      }>
-        Call_{{name}}_functions
-      </button>
-      {{/each}}
     </>
   );
 };

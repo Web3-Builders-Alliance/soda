@@ -36,58 +36,20 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
     })
   }
 
-  // const checkbox = useRef<any>()
-  // const [checked, setChecked] = useState(false)
-  // const [indeterminate, setIndeterminate] = useState<any>(false)
-
-  // useLayoutEffect(() => {
-  //   const isIndeterminate = selectedProperty.length > 0 && selectedProperty.length < elements.length
-  //   setChecked(selectedProperty.length === elements?.length)
-  //   setIndeterminate(isIndeterminate)
-  //   checkbox.current.indeterminate = isIndeterminate
-  // }, [selectedProperty])
-
-  // function toggleAll() {
-  //   setSelectedProperties(checked || indeterminate ? [] : elements)
-  //   setChecked(!checked && !indeterminate)
-  //   setIndeterminate(false)
-  // }
-
   return (
     <div className="flex flex-col gap-4 w-full overflow-x-auto h-full  overflow-y-auto">
       <div className="inline-block w-full align-middle">
         <div className="relative">
-          {/* {
-            selectedProperty.length > 0 && (
-              <div className="absolute left-14 top-0 flex h-12 items-center space-x-3 bg-white sm:left-12">
-                <button
-                  type="button"
-                  className="inline-flex items-center rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white"
-                >
-                  Delete all
-                </button>
-              </div>
-            )
-          } */}
           <table className="w-full max-w-full">
             <thead>
               <tr className='py-2'>
-                {/* <th scope="col" className="relative px-7 sm:w-12 sm:px-6">
-                  <input
-                    type="checkbox"
-                    className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                    ref={checkbox}
-                    checked={checked}
-                    onChange={toggleAll}
-                  />
-                </th> */}
                 {
                   objConfig.map(({ name }: { name: string }) => {
                     return (
                       <th
                         key={name}
                         scope="col"
-                        className="w-min text-white text-left text-sm font-semibold"
+                        className="w-min text-chok text-left text-sm font-semibold "
                       >
                         {name}
                       </th>
@@ -96,16 +58,15 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                 }
               </tr>
             </thead>
-            <tbody className="text-white divide-y divide-gray-200 bg-[#102042] ">
+            <tbody className="text-chok divide-y divide-border bg-backg">
               <tr className='py-2'>
-                {/* <td className="relative px-5">
-                </td> */}
                 {
                   objConfig.map(({ disabled, name, options }: any) => {
                     if (options === "boolean") {
                       return (
                         <td key={name} className='w-min px-5'>
                           <input
+                            className='bg-inputs rounded-md'
                             id={name}
                             type="checkbox"
                             onChange={handlerNewProperty}
@@ -116,7 +77,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                       return (
                         <td key={name} className='w-min pl-5'>
                           <select
-                            className='bg-transparent'
+                            className='bg-inputs rounded-md'
                             id={name}
                             disabled={disabled}
                             defaultValue={options[0]}
@@ -147,7 +108,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                             type='text'
                             id={name}
                             disabled={disabled}
-                            className='bg-transparent border-none pl-5'
+                            className='bg-inputs rounded-md pl-5'
                             onChange={handlerNewProperty}
                           />
                         </td>
@@ -158,7 +119,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                 <td className="whitespace-nowrap w-24 text-center text-sm font-medium">
                   <button
                     onClick={() => addProperty(newProperty)}
-                    className="text-indigo-600 hover:text-indigo-900 p-2"
+                    className="text-chok hover:text-green p-2"
                   >
                     Add Property
                   </button>
@@ -167,9 +128,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
               {
                 elements?.map((property: any, index: number) => {
                   return propertySelectedEdit === index ?
-                    <tr key={property?.name} className='py-2'>
-                      {/* <td className="relative px-5">
-                      </td> */}
+                    <tr key={property.name} className='py-2'>
                       {
                         objConfig.map(({ disabled, name, options }: any) => {
                           if (options === "boolean") {
@@ -186,7 +145,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                             return (
                               <td key={name} className='w-min'>
                                 <select
-                                  className='bg-transparent'
+                                  className='bg-inputs rounded-md'
                                   id={name}
                                   defaultValue={property[name]}
                                   disabled={disabled}
@@ -216,8 +175,10 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                                   type='text'
                                   id={name}
                                   disabled={disabled}
+                                  className='bg-inputs border-none pl-5'
+
                                   defaultValue={property?.[name]}
-                                  className='bg-transparent border-none pl-5'
+
                                   onChange={handlerEditProperty}
                                 />
                               </td>
@@ -231,31 +192,14 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                             editProperty(propertyEditing, index)
                             setPropertySelectedEdit(undefined)
                           }}
-                          className="text-indigo-600 hover:text-indigo-900 p-2"
+                          className="text-chok hover:text-green p-2"
                         >
                           Confirm Edit
                         </button>
                       </td>
                     </tr>
                     :
-                    <tr key={property?.name} className={`${selectedProperty.includes(property) ? 'bg-gray-50' : undefined} `}>
-                      {/* <td className="relative px-7 sm:w-12 sm:px-6">
-                        {selectedProperty.includes(property) && (
-                          <div className="absolute inset-y-0 left-0 w-0.5 bg-indigo-600" />
-                        )}
-                        <input
-                          type="checkbox"
-                          className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                          checked={selectedProperty.includes(property)}
-                          onChange={(e) =>
-                            setSelectedProperties(
-                              e.target.checked
-                                ? [...selectedProperty, property]
-                                : selectedProperty.filter((p: any) => p !== property)
-                            )
-                          }
-                        />
-                      </td> */}
+                    <tr key={property.name} className={`${selectedProperty.includes(property) ? 'bg-gray-50' : undefined} `}>
                       {
                         objConfig.map(({ name }: any) => {
                           const value = () => {
@@ -273,7 +217,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                               key={name}
                               className={classNames(
                                 'whitespace-nowrap py-4 pr-3 text-sm font-medium',
-                                selectedProperty.includes(property) ? 'text-indigo-600' : ''
+                                selectedProperty.includes(property) ? 'text-chok' : ''
                               )}
                             >
                               {
@@ -290,7 +234,7 @@ const Tab: FC<any> = ({ addProperty, editProperty, objConfig, elements }) => {
                             setPropertySelectedEdit(index)
                             setPropertyEditing(property)
                           }}
-                          className="text-indigo-600 hover:text-indigo-900"
+                          className="text-chok hover:text-green"
                         >
                           Edit
                         </button>

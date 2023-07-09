@@ -15,10 +15,10 @@ const saveIDLFile = (setBaseFolder: Function, version: string | undefined, name:
         handleBaseFolder(result, setBaseFolder);
         invoke("generate_idl_file")
           .then(async () => {
-            await message(`Output path: ${result}/idl.json`, "Project generated");
+            await message(`Output path: ${result}/idl.json`, "IDL File generated");
           })
           .catch(async (e) => {
-            await message(e?.error ?? "generate_idl_file Error", { title: "Error", type: "error" });
+            await message(e?.error ?? "generate_idl_file Error", { title: "Error trying to save IDL file in the selected location", type: "error" });
           });
       } catch (e) {
         await message(`${e}`, {

@@ -4,12 +4,27 @@
 )]
 #![allow(non_snake_case, non_camel_case_types)]
 
-use serde;
 use soda_sol::*;
-use std::{io::Write, sync::Mutex, path::PathBuf};
-use tauri::{CustomMenuItem, Menu, MenuItem, Submenu, State};
+use std::{io::Write, path::PathBuf, sync::Mutex};
+use tauri::{CustomMenuItem, Menu, MenuItem, State, Submenu};
 mod default_template;
 use default_template::default_template;
+mod generate;
+use generate::generate;
+mod generate_idl_file;
+use generate_idl_file::generate_idl_file;
+mod new_window;
+use new_window::new_window;
+mod update_base_folder_path;
+use update_base_folder_path::update_base_folder_path;
+mod update_template;
+use update_template::update_template;
+mod update_idl_string;
+use update_idl_string::update_idl_string;
+mod generate_template_file;
+use generate_template_file::generate_template_file;
+mod error;
+use error::Error;
 
 #[derive(Debug)]
 struct StateStruct {
@@ -19,7 +34,7 @@ struct StateStruct {
 }
 
 #[derive(Debug)]
-struct AppState(Mutex<StateStruct>);
+pub struct AppState(Mutex<StateStruct>);
 
 fn main() {
     let quit = CustomMenuItem::new("quit".to_string(), "Quit");
@@ -45,7 +60,7 @@ fn main() {
             .add_item(template_from_folder)
             .add_item(save_template_file)
             .add_item(about)
-            .add_item(quit)
+            .add_item(quit),
     );
 
     let menu = Menu::new()
@@ -126,107 +141,4 @@ fn main() {
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
-}
-
-#[tauri::command]
-fn generate(handle: tauri::AppHandle, state: State<AppState>) -> Result<(), MyError> {
-    let (idl_string, base_folder, template) = {
-        let state = state.0.lock().unwrap();
-        (
-            &state.idl_string.clone(),
-            &state.base_folder.clone(),
-            &state.template.clone(),
-        )
-    };
-    match serde_json::from_str::<IDL>(idl_string) {
-        Ok(idl) => {
-            let dinamyc_files = generate_project(template.clone(), &idl);
-            write_project_to_fs(dinamyc_files, base_folder);
-            Ok(())
-        }
-        Err(e) => Err(MyError::CustomError {
-            message: e.to_string(),
-        }),
-    }
-}
-
-#[tauri::command]
-fn generate_idl_file(handle: tauri::AppHandle, state: State<AppState>) -> Result<(), MyError> {
-    let (idl_string, base_folder) = {
-        let state = state.0.lock().unwrap();
-        (
-            &state.idl_string.clone(),
-            &state.base_folder.clone(),
-        )
-    };
-    let mut file = std::fs::File::create(format!("{}/idl.json", base_folder)).unwrap();
-    file.write_all(idl_string.as_bytes()).unwrap();
-    Ok(())
-}
-
-#[tauri::command]
-async fn new_window(handle: tauri::AppHandle, target: &str) -> Result<(), ()> {
-    tauri::WindowBuilder::new(&handle, target, tauri::WindowUrl::App(target.into()))
-        .title(target)
-        .inner_size(800.0, 700.0)
-        .build()
-        .unwrap();
-    Ok(())
-}
-
-#[tauri::command]
-fn update_base_folder_path(base: String, state: State<AppState>) -> Result<(), ()> {
-    let mut state = state.0.lock().unwrap();
-    state.base_folder = base;
-    Ok(())
-}
-
-#[tauri::command]
-fn update_template(template_path: String, state: State<AppState>) -> Result<(), ()> {
-    let mut state = state.0.lock().unwrap();
-    let template = if PathBuf::from(&template_path).is_file() {
-        load_template(&template_path)
-    } else {
-        get_template_from_fs(&template_path)
-    };
-    state.template = template;
-    Ok(())
-}
-
-#[tauri::command]
-fn update_idl_string(idl: String, state: State<AppState>) -> Result<(), ()> {
-    let mut state = state.0.lock().unwrap();
-    state.idl_string = idl;
-    Ok(())
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum MyError {
-    #[error("custom error: {message}")]
-    CustomError { message: String },
-}
-#[derive(serde::Serialize)]
-struct ErrorWrapper {
-    error: String,
-}
-impl serde::Serialize for MyError {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::ser::Serializer,
-    {
-        let error_message = match self {
-            MyError::CustomError { message } => message,
-        };
-        let wrapper = ErrorWrapper {
-            error: error_message.to_string(),
-        };
-        wrapper.serialize(serializer)
-    }
-}
-
-#[tauri::command]
-fn generate_template_file(path: String, state: State<AppState>) -> Result<(), MyError> {
-    let state = state.0.lock().unwrap();
-    save_template(state.template.clone(), &path);
-    Ok(())
 }
