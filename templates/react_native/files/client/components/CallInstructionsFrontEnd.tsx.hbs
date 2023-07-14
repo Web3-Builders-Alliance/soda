@@ -5,7 +5,7 @@ import {
 {{/each}}
 
 import React, { useEffect, useCallback , useState } from 'react';
-import { View, TextInput, Button } from 'react-native';
+import {View, TextInput, Button , StyleSheet, Text,SafeAreaView} from 'react-native';
 
 
 export default function CallInstructionsFrontEnd() {   
@@ -47,13 +47,21 @@ const {{name}}handler_for_{{../name}} = (e:any) => {
 {{/each}}
   
   return (
-    <View>
+    <>
+       <SafeAreaView>
+      <Text style={styles.textSubHeading}>
+    Call Instructions Of Your IDL
+  </Text>
     {{#each instructions}}
-              // for {{name}}
+              {{!-- // for {{name}} --}}
               {{#each args}}
               <View>
+                 <Text style={styles.text}>
+                  {{../name}} Instructions
+                  </Text>
                 <TextInput
-                placeholder="placeholder"
+                style={styles.input}
+                placeholder={`Enter {{name}}`}
                 onChangeText= {
                   {{name}}handler_for_{{../name}}
                 }
@@ -61,21 +69,48 @@ const {{name}}handler_for_{{../name}} = (e:any) => {
                   {{name}}_for_{{../name}}
                 }
                 />
-              </View>
-              {{/each}}
-              {{/each}}
-
-              // buttons for calling instructions
-              {{#each instructions}}
-              <View>
-              <Button 
-              title="Call_{{name}}_functions"
-              onPress = { () =>
-                 ()=>{{name}}(program , {{#each args}}{{name}}_for_{{../name}} , {{/each}}{{#each accounts}} {{#unless (eq this.name "systemProgram")}}{{#unless (eq this.name "authority")}}{{#unless (eq this.name "clock")}}{{name}}_for_{{../name}}{{/unless}}{{/unless}}{{/unless}} {{#if (eq this.name "authority")}}{{name}}{{/if}} {{#if (eq this.name "systemProgram")}}{{name}}{{/if}} {{#if (eq this.name "clock")}}{{name}}{{/if}},{{/each}})
+                </View>
+                {{/each}}
+                <View style={styles.button}>
+                   <Button
+                    title={`Call {{name}} Instructions`}
+                    onPress = {
+                    ()=>{{name}}(program , {{#each args}}{{name}}_for_{{../name}} , {{/each}}{{#each accounts}} {{#unless (eq this.name "systemProgram")}}{{#unless (eq this.name "authority")}}{{#unless (eq this.name "clock")}}{{name}}_for_{{../name}}{{/unless}}{{/unless}}{{/unless}} {{#if (eq this.name "authority")}}{{name}}{{/if}} {{#if (eq this.name "systemProgram")}}{{name}}{{/if}} {{#if (eq this.name "clock")}}{{name}}{{/if}},{{/each}})
               }
-              />
-              </View>
+                />
+                </View>
               {{/each}}
-              </View>
+              </SafeAreaView>
+              </>
   )
 }
+
+const styles = StyleSheet.create({
+  input: {
+    height: 40,
+    borderColor: 'white',
+    borderWidth: 1,
+    marginTop: 10,
+    paddingHorizontal: 10,
+    
+  },
+  button: {
+    height: 40,
+    marginTop: 10,
+    borderRadius : 4,
+  },
+  text : {
+    fontSize: 16,
+    marginTop : 10,
+    fontWeight: 'bold',
+    color : 'white'
+  },
+  textSubHeading : {
+    textAlign : 'center',
+    fontSize: 18,
+    marginTop : 15,
+    fontWeight: 'bold',
+    color : 'white'
+  }
+  
+});

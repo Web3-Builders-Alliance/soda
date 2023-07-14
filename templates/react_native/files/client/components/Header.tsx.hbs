@@ -11,6 +11,7 @@ import {Colors} from '../components/Color';
 export function Header() {
   const isDarkMode = useColorScheme() === 'dark';
   return (
+    <>
     <ImageBackground
       accessibilityRole="image"
       testID="new-app-screen-header"
@@ -23,10 +24,13 @@ export function Header() {
       ]}
       imageStyle={styles.logo}>
       <View>
-        <Text style={styles.title}>Solana</Text>
-        <Text style={styles.subtitle}>React Native</Text>
       </View>
     </ImageBackground>
+
+    <Text style={styles.textSubHeading}>
+    SODA x SOLANA MOBILE
+    </Text>
+    </>
   );
 }
 
@@ -52,4 +56,18 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textAlign: 'center',
   },
+  textHeading : {
+    textAlign : 'center',
+    fontSize: 20,
+    marginTop : 10,
+    fontWeight: 'bold',
+    color : 'white'
+  },
+  textSubHeading : {
+    textAlign : 'center',
+    fontSize: 18,
+    marginTop : 10,
+    fontWeight: 'bold',
+    color : 'white'
+  }
 });
