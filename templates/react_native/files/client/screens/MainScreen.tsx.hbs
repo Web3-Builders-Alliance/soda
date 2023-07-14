@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View ,SafeAreaView} from 'react-native';
 
 import {Section} from '../components/Section';
 import ConnectButton from '../components/ConnectButton';
@@ -41,8 +41,8 @@ export default function MainScreen() {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {selectedAccount ? (
             <>
-           
-
+            <SafeAreaView>
+              <ScrollView style={styles.scroolView}>
               <Section title="Account Info">
                 <AccountInfo
                   selectedAccount={selectedAccount}
@@ -56,6 +56,8 @@ export default function MainScreen() {
                 />
                 <CallInstructionsFrontEnd/>
               </Section>
+               </ScrollView>
+              </SafeAreaView>
             </>
           ) : null}
         </ScrollView>
@@ -64,7 +66,6 @@ export default function MainScreen() {
         ) : (
           <ConnectButton title="Connect wallet" />
         )}
-        <Text>Selected cluster: {connection.rpcEndpoint}</Text>
       </View>
     </>
   );
@@ -83,4 +84,13 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     paddingVertical: 4,
   },
+  scroolView: {
+    marginBottom: 10,
+  },
+  textSubHeading : {
+    fontSize: 18,
+    marginTop : 10,
+    fontWeight: 'bold',
+    color : 'white'
+  }
 });
