@@ -1,13 +1,14 @@
 import { useIDL } from '@/context/IDL';
-import CodeMirror from '@uiw/react-codemirror';
-import { useState } from 'react';
-import {  githubDark } from '@uiw/codemirror-theme-github';
+// import CodeMirror from '@uiw/react-codemirror';
+import Monaco from '@monaco-editor/react';
+import { FC, useState } from 'react';
+import { githubDark } from '@uiw/codemirror-theme-github';
 
 
-const JSONEditor = () => {
+const JSONEditor: FC<any> = ({ noeditable }) => {
     const { IDL, setIDL } = useIDL()
     const [errorIDL, setErrorIDL] = useState("")
-    const handlerIDL = (value: any)=> {
+    const handlerIDL = (value: any) => {
         try {
             setErrorIDL("")
             const parse = JSON.parse(value)
@@ -18,12 +19,14 @@ const JSONEditor = () => {
 
     }
     return (
-        <div>
+        <div className='h-full'>
             <p className='text-red'>{errorIDL}</p>
-            <CodeMirror
+            <Monaco
+                options={{readOnly: noeditable}}
+                language='json'
                 value={JSON.stringify(IDL, null, "\t")}
                 onChange={handlerIDL}
-                theme={githubDark}
+                theme="vs-dark"
             />
         </div>
     )
