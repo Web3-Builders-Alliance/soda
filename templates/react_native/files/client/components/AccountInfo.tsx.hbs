@@ -31,10 +31,6 @@ export default function AccountInfo({
             ? `Balance: ${convertLamportsToSOL(balance)} SOL`
             : 'Loading balance...'}
         </Text>
-        <Text style={styles.walletName}>
-          {selectedAccount.label ?? 'Wallet name not found'}
-        </Text>
-        <Text style={styles.walletNameSubtitle}>{selectedAccount.address}</Text>
       </View>
     </View>
   );
