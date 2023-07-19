@@ -140,7 +140,7 @@ export const CardsProp: FC<any> = ({ prop, property, nameInstruction, indexItem,
   return (
 
     <div
-      className="relative flex p-5 pt-7 border w-32 min-w-min h-full rounded-lg border-border bg-inputs justify-center text-yellow font-thin hover:bg-backg hover:text-green hover:border-green cursor-pointer"
+      className="relative flex p-5 border w-32 min-w-min h-full rounded-lg border-border justify-evenly text-yellow font-thin hover:bg-backg hover:text-green hover:border-green"
       onClick={(e) => { }}
     >
       <TrashIcon
@@ -148,20 +148,20 @@ export const CardsProp: FC<any> = ({ prop, property, nameInstruction, indexItem,
           e.stopPropagation()
           deleteItem()
         }}
-        className="absolute z-20 text-chok top-2 right-2 w-4 h-4 hover:text-red"
+        className="absolute z-20 text-border bottom-2 right-2 w-4 h-4 hover:text-red cursor-pointer"
       />
-      <div key={prop?.name} className=' flex flex-col py-2 w-max items-center'>
+      <div key={prop?.name} className='flex flex-col w-max items-start left-2'>
         {
           objConfig.map(({ disabled, name, options }: any) => {
             if (options === "boolean") {
               return (
-                <div key={name} className="flex gap-2 text-white items-center">
+                <div key={name} className="flex gap-2 text-green items-center pl-4 pt-2">
                   <label htmlFor={name} >{name}</label>
                   <input
                     checked={property[name]}
                     id={name}
                     type='checkbox'
-                    className='bg-inputs rounded-md'
+                    className='bg-inputs rounded-md cursor-pointer'
                     onChange={(e) => editProperty(e)}
                   />
                 </div>
@@ -170,7 +170,7 @@ export const CardsProp: FC<any> = ({ prop, property, nameInstruction, indexItem,
               return (
                 <select
                   key={name}
-                  className='bg-inputs rounded-md'
+                  className='bg-backg rounded-md mt-2 border-none cursor-pointer hover:bg-inputs ring-1'
                   id={name}
                   defaultValue={property[name]}
                   disabled={disabled}
@@ -197,7 +197,7 @@ export const CardsProp: FC<any> = ({ prop, property, nameInstruction, indexItem,
                   type='text'
                   id={name}
                   disabled={disabled}
-                  className='bg-inputs w-min text-center border-none pl-5'
+                  className='bg-backg w-min text-left text-red rounded-md border-none font-bold ring-1 hover:bg-inputs'
                   placeholder={name}
                   defaultValue={property?.[name]}
                   // ref={inputRef}

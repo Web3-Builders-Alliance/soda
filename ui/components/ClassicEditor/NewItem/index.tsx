@@ -23,16 +23,16 @@ export const NewItem: FC<any> = ({ prop, setIsModalOpen, isModalOpen }) => {
   return (
 
     <div
-      className="flex flex-col justify-between p-5 m-5  h-48 rounded-md bg-inputs items-center text-green font-bold hover:ring-2 ring-border cursor-pointer"
+      className="flex flex-col justify-between p-5 m-5 h-48 rounded-md ring-1 items-center hover:ring-2 ring-border"
     >
       <input
-        placeholder={`${prop.charAt(0).toUpperCase() + prop.slice(1)}'s Name`}
+        placeholder={`Add ${prop.charAt(0).toUpperCase() + prop.slice(1)}'s name`}
         autoFocus
         onChange={(e) => setNewIntructionName(e.target.value)}
-        className="w-full text-center bg-inputs text-yellow rounded-md ring-1 ring-chok"
+        className="w-full text-center h-16 bg-inputs text-red rounded-md ring-1 ring-border"
       />
       <button
-        className="p-2 text-green"
+        className="p-2 text-green font-bold hover:bg-green rounded-md hover:text-inputs"
         onClick={() => {
           setIsModalOpen(false)
           save()

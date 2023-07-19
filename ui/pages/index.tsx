@@ -123,11 +123,11 @@ export default function Home() {
 
                 }
               }}
-              className="sticky ml-auto mr-2 top-2 w-6 h-6 text-white z-50 bg-backg"
+              className="sticky ml-auto mr-2 top-2 w-6 h-6 text-white z-50 cursor-pointer hover:text-greenn "
             />
             {view[selectedUI as keyof typeof render]}
           </div>
-          <div className={`${width ? "w-5/12" : "w-0"} ${hidden ? "hidden" : ""} transition-[width] duration-500`}>
+          <div className={`${width ? "w-6/12" : "w-0"} ${hidden ? "hidden" : ""} transition-[width] ease-in-out duration-700 border border-border rounded-l-lg`}>
             <JSONEditor noeditable />
           </div>
         </div>
@@ -223,23 +223,23 @@ export default function Home() {
         </Transition.Root>
         <div className="sticky top-0 z-40 h-20 flex items-center justify-between gap-x-6 bg-backg  shadow-sm px-6">
           <div className="flex gap-8 justify-center items-center">
-            <button type="button" className="-m-2.5 p-2.5 text-chok text-sm inline-flex items-center gap-x-1.5 rounded-md border border-border hover:bg-inputs focus:bg-inputs active:outline-none active:ring active:ring-border" onClick={newProject}>
+            <button type="button" className="-m-2.5 p-2.5 text-chok text-sm inline-flex items-center gap-x-1.5 rounded-md border border-border hover:bg-inputs hover:shadow-md hover:shadow-green hover:text-green focus:bg-inputs active:outline-none active:ring active:ring-border" onClick={newProject}>
               <PlusIcon className="h-5 w-5" aria-hidden="true" />New
             </button>
-            <button type="button" className="-m-2.5 p-2.5 text-chok text-sm inline-flex items-center gap-x-1.5 rounded-md border border-border hover:bg-inputs focus:bg-inputs active:outline-none active:ring active:ring-border" onClick={openIDL}>
+            <button type="button" className="-m-2.5 p-2.5 text-chok text-sm inline-flex items-center gap-x-1.5 rounded-md border border-border hover:bg-inputs hover:shadow-md hover:shadow-green hover:text-green focus:bg-inputs active:outline-none active:ring active:ring-border" onClick={openIDL}>
               <FolderOpenIcon className="h-5 w-5" aria-hidden="true" />Open
             </button>
-            <button type="button" className="-m-2.5 p-2.5 text-chok text-sm inline-flex items-center gap-x-1.5 rounded-md border border-border hover:bg-inputs focus:bg-inputs active:outline-none active:ring active:ring-border" onClick={generateIDL}>
+            <button type="button" className="-m-2.5 p-2.5 text-chok text-sm inline-flex items-center gap-x-1.5 rounded-md border border-border hover:bg-inputs hover:shadow-md hover:shadow-green hover:text-green focus:bg-inputs active:outline-none active:ring active:ring-border" onClick={generateIDL}>
               <ArrowDownTrayIcon className="h-5 w-5" aria-hidden="true" />Save
             </button>
-            <button type="button" className="-m-2.5 p-2.5 text-chok text-sm inline-flex items-center gap-x-1.5 rounded-md border border-border hover:bg-inputs focus:bg-inputs active:outline-none active:ring active:ring-border" onClick={exportData}>
+            <button type="button" className="-m-2.5 p-2.5 text-chok text-sm inline-flex items-center gap-x-1.5 rounded-md border border-border hover:bg-inputs hover:shadow-md hover:shadow-green hover:text-green focus:bg-inputs active:outline-none active:ring active:ring-border" onClick={exportData}>
               <FolderArrowDownIcon className="h-5 w-5" aria-hidden="true" />Export
             </button>
           </div>
           <div className="text-chok flex gap-5">
             <p className="text-border">Views:</p>
-            <button onClick={() => setSelectedUI("cards")} className={`${selectedUI === "cards" && "text-green underline"}`}>cards</button>
-            <button onClick={() => setSelectedUI("tables")} className={`${selectedUI === "tables" && "text-green underline"}`}>tables</button>
+            <button onClick={() => setSelectedUI("cards")} className={`${selectedUI === "cards" && "text-green underline"}`}>cards</button> 
+            <button onClick={() => setSelectedUI("tables")} className={`${selectedUI === "tables" && "text-green underline"}`}>tables</button> 
             <button onClick={() => setSelectedUI("json")} className={`${selectedUI === "json" && "text-green underline"}`}>JSON</button>
 
           </div>

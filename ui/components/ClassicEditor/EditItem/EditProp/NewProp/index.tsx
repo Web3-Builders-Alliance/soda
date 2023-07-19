@@ -25,16 +25,16 @@ export const NewProp: FC<any> = ({ nameConfig, addProperty, objConfig }) => {
   return (
 
     <div
-      className="flex flex-col justify-between p-4 h-full rounded-md bg-inputs items-center text-white font-bold hover:ring-2 ring-border cursor-pointer"
+      className="flex flex-col justify-evenly p-2 h-full rounded-md items-start text-white font-medium ring-1 hover:ring-2 ring-border"
     >
       {
         objConfig.map(({ disabled, name, options }: any) => {
           if (options === "boolean") {
             return (
-              <div key={name} className=' flex items-center gap-4 px-5'>
+              <div key={name} className=' flex items-center gap-2 pl-4 pt-1'>
                 <label htmlFor={name}>{name}</label>
                 <input
-                  className='bg-inputs rounded-md'
+                  className='bg-inputs rounded-md cursor-pointer '
                   id={name}
                   type="checkbox"
                   onChange={handlerNewProperty}
@@ -45,7 +45,7 @@ export const NewProp: FC<any> = ({ nameConfig, addProperty, objConfig }) => {
             return (
               <select
                 key={name}
-                className=' bg-inputs rounded-md'
+                className='mt-2 bg-inputs rounded-md'
                 id={name}
                 disabled={disabled}
                 defaultValue={options[0]}
@@ -73,7 +73,7 @@ export const NewProp: FC<any> = ({ nameConfig, addProperty, objConfig }) => {
                 id={name}
                 placeholder={name}
                 disabled={disabled}
-                className='text-center w-min bg-inputs rounded-md pl-5'
+                className='text-center w-min bg-inputs rounded-md mt-2'
                 onChange={handlerNewProperty}
               />
             )
@@ -81,7 +81,7 @@ export const NewProp: FC<any> = ({ nameConfig, addProperty, objConfig }) => {
         })
       }
       <button
-        className="p-2 text-green"
+        className="p-2 text-green hover:bg-green hover:text-inputs rounded-md self-end"
         onClick={() => {
           addProperty(newProperty)
         }}

@@ -78,16 +78,16 @@ const EditItem: FC<any> = ({ indexItem, instruction, setEdit }) => {
         instructions: (
             IDL?.[instruction]?.[indexItem] &&
             <>
-                <div className="flex w-full h-12 text-center -space-x-1 shadow-inner shadow-inputs bg-backg">
+                <div className="flex w-full h-12 mt-4 text-center -space-x-1">
                     {
                         ["accounts", "args"].map((name, index) => {
                             return (
                                 <div
-                                    className={` ${tabConfig === name ? "z-20" : ""} self-end w-full`}
+                                    className={` ${tabConfig === name ? "z-20" : ""} self-end`}
                                     key={name}
                                 >
                                     <div
-                                        className={`${tabConfig === name ? "text-chok h-full border-b border-chok" : "text-border hover:text-chok h-[90%] cursor-pointer border-b border-border"} flex px-6 items-center justify-center`}
+                                        className={`${tabConfig === name ? "text-green h-full border-b border-green" : "text-border hover:text-green h-[90%] cursor-pointer border-b border-border"} flex px-6 items-center justify-center`}
 
                                         onClick={() => setTab(name)}
                                     >
@@ -150,17 +150,17 @@ const EditItem: FC<any> = ({ indexItem, instruction, setEdit }) => {
     }
 
     return (
-        <div className={`flex flex-col overflow-x-auto gap-4 h-full w-full relative p-5 `}>
+        <div className={`flex flex-col overflow-x-auto h-full w-full relative p-4`}>
             {
                 instruction !== "errors" &&
                 <div
-                    className="absolute flex left-5 top-2 transform -translate-y-1/2 text-chok justify-center items-center font-mono font-thin"
+                    className="absolute flex left-2 top-4 transform -translate-y-1/2 text-red justify-center items-center font-mono font-medium"
                 >
                     <ArrowLeftIcon
-                        className="w-5 h-3"
+                        className="w-5 h-5 text-chok cursor-pointer hover:text-green"
                         onClick={() => setEdit(false)}
                     />
-                    <p>
+                    <p className="ml-2 font-bold"> 
                         {`${IDL?.[instruction]?.[indexItem]?.name?.charAt(0).toUpperCase() + IDL?.[instruction]?.[indexItem]?.name?.slice(1)}`}
                     </p>
                 </div>
@@ -168,7 +168,7 @@ const EditItem: FC<any> = ({ indexItem, instruction, setEdit }) => {
             {
                 render[instruction as keyof typeof render]
                 ||
-                <div>
+                <div className="mt-4 ml-2">
                     {
                         !IDL?.[instruction]?.[indexItem]?.type ?
                             <select
@@ -195,7 +195,7 @@ const EditItem: FC<any> = ({ indexItem, instruction, setEdit }) => {
                                 }
                             </select>
                             :
-                            <p className="text-chok text-xl">
+                            <p className="text-chok ml-2">
                                 {
                                     `Kind: ${IDL?.[instruction]?.[indexItem]?.type.kind}`
                                 }
