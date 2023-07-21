@@ -232,7 +232,7 @@ pub struct PDA {
 pub struct Seed {
     pub(crate) kind: String,
     #[serde(rename = "type")]
-    pub(crate) type_: String,
+    pub(crate) type_: VecEnum,
     #[serde(default)]
     pub(crate) value: String,
     #[serde(default)]
