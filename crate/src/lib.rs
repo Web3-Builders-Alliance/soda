@@ -1,5 +1,4 @@
 mod helpers;
-
 pub mod error;
 pub mod generate_from_idl;
 pub mod generate_project;

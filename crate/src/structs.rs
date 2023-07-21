@@ -240,17 +240,36 @@ pub struct Seed {
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(rename_all = "camelCase")]
 pub enum InstructionType {
-    String(String),
-    vec(InstructionTypeVec),
-    defined(Defined),
-    option(OptionType),
+    Array(Box<InstructionType>, usize),
+    Bool,
+    Bytes,
+    Defined(String),
+    I128,
+    I16,
+    I32,
+    I64,
+    I8,
+    Option(Box<InstructionType>),
+    Tuple(Vec<InstructionType>),
+    PublicKey,
+    String,
+    U128,
+    U16,
+    U32,
+    U64,
+    U8,
+    Vec(Box<InstructionType>),
+    HashMap(Box<InstructionType>, Box<InstructionType>),
+    BTreeMap(Box<InstructionType>, Box<InstructionType>),
+    HashSet(Box<InstructionType>),
+    BTreeSet(Box<InstructionType>),
 }
 
 impl Default for InstructionType {
     fn default() -> Self {
-        InstructionType::String("".to_string())
+        InstructionType::String
     }
 }
 
@@ -260,6 +279,7 @@ pub enum InstructionTypeVec {
     String(String),
     defined(Defined),
     vec(Vec_),
+    u128(u128),
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]

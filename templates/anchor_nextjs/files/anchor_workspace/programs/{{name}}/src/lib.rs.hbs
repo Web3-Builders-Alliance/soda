@@ -48,7 +48,7 @@ pub struct {{this.name}} {
 #[derive(Debug, Clone, AnchorSerialize, AnchorDeserialize)]
 pub struct {{this.name}} {
     {{#each this.type.fields}}
-    pub {{this.name}}: {{type_from_account_field this.type}},
+    pub {{this.name}}: {{{type_from_account_field this.type}}},
     {{/each}}
 }
 

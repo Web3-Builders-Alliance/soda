@@ -26,26 +26,7 @@ pub(crate) fn create_handlebars_registry() -> Handlebars<'static> {
         }
     );
 
-    handlebars_helper!(type_from_account_field: |account_field_type:  InstructionType|
-        match account_field_type {
-            InstructionType::String(name)=>name,
-            InstructionType::vec(content)=>{
-                format!("Vec{}{}{}", "<", match content {
-                    InstructionTypeVec::String(name)=>name,
-                    InstructionTypeVec::defined(content)=>content.defined,
-                    InstructionTypeVec::vec(content)=>{
-                        match content.vec {
-                            VecEnum::String(name)=>name,
-                            VecEnum::defined(content)=>{content.defined},
-                        }
-                    },
-                },">")
-            },
-            InstructionType::defined(content)=>content.defined,
-            InstructionType::option(content)=> content.option,
-        }.replace("publicKey", "Pubkey")
-        .replace("string", "String")
-    );
+    handlebars_helper!(type_from_account_field: |account_field_type: InstructionType| type_from_account_field_impl(account_field_type));
 
     handlebars_helper!(debug_idl: |idl: IDL|serde_json::to_string(&idl).unwrap_or("".to_string()));
 
@@ -77,4 +58,42 @@ pub fn apply_user_helpers(
         }
     }
     Ok(())
+}
+
+fn type_from_account_field_impl(account_field_type:  InstructionType) -> String {
+    match account_field_type {
+        InstructionType::String => "String".to_string(),
+        InstructionType::U8 => "u8".to_string(),
+        InstructionType::U16 => "u16".to_string(),
+        InstructionType::U32 => "u32".to_string(),
+        InstructionType::U64 => "u64".to_string(),
+        InstructionType::U128 => "u128".to_string(),
+        InstructionType::Bool => "bool".to_string(),
+        InstructionType::Vec(content) => format!("Vec<{}>", type_from_account_field_impl(*content)),
+        InstructionType::Option(option) => format!("Option<{}>", type_from_account_field_impl(*option)),
+        InstructionType::Defined(defined) => defined,
+        InstructionType::Array(content, number) => format!("[{}; {}]", type_from_account_field_impl(*content), number),
+        InstructionType::Bytes => "Vec<u8>".to_string(),
+        InstructionType::I128 => "i128".to_string(),
+        InstructionType::I16 => "i16".to_string(),
+        InstructionType::I32 => "i32".to_string(),
+        InstructionType::I64 => "i64".to_string(),
+        InstructionType::I8 => "i8".to_string(),
+        InstructionType::Tuple(content) => {
+            let mut tuple = "(".to_string();
+            for (i, inner_content) in content.iter().enumerate() {
+                tuple.push_str(&type_from_account_field_impl(inner_content.clone()));
+                if i < content.iter().len() - 1 {
+                    tuple.push_str(", ");
+                }
+            }
+            tuple.push_str(")");
+            tuple
+        }
+        InstructionType::PublicKey => "Pubkey".to_string(),
+        InstructionType::HashMap(content_a, content_b) => format!("HashMap<{}, {}>", type_from_account_field_impl(*content_a), type_from_account_field_impl(*content_b)),
+        InstructionType::BTreeMap(content_a, content_b) => format!("BTreeMap<{}, {}>", type_from_account_field_impl(*content_a), type_from_account_field_impl(*content_b)),
+        InstructionType::HashSet(content) => format!("HashSet<{}>", type_from_account_field_impl(*content)),
+        InstructionType::BTreeSet(content) => format!("BTreeSet<{}>", type_from_account_field_impl(*content)),
+    }    
 }
