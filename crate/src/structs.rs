@@ -194,15 +194,16 @@ impl Default for Type {
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Kind {
     pub(crate) kind: String,
-    #[serde(default)]
-    pub(crate) variants: Vec<Name>,
+    pub(crate) variants: Option<Vec<Name>>,
+    pub(crate) fields: Option<Vec<KindField>>,   
 }
 
 impl Default for Kind {
     fn default() -> Self {
         Kind {
             kind: "struct".to_string(),
-            variants: [].to_vec(),
+            variants: None,
+            fields: Some([].to_vec()),
         }
     }
 }
@@ -213,6 +214,13 @@ pub struct Field {
     #[serde(rename = "type")]
     pub(crate) type_: InstructionType,
     pub(crate) index: bool,
+}
+
+#[derive(Deserialize, Serialize, Debug, Clone)]
+pub struct KindField {
+    pub(crate) name: String,
+    #[serde(rename = "type")]
+    pub(crate) type_: InstructionType,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone, Default)]
