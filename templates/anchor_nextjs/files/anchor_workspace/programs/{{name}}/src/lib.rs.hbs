@@ -43,14 +43,23 @@ pub struct {{this.name}} {
 }
 
 {{/each}}
-// Additional structures
+// Types
 {{#each types}}
 #[derive(Debug, Clone, AnchorSerialize, AnchorDeserialize)]
+{{#if (eq this.type.kind "struct")}}
 pub struct {{this.name}} {
-    {{#each this.type_.fields}}
-    pub {{this.name}}: {{this.type}},
+    {{#each this.type.fields}}
+    pub {{this.name}}: {{{type_from_account_field this.type}}},
     {{/each}}
 }
+{{/if}}
+{{#if (eq this.type.kind "enum")}}
+pub enum {{this.name}} {
+    {{#each this.type.variants}}
+    {{this.name}},
+    {{/each}}
+}
+{{/if}}
 
 {{/each}}
 // Events
