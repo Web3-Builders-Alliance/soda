@@ -16,7 +16,7 @@ export const Card: FC<any> = ({ prop, item, onClick, index, setEdit }) => {
   return (
 
     <div
-      className="relative flex p-5 pt-7 m-5 border w-32 min-w-[8rem] h-48 rounded-lg border-border justify-center text-red font-medium hover:bg-backg hover:text-green hover:border-green cursor-pointer"
+      className="relative flex p-5 pt-7 m-5 border w-44 h-[90%] rounded-lg border-border justify-center text-red font-medium hover:bg-backg hover:text-green hover:border-green cursor-pointer"
       onClick={(e) => {setEdit({item, index})}}
     >
       <TrashIcon onClick={(e) => {
