@@ -23,7 +23,7 @@ export const NewItem: FC<any> = ({ prop, setIsModalOpen, isModalOpen }) => {
   return (
 
     <div
-      className="flex flex-col justify-between p-5 m-5 h-48 rounded-md ring-1 items-center hover:ring-2 ring-border"
+      className="flex flex-col justify-between p-5 m-5 w-32 min-w-[8rem] h-48 rounded-md ring-1 items-center hover:ring-2 ring-border"
     >
       <input
         placeholder={`Add ${prop.charAt(0).toUpperCase() + prop.slice(1)}'s name`}
