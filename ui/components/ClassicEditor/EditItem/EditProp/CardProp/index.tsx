@@ -80,6 +80,7 @@ export const CardsProp: FC<any> = ({ prop, property, nameInstruction, indexItem,
           if (index === indexItem) {
             if (!inst?.[nameConfig]?.find((prop: any) => prop[e.target.value])) {
               if (nameInstruction === "instructions") {
+                console.log(nameConfig, e.target.id, e.target.checked)
                 return {
                   ...inst,
                   [nameConfig]: inst?.[nameConfig].map((prop: any, i: number) => {
@@ -158,7 +159,7 @@ export const CardsProp: FC<any> = ({ prop, property, nameInstruction, indexItem,
                 <div key={name} className="flex gap-2 text-green items-center pl-4 pt-2">
                   <label htmlFor={name} >{name}</label>
                   <input
-                    checked={property[name]}
+                    defaultChecked={property[name]}
                     id={name}
                     type='checkbox'
                     className='bg-inputs rounded-md cursor-pointer'
