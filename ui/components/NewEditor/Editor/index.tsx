@@ -13,14 +13,14 @@ export const NewEditor: FC<any> = ({generateIDL}) => {
         <div className="flex flex-col gap-10 m-5 h-full font-mono">
             <div className="flex justify-between">
                 <input
-                    placeholder="Project's Name"
+                    placeholder="Add project's name"
                     value={IDL.name}
                     onChange={(e) => setIDL({
                         ...IDL,
                         name: e.target.value
                     })
                     }
-                    className="w-3/12 h-20 p-5 bg-inputs text-chok text-base rounded-xl"
+                    className="w-3/12 h-20 p-5 bg-inputs text-chok text-base rounded-xl hover:shadow-md hover:shadow-border hover:text-green"
                 />
                 <div>
                     {/* <button className="text-chok bg-export p-5 rounded-xl h-20" onClick={generateIDL}>
