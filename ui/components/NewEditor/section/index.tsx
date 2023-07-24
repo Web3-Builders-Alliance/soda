@@ -7,7 +7,7 @@ import { useIDL } from "@/context/IDL";
 
 export const Section: FC<any> = ({ instruction }) => {
   const { IDL, setIDL } = useIDL()
-  const [newIntructionName, setNewIntructionName] = useState<string>("");
+  const [newInstructionName, setNewIntructionName] = useState<string>("");
   const [editingItem, setEditingItem] = useState(0);
 
   return (
@@ -22,7 +22,7 @@ export const Section: FC<any> = ({ instruction }) => {
           >
             <input
               placeholder={`Add ${instruction}'s Name`}
-              value={newIntructionName}
+              value={newInstructionName}
               onChange={(e) => setNewIntructionName(e.target.value)}
               className=" w-full bg-inputs focus:outline-none"
             />
@@ -30,14 +30,12 @@ export const Section: FC<any> = ({ instruction }) => {
               <CheckIcon
                 className="w-5 h-5 text-white hover:text-green"
                 onClick={() => {
-                  if (!IDL[instruction].find((inst: any) => inst.name === newIntructionName)) {
+                  if (!IDL[instruction].find((inst: any) => inst.name === newInstructionName)) {
                     setIDL({
                       ...IDL,
                       [instruction]: [
                         ...IDL[instruction],
-                        {
-                          name: newIntructionName
-                        }
+                        { name: newInstructionName }
                       ]
                     })
                   }

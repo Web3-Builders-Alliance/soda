@@ -29,8 +29,8 @@ export default function Home() {
   const newProject = cleanProject(setIDL);
   const generateIDL = saveIDLFile(setBaseFolder, IDL.version, IDL.name, IDL.instructions, IDL.accounts, IDL.types, IDL.events, IDL.errors, IDL.metadata);
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [width, setWidth] = useState(true)
-  const [hidden, setHidden] = useState(false)
+  const [widthJson, setWidthJson] = useState(false)
+  const [hiddenJson, setHiddenJson] = useState(true)
 
   const navigation = [
     {
@@ -110,15 +110,15 @@ export default function Home() {
           <div className="h-full w-full overflow-auto">
             <CodeBracketIcon
               onClick={() => {
-                if (width) {
-                  setWidth(false)
+                if (widthJson) {
+                  setWidthJson(false)
                   setTimeout(() => {
-                    setHidden(true)
+                    setHiddenJson(true)
                   }, 450)
                 } else {
-                  setHidden(false)
+                  setHiddenJson(false)
                   setTimeout(() => {
-                    setWidth(true)
+                    setWidthJson(true)
                   }, 0)
 
                 }
@@ -127,7 +127,7 @@ export default function Home() {
             />
             {view[selectedUI as keyof typeof render]}
           </div>
-          <div className={`${width ? "w-6/12" : "w-0"} ${hidden ? "hidden" : ""} transition-[width] ease-in-out duration-700 border border-border rounded-l-lg`}>
+          <div className={`${widthJson ? "w-6/12" : "w-0"} ${hiddenJson ? "hidden" : ""} transition-[width] ease-in-out duration-700 border border-border rounded-l-lg`}>
             <JSONEditor noeditable />
           </div>
         </div>

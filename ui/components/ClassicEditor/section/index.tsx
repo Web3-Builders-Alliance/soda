@@ -26,7 +26,7 @@ export const Section: FC<any> = ({ instruction, content, initExpanded = false, d
       >
         {`${instruction.charAt(0).toUpperCase() + instruction.slice(1)}`}
       </div>
-      <div className={`flex w-full mini-scrollbar transition-all duration-500 items-center overflow-y-hidden ${expanded ? "overflow-x-auto h-64" : " overflow-x-hidden h-0"}`}>
+      <div className={`flex w-full mini-scrollbar transition-all duration-500 overflow-y-hidden ${expanded ? "overflow-x-auto h-80" : " overflow-x-hidden h-0"}`}>
         {
           instruction !== "errors" && !edit ?
             <>
