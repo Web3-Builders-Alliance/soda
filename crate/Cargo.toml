@@ -1,10 +1,11 @@
 [package]
 name = "soda_sol"
-version = "0.0.5"
+version = "0.0.6"
 edition = "2021"
 license = "Apache-2.0"
 description = "Generates Solana Projects from an IDL"
 repository = "https://github.com/Web3-Builders-Alliance/soda"
+documentation = "https://docs.rs/soda_sol/latest/soda_sol/"
 authors = ["Juan Patricio Marchetto"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

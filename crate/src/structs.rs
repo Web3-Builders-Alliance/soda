@@ -1,20 +1,22 @@
+#![allow(non_snake_case, non_camel_case_types)]
+
 use serde_derive::{self, Deserialize, Serialize};
 use std::convert::From;
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct IDL {
-    pub(crate) version: String,
-    pub(crate) name: String,
-    pub(crate) instructions: Vec<Instruction>,
+    pub version: String,
+    pub name: String,
+    pub instructions: Vec<Instruction>,
     #[serde(default)]
-    pub(crate) accounts: Vec<Accounts>,
+    pub accounts: Vec<Accounts>,
     #[serde(default)]
-    pub(crate) types: Vec<Types>,
+    pub types: Vec<Types>,
     #[serde(default)]
-    pub(crate) events: Vec<Event>,
+    pub events: Vec<Event>,
     #[serde(default)]
-    pub(crate) errors: Vec<ErrorDesc>,
+    pub errors: Vec<ErrorDesc>,
     #[serde(default)]
-    pub(crate) metadata: Metadata,
+    pub metadata: Metadata,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -134,6 +136,7 @@ pub struct Accounts {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Types {
+    #[serde(default)]
     pub(crate) name: String,
     #[serde(default)]
     #[serde(rename = "type")]
@@ -142,6 +145,7 @@ pub struct Types {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Event {
+    #[serde(default)]
     pub(crate) name: String,
     #[serde(default)]
     pub(crate) fields: Vec<Field>,
@@ -192,25 +196,34 @@ impl Default for Type {
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Kind {
     pub(crate) kind: String,
-    #[serde(default)]
-    pub(crate) variants: Vec<Name>,
+    pub(crate) variants: Option<Vec<Name>>,
+    pub(crate) fields: Option<Vec<KindField>>,   
 }
 
 impl Default for Kind {
     fn default() -> Self {
         Kind {
             kind: "struct".to_string(),
-            variants: [].to_vec(),
+            variants: None,
+            fields: Some([].to_vec()),
         }
     }
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Field {
+    #[serde(default)]
     pub(crate) name: String,
     #[serde(rename = "type")]
     pub(crate) type_: InstructionType,
     pub(crate) index: bool,
+}
+
+#[derive(Deserialize, Serialize, Debug, Clone)]
+pub struct KindField {
+    pub(crate) name: String,
+    #[serde(rename = "type")]
+    pub(crate) type_: InstructionType,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone, Default)]
@@ -222,7 +235,7 @@ pub struct PDA {
 pub struct Seed {
     pub(crate) kind: String,
     #[serde(rename = "type")]
-    pub(crate) type_: String,
+    pub(crate) type_: VecEnum,
     #[serde(default)]
     pub(crate) value: String,
     #[serde(default)]
@@ -230,17 +243,36 @@ pub struct Seed {
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(rename_all = "camelCase")]
 pub enum InstructionType {
-    String(String),
-    vec(InstructionTypeVec),
-    defined(Defined),
-    option(OptionType),
+    Array(Box<InstructionType>, usize),
+    Bool,
+    Bytes,
+    Defined(String),
+    I128,
+    I16,
+    I32,
+    I64,
+    I8,
+    Option(Box<InstructionType>),
+    Tuple(Vec<InstructionType>),
+    PublicKey,
+    String,
+    U128,
+    U16,
+    U32,
+    U64,
+    U8,
+    Vec(Box<InstructionType>),
+    HashMap(Box<InstructionType>, Box<InstructionType>),
+    BTreeMap(Box<InstructionType>, Box<InstructionType>),
+    HashSet(Box<InstructionType>),
+    BTreeSet(Box<InstructionType>),
 }
 
 impl Default for InstructionType {
     fn default() -> Self {
-        InstructionType::String("".to_string())
+        InstructionType::String
     }
 }
 
@@ -250,6 +282,7 @@ pub enum InstructionTypeVec {
     String(String),
     defined(Defined),
     vec(Vec_),
+    u128(u128),
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
@@ -289,7 +322,7 @@ pub struct TypeFields {
 
 #[derive(Deserialize, Serialize, Debug, Clone, Default)]
 pub struct Metadata {
-    pub(crate) address: String,
+    pub address: String,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]

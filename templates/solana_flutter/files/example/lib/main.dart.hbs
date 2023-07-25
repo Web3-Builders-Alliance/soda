@@ -1,0 +1,193 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:solana/solana.dart';
+import 'package:solana_mobile_client_example/client.dart';
+
+void main() {
+  runApp(
+    BlocProvider(
+      create: (_) => ClientBloc(
+        SolanaClient(
+          rpcUrl: Uri.parse('https://api.testnet.solana.com'),
+          websocketUrl: Uri.parse('wss://api.testnet.solana.com'),
+        ),
+      ),
+      child: const MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) => MaterialApp(
+        home: Scaffold(
+          appBar: AppBar(
+            title: const Text('Soda Flutter Template'),
+          ),
+          body: BlocConsumer<ClientBloc, ClientState>(
+            listener: (context, state) {
+              // ignore: avoid_print, only for example
+              print(state.capabilities);
+            },
+            listenWhen: (previous, current) =>
+                previous.capabilities != current.capabilities,
+            builder: (context, state) => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 16,
+                  ),
+                  child: Text(
+                    'Soda x Solana Mobile',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+                Button(
+                  onPressed: () => context.read<ClientBloc>().authorize(),
+                  text: 'Connect Wallet',
+                ),
+                Button(
+                  onPressed: state.isAuthorized
+                      ? () => context.read<ClientBloc>().deauthorize()
+                      : null,
+                  text: 'Disconnect Wallet',
+                ),
+                Button(
+                  onPressed: state.canRequestAirdrop
+                      ? () => context.read<ClientBloc>().requestAirdrop()
+                      : null,
+                  text: 'Request airdrop(devnet)',
+                ),
+                Container(
+                    height: 550,
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: MyForm(),
+                          )
+                        ],
+                      ),
+                    )),
+              ],
+            ),
+          ),
+        ),
+      );
+}
+
+class MyForm extends StatefulWidget {
+  @override
+  _MyFormState createState() => _MyFormState();
+}
+
+{{#each instructions}}
+Call_{{name}}_function(program , {{#each args}}{{name}}_for_{{../name}} , {{/each}}{{#each accounts}} {{#unless (eq this.name "systemProgram")}}{{#unless (eq this.name "authority")}}{{#unless (eq this.name "clock")}}{{name}}_for_{{../name}}{{/unless}}{{/unless}}{{/unless}} {{#if (eq this.name "authority")}}{{name}}{{/if}} {{#if (eq this.name "systemProgram")}}{{name}}{{/if}} {{#if (eq this.name "clock")}}{{name}}{{/if}},{{/each}}) {
+ // enter your code
+}
+{{/each}}
+
+
+
+class _MyFormState extends State<MyForm> {
+  final _formKey = GlobalKey<FormState>();
+  // variables for account 
+  final program = "";
+  final authority = "";
+  final systemProgram = "";
+  final clock = "";
+  {{#each instructions}}  
+  {{#each accounts}}
+  {{#unless (eq this.name "systemProgram")}}
+  {{#unless (eq this.name "authority")}}
+  {{#unless (eq this.name "clock")}}
+  final {{name}}_for_{{../name}} = "";
+  {{/unless}}
+  {{/unless}}
+  {{/unless}}
+  {{/each}}
+  {{/each}}
+
+  //variables for args
+  {{#each instructions}}
+  {{#each args}}
+  String {{name}}_for_{{../name}} = "";
+  {{/each}}
+  {{/each}}
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Call Instructions from Your IDL')),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                {{#each instructions}}
+                {{#each args}}
+                Text("{{../name}} instruction", style: TextStyle(fontSize: 20)),
+                TextFormField(
+                  decoration: InputDecoration(labelText: "Enter {{name}}"),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your name';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    {{name}}_for_{{../name}} = value!;
+                  },
+                ),
+                SizedBox(height: 16),
+                {{/each}}
+                ElevatedButton(
+                  onPressed: (){
+                    Call_{{name}}_function(program , {{#each args}}{{name}}_for_{{../name}} , {{/each}}{{#each accounts}} {{#unless (eq this.name "systemProgram")}}{{#unless (eq this.name "authority")}}{{#unless (eq this.name "clock")}}{{name}}_for_{{../name}}{{/unless}}{{/unless}}{{/unless}} {{#if (eq this.name "authority")}}{{name}}{{/if}} {{#if (eq this.name "systemProgram")}}{{name}}{{/if}} {{#if (eq this.name "clock")}}{{name}}{{/if}},{{/each}});
+                  },
+                  child: Text("Call {{name}} Instructions"),
+                ),
+                SizedBox(height: 16),
+                {{/each}}
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class Button extends StatelessWidget {
+  const Button({
+    super.key,
+    this.onPressed,
+    required this.text,
+  });
+
+  final VoidCallback? onPressed;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size.fromHeight(40),
+          ),
+          onPressed: onPressed,
+          child: Text(text),
+        ),
+      );
+}
+
+
