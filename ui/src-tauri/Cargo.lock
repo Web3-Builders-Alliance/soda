@@ -2367,7 +2367,9 @@ dependencies = [
 
 [[package]]
 name = "soda_sol"
-version = "0.0.6"
+version = "0.0.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bd32d9ac134802d8363d2bd3d5ced12eaefa659f230708774d3514cf7160f1e6"
 dependencies = [
  "bincode",
  "handlebars",

@@ -37,13 +37,15 @@ const IDLProvider = ({ children }: { children: ReactNode }) => {
       .then(() => {
         if (IDL.name === "Chewing Glass") {
           invoke("new_window", { target: "bubbles" }).catch(async (e) => {
-            await message(e, { title: "Error", type: "error" });
+            console.log(e)
+            await message(e?.error ?? "Error open more windows", { title: "Error", type: "error" });
           });
         }
         setIDL(IDL);
       })
       .catch(async (e) => {
-        await message(e, { title: "Error", type: "error" });
+        console.log(e)
+        await message(e?.error ?? "Error setting IDL", { title: "Error", type: "error" });
       });
   };
 
