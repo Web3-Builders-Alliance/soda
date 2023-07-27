@@ -364,7 +364,7 @@ dependencies = [
 
 [[package]]
 name = "soda_sol"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
  "bincode",
  "handlebars",
