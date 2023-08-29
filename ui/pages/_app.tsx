@@ -1,3 +1,4 @@
+import Layout from '@/components/Layout'
 import { IDLProvider } from '@/context/IDL'
 import { TemplatesProvider } from '@/context/templates'
 import '@/styles/globals.css'
@@ -7,7 +8,9 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <IDLProvider>
       <TemplatesProvider>
-        <Component {...pageProps} />
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
       </TemplatesProvider>
     </IDLProvider>
   )
