@@ -1,5 +1,5 @@
 use std::sync::{MutexGuard, PoisonError};
-
+use std::time::SystemTimeError;
 use crate::StateStruct;
 
 #[derive(thiserror::Error, Debug)]
@@ -54,6 +54,14 @@ impl From<serde_json::Error> for Error {
 
 impl From<tauri::Error> for Error {
     fn from(err: tauri::Error) -> Error {
+        Error::CustomError {
+            message: err.to_string(),
+        }
+    }
+}
+
+impl From<SystemTimeError> for Error {
+    fn from(err: SystemTimeError) -> Error {
         Error::CustomError {
             message: err.to_string(),
         }

@@ -136,6 +136,7 @@ pub struct Accounts {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Types {
+    #[serde(default)]
     pub(crate) name: String,
     #[serde(default)]
     #[serde(rename = "type")]
@@ -144,6 +145,7 @@ pub struct Types {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Event {
+    #[serde(default)]
     pub(crate) name: String,
     #[serde(default)]
     pub(crate) fields: Vec<Field>,
@@ -210,6 +212,7 @@ impl Default for Kind {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Field {
+    #[serde(default)]
     pub(crate) name: String,
     #[serde(rename = "type")]
     pub(crate) type_: InstructionType,
