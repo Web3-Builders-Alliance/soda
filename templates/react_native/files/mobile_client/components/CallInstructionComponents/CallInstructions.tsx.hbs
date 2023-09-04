@@ -8,7 +8,7 @@ import * as anchor from '@coral-xyz/anchor';
 import {ProgramSource} from '../../utils/type';
 
 import {useConnection} from '../providers/ConnectionProvider';
-import {useCounterProgram} from '../../hooks/useCounterProgram';
+import {useProgram} from '../../hooks/useProgram';
 import {useAuthorization} from '../providers/AuthorizationProvider';
 
 type CounterAccount = {
@@ -30,7 +30,7 @@ function Call_{{name}}_Instruction({
   const [signingInProgress, setSigningInProgress] = useState(false);
   const {connection} = useConnection();
   const {selectedAccount} = useAuthorization();
-  const {counterProgram, counterPDA, counterProgramId} = useCounterProgram(
+  const {counterProgram, counterPDA, counterProgramId} = useProgram(
     connection,
     anchorWallet,
   );

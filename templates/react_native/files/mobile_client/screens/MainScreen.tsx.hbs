@@ -14,7 +14,7 @@ import {useConnection} from '../components/providers/ConnectionProvider';
 import DisconnectButton from '../components/DisconnectButton';
 import RequestAirdropButton from '../components/RequestAirdropButton';
 import {ProgramSource} from '../utils/type';
-import {useCounterProgram} from '../hooks/useCounterProgram';
+import {useProgram} from '../hooks/useProgram';
 import {useAnchorWallet} from '../hooks/useAnchorWallet';
 
 import {
@@ -36,7 +36,7 @@ export default function MainScreen() {
   const {authorizeSession, selectedAccount} = useAuthorization();
   const [balance, setBalance] = useState<number | null>(null);
   const anchorWallet = useAnchorWallet(authorizeSession, selectedAccount);
-  const {counterProgram, counterPDA, counterProgramId} = useCounterProgram(
+  const {counterProgram, counterPDA, counterProgramId} = useProgram(
     connection,
     anchorWallet,
   );
