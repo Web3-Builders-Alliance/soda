@@ -1,20 +1,21 @@
-import { FC, useState, useEffect } from "react"
+import { FC, useState, useEffect, useRef } from "react"
 import Tab from "./Tabs/tab"
 import { type_args } from "@/const"
 import { useIDL } from "@/context/IDL"
 
-const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
+const EditInstructions: FC<any> = ({ indexItem, instruction }) => {
     const [tabConfig, setTab] = useState("accounts")
+    const timeOutediting = useRef<NodeJS.Timeout>()
     const [kind, setKind] = useState("")
     const { IDL, setIDL } = useIDL()
 
     useEffect(() => {
-        if (IDL?.[instruction]?.[editingItem]?.type) {
-            setKind(IDL?.[instruction]?.[editingItem]?.type?.kind)
+        if (IDL?.[instruction]?.[indexItem]?.type) {
+            setKind(IDL?.[instruction]?.[indexItem]?.type?.kind)
         } else {
             setKind("")
         }
-    }, [editingItem])
+    }, [indexItem])
 
     const addProperty = (newProperty: any) => {
         if (instruction === "errors") {
@@ -33,7 +34,7 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
         setIDL({
             ...IDL,
             [instruction]: IDL[instruction].map((inst: any, index: number) => {
-                if (index === editingItem) {
+                if (index === indexItem) {
                     if (instruction === "instructions" && !inst?.[tabConfig]?.includes(newProperty)) {
                         return {
                             ...inst,
@@ -71,76 +72,136 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
         })
     }
 
-    const editProperty = (propertyEdit: any, indexProperty: number) => {
-        if (instruction === "errors") {
+    const editProperty = (e: any, indexProperty: number) => {
+        if (timeOutediting.current) clearTimeout(timeOutediting.current)
+
+        timeOutediting.current = setTimeout(() => {
+            if (instruction === "errors") {
+                const editing = {
+                    ...IDL,
+                    [instruction]: IDL[instruction].map((prop: any, i: number) => {
+
+                        if (indexProperty === i) {
+                            return {
+                                ...prop,
+                                [e.target.id]: e.target.type === "checkbox" ? e.target.checked : e.target.value
+                            }
+                        } else {
+                            return prop
+                        }
+                    })
+                }
+                return setIDL(editing)
+            }
+
             const editing = {
                 ...IDL,
-                [instruction]: IDL[instruction].map((prop: any, i: number) => {
-                    if (indexProperty === i) {
-                        return propertyEdit
-                    } else {
-                        prop
+                [instruction]: IDL[instruction].map((inst: any, index: number) => {
+                    if (index === indexItem) {
+                        if (!inst?.[tabConfig]?.find((prop: any) => prop[e.target.value])) {
+                            if (instruction === "instructions") {
+                                return {
+                                    ...inst,
+                                    [tabConfig]: inst?.[tabConfig].map((prop: any, i: number) => {
+                                        if (indexProperty === i) {
+                                            return {
+                                                ...prop,
+                                                [e.target.id]: e.target.type === "checkbox" ? e.target.checked : e.target.value
+                                            }
+                                        } else {
+                                            return prop
+                                        }
+                                    })
+                                }
+                            }
+                            if (instruction === "events") {
+                                return {
+                                    ...inst,
+                                    fields: inst?.fields.map((prop: any, i: number) => {
+                                        if (indexProperty === i) {
+                                            return {
+                                                ...prop,
+                                                [e.target.id]: e.target.type === "checkbox" ? e.target.checked : e.target.value
+                                            }
+                                        } else {
+                                            return prop
+                                        }
+                                    })
+                                }
+                            }
+                            return {
+                                ...inst,
+                                type: {
+                                    ...inst.type,
+                                    [inst?.type?.kind === "struct" ? "fields" : "variants"]: inst?.type?.[inst?.type?.kind === "struct" ? "fields" : "variants"].map((prop: any, i: number) => {
+                                        if (indexProperty === i) {
+                                            return {
+                                                ...prop,
+                                                [e.target.id]: e.target.type === "checkbox" ? e.target.checked : e.target.value
+                                            }
+                                        } else {
+                                            return prop
+                                        }
+                                    })
+
+                                }
+                            }
+
+                        }
+                    }
+                    return inst
+                })
+            }
+            setIDL(editing)
+        }, 1000)
+    }
+
+    const deleteItem = (indexProperty: number) => {
+        if (instruction === "errors") {
+            const del = {
+                ...IDL,
+                [instruction]: IDL[instruction].filter((e: any, i: any) => i !== indexProperty).map((error: any, i: any) => {
+                    return {
+                        ...error,
+                        code: 6000 + i
                     }
                 })
             }
-            return setIDL(editing)
+            setIDL(del)
+            return 
         }
-        const editing = {
+        const del = {
             ...IDL,
             [instruction]: IDL[instruction].map((inst: any, index: number) => {
-                console.log(inst, indexProperty)
-                if (index === editingItem) {
-                    if (instruction === "instructions" && !inst?.[tabConfig]?.includes(propertyEdit)) {
+                if (index === indexItem) {
+                    if (instruction === "instructions") {
                         return {
                             ...inst,
-                            [tabConfig]: inst?.[tabConfig].map((prop: any, i: number) => {
-                                if (indexProperty === i) {
-                                    return propertyEdit
-                                } else {
-                                    return prop
-                                }
-                            })
+                            [tabConfig]: inst[tabConfig].filter((e: any, i: any) => i !== indexProperty)
                         }
                     }
-                    if (instruction === "events" && !inst?.[tabConfig]?.includes(propertyEdit)) {
+                    if (instruction === "events") {
                         return {
                             ...inst,
-                            fields: inst?.fields.map((prop: any, i: number) => {
-                                if (indexProperty === i) {
-                                    return propertyEdit
-                                } else {
-                                    return prop
-                                }
-                            })
+                            fields: inst?.fields.filter((e: any, i: any) => i !== indexProperty)
                         }
                     }
-                    if (!inst?.types?.[tabConfig]?.includes(propertyEdit)) {
-                        return {
-                            ...inst,
-                            type: {
-                                kind: kind,
-                                [kind === "struct" ? "fields" : "variants"]: inst?.type?.[kind === "struct" ? "fields" : "variants"].map((prop: any, i: number) => {
-                                    if (indexProperty === i) {
-                                        return propertyEdit
-                                    } else {
-                                        return prop
-                                    }
-                                })
-
-                            }
+                    return {
+                        ...inst,
+                        type: {
+                            ...inst.type,
+                            [inst?.type?.kind === "struct" ? "fields" : "variants"]: inst?.type?.[inst?.type?.kind === "struct" ? "fields" : "variants"].filter((e: any, i: any) => i !== indexProperty)
                         }
                     }
                 }
                 return inst
             })
         }
-        setIDL(editing)
-
+        setIDL(del)
     }
-
     const render = {
         instructions: (
-            IDL?.[instruction]?.[editingItem] &&
+            IDL?.[instruction]?.[indexItem] &&
             <div className="flex flex-col overflow-x-auto gap-4 h-full bg-backg rounded-md shadow-md shadow-inputs mt-20">
                 <div className="flex w-full h-12 text-center -space-x-1 shadow-inner shadow-inputs bg-backg">
                     {
@@ -169,7 +230,8 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                     <Tab
                         editProperty={editProperty}
                         addProperty={addProperty}
-                        elements={IDL?.[instruction]?.[editingItem]?.[tabConfig]}
+                        deleteItem={deleteItem}
+                        elements={IDL?.[instruction]?.[indexItem]?.[tabConfig]}
                         objConfig={[{ name: "name" }, { name: "isMut", options: "boolean" }, { name: "isSigner", options: "boolean" }]}
                     />
                 }
@@ -178,7 +240,8 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                     <Tab
                         editProperty={editProperty}
                         addProperty={addProperty}
-                        elements={IDL?.[instruction]?.[editingItem]?.[tabConfig]}
+                        deleteItem={deleteItem}
+                        elements={IDL?.[instruction]?.[indexItem]?.[tabConfig]}
                         objConfig={[{ name: "name" }, { name: "type", options: type_args }]}
                     />
                 }
@@ -189,18 +252,20 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                 <Tab
                     editProperty={editProperty}
                     addProperty={addProperty}
+                    deleteItem={deleteItem}
                     elements={IDL?.[instruction]}
                     objConfig={[{ disabled: true, name: "code" }, { name: "name" }, { name: "msg" }]}
                 />
             </div>
         ),
         events: (
-            IDL?.[instruction]?.[editingItem] &&
+            IDL?.[instruction]?.[indexItem] &&
             <div className="flex flex-col w-full overflow-x-auto gap-4 h-full mt-20">
                 <Tab
                     editProperty={editProperty}
                     addProperty={addProperty}
-                    elements={IDL?.[instruction]?.[editingItem]?.fields}
+                    deleteItem={deleteItem}
+                    elements={IDL?.[instruction]?.[indexItem]?.fields}
                     objConfig={[{ name: "name" }, { name: "type", options: type_args }, { name: "index", options: "boolean" }]}
                 />
             </div>
@@ -209,10 +274,10 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
 
     if (render[instruction as keyof typeof render]) return render[instruction as keyof typeof render]
     return (
-        IDL?.[instruction]?.[editingItem] &&
+        IDL?.[instruction]?.[indexItem] &&
         <div className="flex flex-col overflow-x-auto gap-4 h-full mt-20">
             {
-                !IDL?.[instruction]?.[editingItem]?.type ?
+                !IDL?.[instruction]?.[indexItem]?.type ?
                     <select
                         className='bg-inputs rounded-md text-chok'
                         defaultValue={0}
@@ -239,7 +304,7 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                     :
                     <p className="text-chok text-xl">
                         {
-                           `Kind: ${IDL?.[instruction]?.[editingItem]?.type.kind}`
+                            `Kind: ${IDL?.[instruction]?.[indexItem]?.type.kind}`
                         }
                     </p>
             }
@@ -248,17 +313,19 @@ const EditInstructions: FC<any> = ({ editingItem, instruction }) => {
                 <Tab
                     editProperty={editProperty}
                     addProperty={addProperty}
-                    elements={IDL?.[instruction]?.[editingItem]?.type?.variants}
+                    deleteItem={deleteItem}
+                    elements={IDL?.[instruction]?.[indexItem]?.type?.variants}
                     objConfig={[{ name: "name" }]}
-                    />
-                }
+                />
+            }
             {
                 kind === "struct" &&
                 <Tab
-                editProperty={editProperty}
-                addProperty={addProperty}
-                elements={IDL?.[instruction]?.[editingItem]?.type?.fields}
-                objConfig={[{ name: "name" }, { name: "type", options: type_args }, { name: "index", options: "boolean" }]}
+                    editProperty={editProperty}
+                    addProperty={addProperty}
+                    deleteItem={deleteItem}
+                    elements={IDL?.[instruction]?.[indexItem]?.type?.fields}
+                    objConfig={[{ name: "name" }, { name: "type", options: type_args }, { name: "index", options: "boolean" }]}
                 />
             }
         </div>

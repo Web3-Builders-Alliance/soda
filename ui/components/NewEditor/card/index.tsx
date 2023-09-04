@@ -12,7 +12,7 @@ export const Card: FC<any> = ({ name, onClick, deleteItem, instruction, index })
     clearTimeout(timeoutName.current)
 
     timeoutName.current = setTimeout(()=> {
-
+      
       setIDL({
         ...IDL,
         [instruction]: IDL[instruction].map((inst: any, i: number) => {
