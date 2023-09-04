@@ -1,0 +1,58 @@
+import {AnchorProvider, Program} from '@coral-xyz/anchor';
+import {Connection, PublicKey} from '@solana/web3.js';
+import {useMemo} from 'react';
+import * as anchor from '@coral-xyz/anchor';
+
+import {  ProgramSource } from '../utils/type';
+
+import idl from '../utils/idl.json'
+
+export function useCounterProgram(
+  connection: Connection,
+  anchorWallet: anchor.Wallet | null,
+) {
+  const counterProgramId = useMemo(() => {
+    return new PublicKey('GG5TtHkUCRAFWJrFmdTtijP8aCUHdoyegWdaFNtgDnSg');
+  }, []);
+
+  const [counterPDA] = useMemo(() => {
+    const counterSeed = anchor.utils.bytes.utf8.encode('counter');
+    return anchor.web3.PublicKey.findProgramAddressSync(
+      [counterSeed],
+      counterProgramId,
+    );
+  }, [counterProgramId]);
+
+  const provider = useMemo(() => {
+    if (!anchorWallet) {
+      return null;
+    }
+    return new AnchorProvider(connection, anchorWallet, {
+      preflightCommitment: 'confirmed',
+      commitment: 'processed',
+    });
+  }, [anchorWallet, connection]);
+
+  const basicCounterProgram = useMemo(() => {
+    if (!provider) {
+      return null;
+    }
+
+    return new Program<ProgramSource>(
+      idl as ProgramSource,
+      counterProgramId,
+      provider,
+    );
+  }, [counterProgramId, provider]);
+
+  const value = useMemo(
+    () => ({
+      counterProgram: basicCounterProgram,
+      counterProgramId: counterProgramId,
+      counterPDA: counterPDA,
+    }),
+    [basicCounterProgram, counterProgramId, counterPDA],
+  );
+
+  return value;
+}

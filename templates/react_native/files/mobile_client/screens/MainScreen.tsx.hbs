@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View ,SafeAreaView} from 'react-native';
-
+import * as anchor from '@coral-xyz/anchor';
+import {PublicKey} from '@solana/web3.js';
 import {Section} from '../components/Section';
 import ConnectButton from '../components/ConnectButton';
 import AccountInfo from '../components/AccountInfo';
@@ -8,15 +9,37 @@ import {
   useAuthorization,
   Account,
 } from '../components/providers/AuthorizationProvider';
+import {Program} from '@coral-xyz/anchor';
 import {useConnection} from '../components/providers/ConnectionProvider';
 import DisconnectButton from '../components/DisconnectButton';
 import RequestAirdropButton from '../components/RequestAirdropButton';
-import CallInstructionsFrontEnd from "../components/CallInstructionsFrontEnd"
+import {ProgramSource} from '../utils/type';
+import {useCounterProgram} from '../hooks/useCounterProgram';
+import {useAnchorWallet} from '../hooks/useAnchorWallet';
+
+import {
+ {{#each instructions}}
+ Call_{{name}}_Instruction,
+ {{/each}}
+} 
+from '../components/CallInstructionComponents/CallInstructions'
+
+type CounterAccount = {
+  count: anchor.BN;
+  authority: PublicKey;
+  bump: number;
+};
 
 export default function MainScreen() {
+  const [counterValue, setCounterValue] = useState<string | null>(null);
   const {connection} = useConnection();
-  const {selectedAccount} = useAuthorization();
+  const {authorizeSession, selectedAccount} = useAuthorization();
   const [balance, setBalance] = useState<number | null>(null);
+  const anchorWallet = useAnchorWallet(authorizeSession, selectedAccount);
+  const {counterProgram, counterPDA, counterProgramId} = useCounterProgram(
+    connection,
+    anchorWallet,
+  );
 
   const fetchAndUpdateBalance = useCallback(
     async (account: Account) => {
@@ -28,12 +51,29 @@ export default function MainScreen() {
     [connection],
   );
 
+   const fetchAndUpdateCounter = useCallback(
+    async (program: Program<ProgramSource>) => {
+      const counterAccount: CounterAccount =
+        await program.account.counter.fetch(counterPDA);
+      setCounterValue(counterAccount.count.toString());
+    },
+    [counterPDA],
+  );
+
   useEffect(() => {
     if (!selectedAccount) {
       return;
     }
     fetchAndUpdateBalance(selectedAccount);
   }, [fetchAndUpdateBalance, selectedAccount]);
+
+      // Auto fetch count
+    useEffect(() => {
+      if (!counterProgram) {
+        return;
+      }
+      fetchAndUpdateCounter(counterProgram);
+    }, [fetchAndUpdateCounter, counterProgram]);
 
   return (
     <>
@@ -54,7 +94,16 @@ export default function MainScreen() {
                     await fetchAndUpdateBalance(account)
                   }
                 />
-                <CallInstructionsFrontEnd/>
+               {{#each instructions}}
+               <View style = {styles.button}>
+                <Call_{{name}}_Instruction
+                onComplete={(counterAccount: CounterAccount) => {
+                setCounterValue(counterAccount.count.toString());
+                }}
+                anchorWallet={anchorWallet}
+                />
+                </View>
+              {{/each}}
               </Section>
                </ScrollView>
               </SafeAreaView>
@@ -92,5 +141,8 @@ const styles = StyleSheet.create({
     marginTop : 10,
     fontWeight: 'bold',
     color : 'white'
+  },
+  button : {
+    marginTop : 20
   }
 });
