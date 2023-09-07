@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Text, View ,SafeAreaView} from 'react-native';
+import {ScrollView, StyleSheet, Text, View ,SafeAreaView , View, TextInput} from 'react-native';
 import * as anchor from '@coral-xyz/anchor';
 import {PublicKey} from '@solana/web3.js';
 import {Section} from '../components/Section';
@@ -20,6 +20,10 @@ import {useAnchorWallet} from '../hooks/useAnchorWallet';
 import {
  {{#each instructions}}
  Call_{{name}}_Instruction,
+ {{#each args}}
+ {{name}}_for_{{../name}},
+ {{name}}handler_for_{{../name}},
+ {{/each}}
  {{/each}}
 } 
 from '../components/CallInstructionComponents/CallInstructions'
@@ -94,16 +98,49 @@ export default function MainScreen() {
                     await fetchAndUpdateBalance(account)
                   }
                 />
-               {{#each instructions}}
-               <View style = {styles.button}>
-                <Call_{{name}}_Instruction
+
+                {{#each instructions}}
+                {{#each args}}
+                <View style={styles.button}>
+                  <Text style={styles.text}>
+                    {{../name}} Instruction
+                  </Text>
+                  <TextInput>
+                    style={styles.input}
+                    placeholder = {`Enter {{name}}`}
+                    onChangeText= {
+                  {{name}}handler_for_{{../name}}
+                }
+                value={
+                  {{name}}_for_{{../name}}
+                } 
+                  </TextInput>
+                </View>
+                {{/each}}
+                <View style={styles.button}>
+                  <Call_{{name}}_Instruction
                 onComplete={(counterAccount: CounterAccount) => {
                 setCounterValue(counterAccount.count.toString());
                 }}
                 anchorWallet={anchorWallet}
                 />
                 </View>
-              {{/each}}
+                {{/each}}  
+
+               
+               
+               {{!-- {{#each instructions}}
+               <View style = {styles.button}>
+                <Call_{{name}}_Instruction
+                onComplete={(//counterAccount: CounterAccount) => {
+                setCounterValue(counterAccount.count.toString());
+                }}
+                anchorWallet={anchorWallet}
+                />
+                </View>
+              {{/each}} --}}
+
+
               </Section>
                </ScrollView>
               </SafeAreaView>
@@ -137,12 +174,31 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   textSubHeading : {
+     textAlign : 'center',
     fontSize: 18,
     marginTop : 10,
     fontWeight: 'bold',
     color : 'white'
   },
-  button : {
-    marginTop : 20
-  }
+   input: {
+    height: 40,
+    borderColor: 'white',
+    borderWidth: 1,
+    marginTop: 10,
+    paddingHorizontal: 10,
+    
+  },
+  button: {
+    height: 40,
+    marginTop: 20,
+    borderRadius : 4,
+  },
+  text : {
+    fontSize: 16,
+    marginTop : 10,
+    fontWeight: 'bold',
+    color : 'white'
+  },
+ 
+  
 });

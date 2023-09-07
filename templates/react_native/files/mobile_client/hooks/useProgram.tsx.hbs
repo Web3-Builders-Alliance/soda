@@ -11,17 +11,33 @@ export function useProgram(
   connection: Connection,
   anchorWallet: anchor.Wallet | null,
 ) {
-  const counterProgramId = useMemo(() => {
+  const ProgramId = useMemo(() => {
     return new PublicKey('GG5TtHkUCRAFWJrFmdTtijP8aCUHdoyegWdaFNtgDnSg');
   }, []);
 
-  const [counterPDA] = useMemo(() => {
+  {{#each instructions}}
+  {{#each accounts}}
+  {{#if isMut}}
+  {{#unless isSigner}}
+  const [{{name}}PDA_for_{{../name}}] = useMemo(()=>{
+    const {{name}}Seed_for_{{../name}} = ""
+    return anchor.web3.PublicKey.findProgramAddressSync(
+      [{{name}}Seed_for_{{../name}}],
+      ProgramId,
+    )
+  },[ProgramId])
+  {{/unless}}
+  {{/if}}
+  {{/each}}
+  {{/each}}
+
+  {{!-- const [counterPDA] = useMemo(() => {
     const counterSeed = anchor.utils.bytes.utf8.encode('counter');
     return anchor.web3.PublicKey.findProgramAddressSync(
       [counterSeed],
-      counterProgramId,
+      ProgramId,
     );
-  }, [counterProgramId]);
+  }, [ProgramId]); --}}
 
   const provider = useMemo(() => {
     if (!anchorWallet) {
@@ -33,25 +49,34 @@ export function useProgram(
     });
   }, [anchorWallet, connection]);
 
-  const basicCounterProgram = useMemo(() => {
+  const basicProgram = useMemo(() => {
     if (!provider) {
       return null;
     }
 
     return new Program<ProgramSource>(
       idl as ProgramSource,
-      counterProgramId,
+      ProgramId,
       provider,
     );
-  }, [counterProgramId, provider]);
+  }, [ProgramId, provider]);
 
   const value = useMemo(
     () => ({
-      counterProgram: basicCounterProgram,
-      counterProgramId: counterProgramId,
-      counterPDA: counterPDA,
+      Program: basicProgram,
+      ProgramId: ProgramId,
+      {{#each instructions}}
+      {{#each accounts}}
+      {{#if isMut}}
+      {{#unless isSigner}}
+      {{name}}PDA_for_{{../name}} : {{name}}PDA_for_{{../name}},
+      {{/unless}}
+      {{/if}}
+      {{/each}}
+      {{/each}}
+      {{!-- counterPDA: counterPDA, --}}
     }),
-    [basicCounterProgram, counterProgramId, counterPDA],
+    [basicProgram, ProgramId],
   );
 
   return value;
