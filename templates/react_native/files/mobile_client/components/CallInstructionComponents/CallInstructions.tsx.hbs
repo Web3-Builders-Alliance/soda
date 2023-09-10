@@ -11,14 +11,8 @@ import {useConnection} from '../providers/ConnectionProvider';
 import {useProgram} from '../../hooks/useProgram';
 import {useAuthorization} from '../providers/AuthorizationProvider';
 
-type CounterAccount = {
-  count: anchor.BN;
-  authority: PublicKey;
-  bump: number;
-};
 
 type ButtonProps = Readonly<{
-  onComplete: (counterAccount: CounterAccount) => void;
   anchorWallet: anchor.Wallet;
 }>;
 
@@ -40,7 +34,6 @@ const {{name}}handler_for_{{../name}} = (e:any) => {
 
 {{#each instructions}}
 function Call_{{name}}_Instruction({
-  onComplete,
   anchorWallet,
 }: ButtonProps) {
   const [signingInProgress, setSigningInProgress] = useState(false);
@@ -108,12 +101,6 @@ function Call_{{name}}_Instruction({
             selectedAccount.publicKey,
           );
 
-          // Fetch the account info for the Counter PDA to see the new count value.
-          const counterAccount: CounterAccount =
-            await counterProgram.account.counter.fetch(counterPDA);
-
-          // Update the count value state.
-          onComplete(counterAccount);
         } finally {
           setSigningInProgress(false);
         }
