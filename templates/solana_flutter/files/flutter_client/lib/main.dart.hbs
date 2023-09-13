@@ -9,8 +9,8 @@ void main() {
     BlocProvider(
       create: (_) => ClientBloc(
         SolanaClient(
-          rpcUrl: Uri.parse('https://api.testnet.solana.com'),
-          websocketUrl: Uri.parse('wss://api.testnet.solana.com'),
+          rpcUrl: Uri.parse('https://api.devnet.solana.com'),
+          websocketUrl: Uri.parse('wss://api.devnet.solana.com'),
         ),
       ),
       child: const MyApp(),

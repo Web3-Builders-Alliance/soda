@@ -1,0 +1,122 @@
+
+import {Program} from '@coral-xyz/anchor';
+import {PublicKey} from '@solana/web3.js';
+import React, {useState, useCallback} from 'react';
+import {Button} from 'react-native';
+import * as anchor from '@coral-xyz/anchor';
+
+import {ProgramSource} from '../../utils/type';
+
+import {useConnection} from '../providers/ConnectionProvider';
+import {useProgram} from '../../hooks/useProgram';
+import {useAuthorization} from '../providers/AuthorizationProvider';
+
+
+type ButtonProps = Readonly<{
+  anchorWallet: anchor.Wallet;
+}>;
+
+{{#each instructions}}
+//for {{name}} instructions
+{{#each args}}
+const [{{name}}_for_{{../name}} , set{{name}}_for_{{../name}}] = useState()
+{{/each}}
+{{/each}}
+
+//handler functions for inputs feilds
+{{#each instructions}}
+{{#each args}}
+const {{name}}handler_for_{{../name}} = (e:any) => {
+  set{{name}}_for_{{../name}}(e.target.value)
+}
+{{/each}}
+{{/each}}
+
+{{#each instructions}}
+function Call_{{name}}_Instruction({
+  anchorWallet,
+}: ButtonProps) {
+  const [signingInProgress, setSigningInProgress] = useState(false);
+  const {connection} = useConnection();
+  const {selectedAccount} = useAuthorization();
+  const {counterProgram, counterProgramId} = useProgram(
+    connection,
+    anchorWallet,
+  );
+
+  {{#each accounts}}
+  {{#if isMut}}
+  {{#unless isSigner}}
+  const {
+    {{name}}PDA_for_{{../name}}
+  } = useProgram(
+    connection,
+    anchorWallet
+  )
+  {{/unless}}
+  {{/if}}
+  {{/each}}
+
+
+  const initializeCounter = useCallback(
+    async (program: Program<ProgramSource>, authorityPublicKey: PublicKey) => {
+      // Call the increment function of the program.
+      const signature = await program.methods
+        .{{name}}({{#each args}}{{name}}_for_{{../name}}{{/each}})
+        .accounts({
+          {{#each accounts}}
+          {{#if isMut}}
+          {{#unless isSigner}}
+          {{name}} : {{name}}PDA_for_{{../name}},
+          {{/unless}}
+          {{/if}}
+          {{/each}}
+          authority: authorityPublicKey,
+        })
+        .rpc();
+
+      return signature;
+    },
+    {{#each accounts}}
+    {{#if isMut}}
+    {{#unless isSigner}}
+    [{{name}}PDA_for_{{../name}}]
+    {{/unless}}
+    {{/if}}
+    {{/each}}
+  );
+
+  return (
+    <Button
+      title={`Call {{name}} Instructions`}
+      disabled={signingInProgress || !counterProgram}
+      onPress={async () => {
+        if (signingInProgress || !counterProgram || !selectedAccount) {
+          return;
+        }
+        setSigningInProgress(true);
+        try {
+          const signature = await initializeCounter(
+            counterProgram,
+            selectedAccount.publicKey,
+          );
+
+        } finally {
+          setSigningInProgress(false);
+        }
+      }}
+    />
+  );
+}
+
+{{/each}}
+
+export {
+  {{#each instructions}}
+  Call_{{name}}_Instruction,
+  {{#each args}}
+  {{name}}_for_{{../name}},
+  {{name}}handler_for_{{../name}},
+  {{/each}}
+  {{/each}}
+}
