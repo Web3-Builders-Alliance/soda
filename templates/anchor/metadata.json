@@ -1,0 +1,8 @@
+{
+    "name": "⚓ Anchor",
+    "version": "0.2.0-alpha",
+    "description": "Export to an Anchor framework setup, streamlining Solana smart contract development.",
+    "authors": "Juan Patricio Marchetto, Ahzam Akhtar, Mike Hale",
+    "image": "",
+    "tags": "alpha"
+}

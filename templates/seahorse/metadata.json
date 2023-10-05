@@ -1,7 +1,7 @@
 {
-    "name": "Seahorse",
+    "name": "🌊 Seahorse",
     "version": "0.1.0-alpha",
-    "description": "Seahorse program.",
+    "description": "Select for Solana programming using Seahorse, allowing you to write Anchor-compatible programs in Python",
     "authors": "Ahzam Akhtar",
     "image": "",
     "tags": "alpha"

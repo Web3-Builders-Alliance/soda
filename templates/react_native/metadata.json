@@ -1,7 +1,7 @@
 {
-    "name": "React Native",
-    "version": "0.0.2-alpha",
-    "description": "Experimental template for a React Native client",
+    "name": "📱 React Native",
+    "version": "0.0.3-alpha",
+    "description": "Export to get a mobile-ready Solana project for React Native. Ideal for DApp mobile integrations.",
     "authors": "Ahzam Akhtar",
     "image": "",
     "tags": "Experimental"
