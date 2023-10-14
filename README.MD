@@ -2,10 +2,7 @@
   <img  src="https://github.com/Web3-Builders-Alliance/soda/blob/main/assets/soda.png?raw=true"  width="200">
 </p>  
 
-## Fast Code Generator. Build program prototypes up to Solana speed!
-### Generate mobile and web clients from Solana programs.
-
- **Note: Soda is in active development, so all is subject to change. This code is unaudited. Use at your own risk.**
+**Fast Code Generator. Build program prototypes up to Solana speed! Generate mobile and web clients from Solana programs.**
 
 ---
 
@@ -65,3 +62,6 @@ if no template path is provided, the CLI will try to read from a template folder
 Creates a template folder from a template file.
 If no output path is provided, the template folder will be created in the current directory with the name template.
 If no template path is provided, the CLI will try to read from a template.soda file in the current directory.
+
+
+**Note: Soda is in active development, so all is subject to change. This code is unaudited. Use at your own risk.**
