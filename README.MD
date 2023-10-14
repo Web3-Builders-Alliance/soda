@@ -25,9 +25,9 @@
 	- Anchor Program
 	- Seahorse Program
 
+---
 
-
-## The best way to use soda is using the web https://machine.usesoda.dev/
+### The best way to use soda is using the web https://machine.usesoda.dev/
 
 ## Install Soda Desktop
   
