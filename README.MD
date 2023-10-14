@@ -2,13 +2,12 @@
   <img  src="https://github.com/Web3-Builders-Alliance/soda/blob/main/assets/soda.png?raw=true"  width="200">
 </p>  
 
-# Fast Code Generator. Build program prototypes up to Solana speed! Generate mobile and web clients from Solana programs.
-
-## The best way to use soda is using the web https://machine.usesoda.dev/
+## Fast Code Generator. Build program prototypes up to Solana speed! Generate mobile and web clients from Solana programs.
 
  **Note: Soda is in active development, so all is subject to change. This code is unaudited. Use at your own risk.**
-  
+
 ---
+
 ### Current Features
 -  Generate Solana Programs and clients' source code from an IDL
 -  Write, read and edit IDL in a desktop UI
@@ -27,6 +26,10 @@
 	- React Native Client
 	- Anchor Program
 	- Seahorse Program
+
+
+
+## The best way to use soda is using the web https://machine.usesoda.dev/
 
 ## Install Soda Desktop
   
