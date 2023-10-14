@@ -1,9 +1,10 @@
-<p  align="center">
+<p align="center">
   <img  src="https://github.com/Web3-Builders-Alliance/soda/blob/main/assets/soda.png?raw=true"  width="200">
 </p>  
 
-# Ship a Solana program inferred from Solana data
+# Fast Code Generator. Build program prototypes up to Solana speed! Generate mobile and web clients from Solana programs.
 
+## The best way to use soda is using the web https://machine.usesoda.dev/
 
  **Note: Soda is in active development, so all is subject to change. This code is unaudited. Use at your own risk.**
   
@@ -21,13 +22,14 @@
 	- Lang agnostic
 	- Interconvertible portable template file format and template folder, both supported by CLI and Desktop App 
 -  Available Templates:
-	- Anchor Program With a NextJs-Tailwind Client (Used as default in Desktop App)
-	- Seahorse Program (experimental)
-	- React Native Client (experimental)
+	- NextJs-Tailwind Client
+	- Flutter Client
+	- React Native Client
+	- Anchor Program
+	- Seahorse Program
 
 ## Install Soda Desktop
   
-
 To install the Desktop App you need to [download the lastest release](https://github.com/Web3-Builders-Alliance/soda/releases)
 
 (Optionally you can download templates.zip file if you want to use other templates than the default one, or just clone this repo an use it from the templates folder)
