@@ -2,7 +2,8 @@
   <img  src="https://github.com/Web3-Builders-Alliance/soda/blob/main/assets/soda.png?raw=true"  width="200">
 </p>  
 
-## Fast Code Generator. Build program prototypes up to Solana speed! Generate mobile and web clients from Solana programs.
+## Fast Code Generator. Build program prototypes up to Solana speed!
+### Generate mobile and web clients from Solana programs.
 
  **Note: Soda is in active development, so all is subject to change. This code is unaudited. Use at your own risk.**
 
