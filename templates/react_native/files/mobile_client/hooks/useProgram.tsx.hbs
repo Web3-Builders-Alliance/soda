@@ -31,14 +31,6 @@ export function useProgram(
   {{/each}}
   {{/each}}
 
-  {{!-- const [counterPDA] = useMemo(() => {
-    const counterSeed = anchor.utils.bytes.utf8.encode('counter');
-    return anchor.web3.PublicKey.findProgramAddressSync(
-      [counterSeed],
-      ProgramId,
-    );
-  }, [ProgramId]); --}}
-
   const provider = useMemo(() => {
     if (!anchorWallet) {
       return null;
@@ -49,7 +41,7 @@ export function useProgram(
     });
   }, [anchorWallet, connection]);
 
-  const basicProgram = useMemo(() => {
+  const program = useMemo(() => {
     if (!provider) {
       return null;
     }
@@ -63,8 +55,8 @@ export function useProgram(
 
   const value = useMemo(
     () => ({
-      Program: basicProgram,
-      ProgramId: ProgramId,
+      program: program,
+      programId: ProgramId,
       {{#each instructions}}
       {{#each accounts}}
       {{#if isMut}}
@@ -76,7 +68,7 @@ export function useProgram(
       {{/each}}
       {{!-- counterPDA: counterPDA, --}}
     }),
-    [basicProgram, ProgramId],
+    [program, ProgramId],
   );
 
   return value;

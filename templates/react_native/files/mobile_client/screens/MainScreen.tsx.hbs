@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Text, View ,SafeAreaView , View, TextInput} from 'react-native';
+import {ScrollView, StyleSheet, Text, View ,SafeAreaView , TextInput ,TouchableOpacity , Button } from 'react-native';
 import * as anchor from '@coral-xyz/anchor';
 import {PublicKey} from '@solana/web3.js';
 import {Section} from '../components/Section';
@@ -16,7 +16,7 @@ import RequestAirdropButton from '../components/RequestAirdropButton';
 import {ProgramSource} from '../utils/type';
 import {useProgram} from '../hooks/useProgram';
 import {useAnchorWallet} from '../hooks/useAnchorWallet';
-
+import Collapsible from 'react-native-collapsible';
 import {
  {{#each instructions}}
  Call_{{name}}_Instruction,
@@ -28,19 +28,14 @@ import {
 } 
 from '../components/CallInstructionComponents/CallInstructions'
 
-type CounterAccount = {
-  count: anchor.BN;
-  authority: PublicKey;
-  bump: number;
-};
-
 export default function MainScreen() {
-  const [counterValue, setCounterValue] = useState<string | null>(null);
+  const [collapsed, setCollapsed] = useState(false);
+  const [manualPublicKey , setManualPublicKey] = useState("")
   const {connection} = useConnection();
   const {authorizeSession, selectedAccount} = useAuthorization();
   const [balance, setBalance] = useState<number | null>(null);
   const anchorWallet = useAnchorWallet(authorizeSession, selectedAccount);
-  const {counterProgram, counterPDA, counterProgramId} = useProgram(
+  const {program, programId} = useProgram(
     connection,
     anchorWallet,
   );
@@ -55,15 +50,6 @@ export default function MainScreen() {
     [connection],
   );
 
-   const fetchAndUpdateCounter = useCallback(
-    async (program: Program<ProgramSource>) => {
-      const counterAccount: CounterAccount =
-        await program.account.counter.fetch(counterPDA);
-      setCounterValue(counterAccount.count.toString());
-    },
-    [counterPDA],
-  );
-
   useEffect(() => {
     if (!selectedAccount) {
       return;
@@ -71,13 +57,19 @@ export default function MainScreen() {
     fetchAndUpdateBalance(selectedAccount);
   }, [fetchAndUpdateBalance, selectedAccount]);
 
-      // Auto fetch count
     useEffect(() => {
-      if (!counterProgram) {
+      if (!program) {
         return;
       }
-      fetchAndUpdateCounter(counterProgram);
-    }, [fetchAndUpdateCounter, counterProgram]);
+    }, [program]);
+
+   const toggleExpand = () => {
+    setCollapsed(!collapsed);
+  };
+
+  const manualPublicKeyHandler = (e:any) => {
+    setManualPublicKey(e.target.value)
+  }
 
   return (
     <>
@@ -87,7 +79,7 @@ export default function MainScreen() {
             <>
             <SafeAreaView>
               <ScrollView style={styles.scroolView}>
-              <Section title="Account Info">
+              <Section title="Wallet Info">
                 <AccountInfo
                   selectedAccount={selectedAccount}
                   balance={balance}
@@ -98,6 +90,60 @@ export default function MainScreen() {
                     await fetchAndUpdateBalance(account)
                   }
                 />
+
+                  <Text style={
+                    {marginTop : 15 , fontSize : 20 , color : "white" , fontWeight : "bold"}
+                    }>
+                    Program Id Info
+                  </Text>
+
+                 <TouchableOpacity
+                      onPress={() => toggleExpand()}
+                      style={
+                        {marginTop: 20 , backgroundColor : "grey"}
+                        }>
+                      <Text style={
+                        {fontSize: 16, color: 'white' , padding : 5}
+                        }>
+                        Enter PublicKey of Your Program
+                      </Text>
+                      
+                    </TouchableOpacity>
+
+                 <Collapsible collapsed={!collapsed}>
+                      <View
+                        style={
+                          {
+                          marginTop: 10,
+                        }
+                        }>
+                        <TextInput
+                        placeholder='Enter your Program PublicKey....'
+                        placeholderTextColor="grey"
+                          style={
+                            {
+                            backgroundColor: 'white',
+                            paddingHorizontal: 10,
+                            height: 40,
+                            fontSize : 15,
+                            color : "black"
+                          }
+                          }
+                        value={manualPublicKey}
+                        onChange={manualPublicKeyHandler}
+                        />
+                          <Button
+                          title='Set Now'
+                          />
+                          
+                      </View>
+                    </Collapsible>
+
+                    <Text style={
+                     {marginTop : 20 , fontSize : 20 , color : "white" , fontWeight : "bold"}
+                    }>
+                      Call Instructions from your IDL
+                    </Text>
 
                 {{#each instructions}}
                 {{#each args}}
@@ -181,7 +227,5 @@ const styles = StyleSheet.create({
     marginTop : 10,
     fontWeight: 'bold',
     color : 'white'
-  },
- 
-  
+  },  
 });

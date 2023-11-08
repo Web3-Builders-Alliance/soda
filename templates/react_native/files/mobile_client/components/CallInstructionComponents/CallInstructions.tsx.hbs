@@ -39,7 +39,7 @@ function Call_{{name}}_Instruction({
   const [signingInProgress, setSigningInProgress] = useState(false);
   const {connection} = useConnection();
   const {selectedAccount} = useAuthorization();
-  const {counterProgram, counterProgramId} = useProgram(
+  const {program, programId} = useProgram(
     connection,
     anchorWallet,
   );
@@ -89,15 +89,15 @@ function Call_{{name}}_Instruction({
   return (
     <Button
       title={`Call {{name}} Instructions`}
-      disabled={signingInProgress || !counterProgram}
+      disabled={signingInProgress || !program}
       onPress={async () => {
-        if (signingInProgress || !counterProgram || !selectedAccount) {
+        if (signingInProgress || !program || !selectedAccount) {
           return;
         }
         setSigningInProgress(true);
         try {
           const signature = await initializeCounter(
-            counterProgram,
+            program,
             selectedAccount.publicKey,
           );
 
