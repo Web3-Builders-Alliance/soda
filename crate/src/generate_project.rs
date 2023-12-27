@@ -3,6 +3,8 @@ use std::path::PathBuf;
 use crate::*;
 use helpers::{apply_user_helpers, create_handlebars_registry};
 
+/// Generate a Vec containing the paths and content of each file of the project
+/// from an IDL and a template
 pub fn generate_project(template: Template, idl: &IDL) -> Result<Vec<TemplateFile>, Error> {
     let Template { files, helpers, .. } = template;
     let mut handlebars = create_handlebars_registry();

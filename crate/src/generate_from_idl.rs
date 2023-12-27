@@ -1,6 +1,7 @@
 use crate::*;
 use std::path::PathBuf;
 
+/// Generate a project in the filesystem from an IDL
 pub fn generate_from_idl(base_path: &str, idl: IDL, template_path: &str) -> Result<(), Error> {
     let template = if PathBuf::from(template_path).is_file() {
         load_template(template_path)?
