@@ -4,9 +4,7 @@ import {PublicKey} from '@solana/web3.js';
 import React, {useState, useCallback} from 'react';
 import {Button} from 'react-native';
 import * as anchor from '@coral-xyz/anchor';
-
 import {ProgramSource} from '../../utils/type';
-
 import {useConnection} from '../providers/ConnectionProvider';
 import {useProgram} from '../../hooks/useProgram';
 import {useAuthorization} from '../providers/AuthorizationProvider';
@@ -39,7 +37,7 @@ function Call_{{name}}_Instruction({
   const [signingInProgress, setSigningInProgress] = useState(false);
   const {connection} = useConnection();
   const {selectedAccount} = useAuthorization();
-  const {counterProgram, counterProgramId} = useProgram(
+  const {program, programId} = useProgram(
     connection,
     anchorWallet,
   );
@@ -58,7 +56,7 @@ function Call_{{name}}_Instruction({
   {{/each}}
 
 
-  const initializeCounter = useCallback(
+  const execute_{{./name}}_function = useCallback(
     async (program: Program<ProgramSource>, authorityPublicKey: PublicKey) => {
       // Call the increment function of the program.
       const signature = await program.methods
@@ -89,15 +87,15 @@ function Call_{{name}}_Instruction({
   return (
     <Button
       title={`Call {{name}} Instructions`}
-      disabled={signingInProgress || !counterProgram}
+      disabled={signingInProgress || !program}
       onPress={async () => {
-        if (signingInProgress || !counterProgram || !selectedAccount) {
+        if (signingInProgress || !program || !selectedAccount) {
           return;
         }
         setSigningInProgress(true);
         try {
-          const signature = await initializeCounter(
-            counterProgram,
+          const signature = await execute_{{./name}}_function(
+            program,
             selectedAccount.publicKey,
           );
 
