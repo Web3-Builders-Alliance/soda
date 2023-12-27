@@ -5,6 +5,7 @@ use std::{
 };
 use walkdir::WalkDir;
 
+// Get a template from the filesystem and return a Template struct
 pub fn get_template_from_fs(template_path: &str) -> Result<Template, Error> {
     let mut files = vec![];
     for entry in WalkDir::new(format!("{}/files/", template_path)) {

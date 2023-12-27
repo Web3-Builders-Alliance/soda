@@ -4,6 +4,7 @@ use std::{
     io::Write,
 };
 
+/// Write a project to the filesystem using a vector of TemplateFile as source
 pub fn write_project_to_fs(dinamyc_files: Vec<TemplateFile>, base_path: &str) -> Result<(), Error> {
     for TemplateFile { path, content } in dinamyc_files {
         let path_with_base = format!("{}/{}", &base_path, path);
