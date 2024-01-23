@@ -3,7 +3,7 @@ use handlebars::{handlebars_helper, Handlebars};
 use structs::{InstructionType, TemplateHelper, IDL};
 
 pub(crate) fn create_handlebars_registry() -> Handlebars<'static> {
-    handlebars_helper!(snakecase: |name: String| name.chars().enumarate().fold(
+    handlebars_helper!(snakecase: |name: String| name.chars().enumerate().fold(
             "".to_string(),
             |acc, (index, letter)| {
                 if letter.is_uppercase() {
