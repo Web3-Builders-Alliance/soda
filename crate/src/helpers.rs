@@ -3,12 +3,18 @@ use handlebars::{handlebars_helper, Handlebars};
 use structs::{InstructionType, TemplateHelper, IDL};
 
 pub(crate) fn create_handlebars_registry() -> Handlebars<'static> {
-    handlebars_helper!(snakecase: |name: String| name.chars().fold(
+    handlebars_helper!(snakecase: |name: String| name.chars().enumarate().fold(
             "".to_string(),
-            |acc, letter| if letter.is_uppercase(){
-                format!("{}_{}",acc,letter.to_lowercase())
-            }else{
-                format!("{}{}",acc,letter)
+            |acc, (index, letter)| {
+                if letter.is_uppercase() {
+                    if index == 0 {
+                        format!("{}{}", acc, letter.to_lowercase())
+                    } else {
+                        format!("{}_{}", acc, letter.to_lowercase())
+                    }
+                } else {
+                    format!("{}{}", acc, letter)
+                }
             }
         )
     );
