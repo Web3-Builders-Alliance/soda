@@ -118,11 +118,11 @@ pub struct TemplateHelper {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Instruction {
-    pub(crate) name: String,
+    pub name: String,
     #[serde(default)]
-    pub(crate) accounts: Vec<InstructionAccount>,
+    pub accounts: Vec<InstructionAccount>,
     #[serde(default)]
-    pub(crate) args: Vec<InstructionArgs>,
+    pub args: Vec<InstructionArgs>,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
@@ -172,9 +172,9 @@ pub struct InstructionAccount {
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct InstructionArgs {
-    pub(crate) name: String,
+    pub name: String,
     #[serde(rename = "type")]
-    pub(crate) type_: InstructionType,
+    pub type_: InstructionType,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
