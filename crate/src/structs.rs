@@ -161,13 +161,13 @@ pub struct ErrorDesc {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct InstructionAccount {
-    pub(crate) name: String,
+    pub name: String,
     #[serde(default)]
-    pub(crate) isMut: bool,
+    pub isMut: bool,
     #[serde(default)]
-    pub(crate) isSigner: bool,
+    pub isSigner: bool,
     #[serde(default)]
-    pub(crate) pda: PDA,
+    pub pda: PDA,
 }
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
