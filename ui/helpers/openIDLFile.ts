@@ -2,7 +2,7 @@ import { open } from "@tauri-apps/api/dialog";
 import { message } from "@tauri-apps/api/dialog";
 import { readTextFile } from "@tauri-apps/api/fs";
 
-const openIDLFile = (IDL: any, setIDL: Function) => {
+const openIDLFile = (setIDL: Function) => {
   return async () => {
     try {
       const result = await open({
