@@ -6,6 +6,7 @@ use std::convert::From;
 pub struct IDL {
     pub version: String,
     pub name: String,
+    #[serde(default)]
     pub instructions: Vec<Instruction>,
     #[serde(default)]
     pub accounts: Vec<Accounts>,
@@ -131,7 +132,7 @@ pub struct Accounts {
     pub(crate) name: String,
     #[serde(default)]
     #[serde(rename = "type")]
-    pub(crate) type_: Type,
+    pub(crate) kind: Type,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
@@ -140,7 +141,7 @@ pub struct Types {
     pub(crate) name: String,
     #[serde(default)]
     #[serde(rename = "type")]
-    pub(crate) type_: Kind,
+    pub(crate) kind: Kind,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
@@ -174,7 +175,7 @@ pub struct InstructionAccount {
 pub struct InstructionArgs {
     pub name: String,
     #[serde(rename = "type")]
-    pub type_: InstructionType,
+    pub kind: InstructionType,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
@@ -215,7 +216,7 @@ pub struct Field {
     #[serde(default)]
     pub(crate) name: String,
     #[serde(rename = "type")]
-    pub(crate) type_: InstructionType,
+    pub(crate) kind: InstructionType,
     pub(crate) index: bool,
 }
 
@@ -223,7 +224,7 @@ pub struct Field {
 pub struct KindField {
     pub(crate) name: String,
     #[serde(rename = "type")]
-    pub(crate) type_: InstructionType,
+    pub(crate) kind: InstructionType,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone, Default)]
@@ -235,7 +236,7 @@ pub struct PDA {
 pub struct Seed {
     pub(crate) kind: String,
     #[serde(rename = "type")]
-    pub(crate) type_: VecEnum,
+    pub(crate) of_type: VecEnum,
     #[serde(default)]
     pub(crate) value: String,
     #[serde(default)]
@@ -317,7 +318,7 @@ pub struct TypeFields {
     pub(crate) name: String,
     #[serde(default)]
     #[serde(rename = "type")]
-    pub(crate) type_: InstructionType,
+    pub(crate) kind: InstructionType,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone, Default)]
