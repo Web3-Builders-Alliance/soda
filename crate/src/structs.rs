@@ -70,54 +70,6 @@ impl From<Data> for IDL {
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
-pub struct Template {
-    pub files: Vec<TemplateFile>,
-    pub helpers: Vec<TemplateHelper>,
-    #[serde(default)]
-    pub metadata: TemplateMetadata,
-}
-
-#[derive(Deserialize, Serialize, Debug, Clone)]
-pub struct TemplateMetadata {
-    #[serde(default)]
-    pub name: String,
-    #[serde(default)]
-    pub version: String,
-    #[serde(default)]
-    pub description: String,
-    #[serde(default)]
-    pub authors: String,
-    #[serde(default)]
-    pub image: String,
-    #[serde(default)]
-    pub tags: String,
-}
-
-impl Default for TemplateMetadata {
-    fn default() -> Self {
-        TemplateMetadata {
-            name: "".to_string(),
-            version: "".to_string(),
-            description: "".to_string(),
-            authors: "".to_string(),
-            image: "".to_string(),
-            tags: "".to_string(),
-        }
-    }
-}
-#[derive(Deserialize, Serialize, Debug, Clone)]
-pub struct TemplateFile {
-    pub path: String,
-    pub content: Content,
-}
-
-#[derive(Deserialize, Serialize, Debug, Clone)]
-pub struct TemplateHelper {
-    pub helper_name: String,
-    pub script: String,
-}
-
-#[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Instruction {
     pub name: String,
     #[serde(default)]
