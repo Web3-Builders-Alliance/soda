@@ -8,9 +8,7 @@ const cleanProject = (setIDL: Function) => {
       setIDL({
         name: "",
         version: "0.1.0",
-        instructions: [{
-            name: "initialize"
-        }],
+        instructions: [],
         accounts: [],
         types: [],
         events: [],

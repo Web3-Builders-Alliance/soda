@@ -8,21 +8,10 @@ const TemplateContext = createContext<any>({
 });
 
 const TemplatesProvider = ({ children }: { children: ReactNode }) => {
-    const [templates, setTemplates] = useState([
-        {
-            name: "Anchor",
-            icon: AnchorImg,
-            version: "1.0.0",
-            description: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Cum, molestiass .",
-            broughtBy: {
-                icon: SolanaFundationIcon,
-                name: "Solana Fundation"
-            }
-        }
-    ]);
+    const [templates, setTemplates] = useState([]);
 
     return (
-        <TemplateContext.Provider value={{ templates }}>
+        <TemplateContext.Provider value={{ templates, setTemplates }}>
             {children}
         </TemplateContext.Provider>
     );
