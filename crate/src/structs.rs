@@ -4,6 +4,7 @@ use serde_derive::{self, Deserialize, Serialize};
 use std::convert::From;
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct IDL {
+    #[serde(default)]
     pub version: String,
     pub name: String,
     #[serde(default)]
@@ -22,6 +23,7 @@ pub struct IDL {
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Data {
+    #[serde(default)]
     pub version: String,
     pub name: String,
     pub instructions: Vec<Instruction>,
@@ -235,10 +237,10 @@ pub struct PDA {
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Seed {
     pub(crate) kind: String,
-    #[serde(rename = "type")]
+    #[serde(default, rename = "type")]
     pub(crate) of_type: VecEnum,
     #[serde(default)]
-    pub(crate) value: String,
+    pub(crate) value: serde_json::Value,
     #[serde(default)]
     pub(crate) path: String,
 }
@@ -258,6 +260,7 @@ pub enum InstructionType {
     Option(Box<InstructionType>),
     Tuple(Vec<InstructionType>),
     PublicKey,
+    pubkey,
     String,
     U128,
     U16,
@@ -301,6 +304,13 @@ pub struct Vec_ {
 pub enum VecEnum {
     String(String),
     defined(Defined),
+}
+
+impl Default for VecEnum {
+    fn default() -> Self {
+        VecEnum::String("".to_string())
+    }
+    
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]

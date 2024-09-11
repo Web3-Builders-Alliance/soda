@@ -97,6 +97,7 @@ fn type_from_account_field_impl(account_field_type:  InstructionType) -> String 
             tuple
         }
         InstructionType::PublicKey => "Pubkey".to_string(),
+        InstructionType::pubkey => "Pubkey".to_string(),
         InstructionType::HashMap(content_a, content_b) => format!("HashMap<{}, {}>", type_from_account_field_impl(*content_a), type_from_account_field_impl(*content_b)),
         InstructionType::BTreeMap(content_a, content_b) => format!("BTreeMap<{}, {}>", type_from_account_field_impl(*content_a), type_from_account_field_impl(*content_b)),
         InstructionType::HashSet(content) => format!("HashSet<{}>", type_from_account_field_impl(*content)),

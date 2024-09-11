@@ -1,0 +1,677 @@
+{
+  "address": "CE4kN17mzWxUu9xPRcMqfm8gxtcNYt4qVNVATGnQ5wSW",
+  "metadata": {
+    "address": "CE4kN17mzWxUu9xPRcMqfm8gxtcNYt4qVNVATGnQ5wSW"
+  },
+  "instructions": [
+    {
+      "name": "bulk_update_student_progress",
+      "discriminator": [
+        73,
+        109,
+        132,
+        135,
+        117,
+        78,
+        167,
+        151
+      ],
+      "accounts": [
+        {
+          "name": "student",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "student_account",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  117,
+                  100,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "student_account.wallet",
+                "account": "Student"
+              }
+            ]
+          }
+        },
+        {
+          "name": "student_progress",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  117,
+                  100,
+                  101,
+                  110,
+                  116,
+                  95,
+                  112,
+                  114,
+                  111,
+                  103,
+                  114,
+                  101,
+                  115,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "student_account.wallet",
+                "account": "Student"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "course_id",
+          "type": "u8"
+        },
+        {
+          "name": "content_at",
+          "type": "u8"
+        },
+        {
+          "name": "new_points_earned",
+          "type": "u8"
+        },
+        {
+          "name": "course_completed",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "complete_course",
+      "discriminator": [
+        91,
+        113,
+        236,
+        190,
+        183,
+        191,
+        2,
+        63
+      ],
+      "accounts": [
+        {
+          "name": "student",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "student_account",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  117,
+                  100,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "student_account.wallet",
+                "account": "Student"
+              }
+            ]
+          }
+        },
+        {
+          "name": "student_progress",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  117,
+                  100,
+                  101,
+                  110,
+                  116,
+                  95,
+                  112,
+                  114,
+                  111,
+                  103,
+                  114,
+                  101,
+                  115,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "student_account.wallet",
+                "account": "Student"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "enroll_student",
+      "discriminator": [
+        127,
+        40,
+        0,
+        155,
+        94,
+        102,
+        147,
+        128
+      ],
+      "accounts": [
+        {
+          "name": "student",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "student_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  117,
+                  100,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "wallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "student_progress",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  117,
+                  100,
+                  101,
+                  110,
+                  116,
+                  95,
+                  112,
+                  114,
+                  111,
+                  103,
+                  114,
+                  101,
+                  115,
+                  115
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "wallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "wallet",
+          "type": "pubkey"
+        },
+        {
+          "name": "full_name",
+          "type": "string"
+        },
+        {
+          "name": "course_id",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "init_config",
+      "discriminator": [
+        23,
+        235,
+        115,
+        232,
+        168,
+        96,
+        1,
+        231
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "course_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "rewards_mint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  119,
+                  97,
+                  114,
+                  100,
+                  115,
+                  95,
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "course_config"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "course_id",
+          "type": "u8"
+        },
+        {
+          "name": "last_content_index",
+          "type": "u8"
+        },
+        {
+          "name": "total_questions",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "update_content_pointer",
+      "discriminator": [
+        182,
+        230,
+        9,
+        185,
+        104,
+        150,
+        209,
+        29
+      ],
+      "accounts": [
+        {
+          "name": "student",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "student_account",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  117,
+                  100,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "student_account.wallet",
+                "account": "Student"
+              }
+            ]
+          }
+        },
+        {
+          "name": "student_progress",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  117,
+                  100,
+                  101,
+                  110,
+                  116,
+                  95,
+                  112,
+                  114,
+                  111,
+                  103,
+                  114,
+                  101,
+                  115,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "student_account.wallet",
+                "account": "Student"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "new_content_index",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "update_score",
+      "discriminator": [
+        188,
+        226,
+        238,
+        41,
+        14,
+        241,
+        105,
+        215
+      ],
+      "accounts": [
+        {
+          "name": "student",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "student_account",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  117,
+                  100,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "student_account.wallet",
+                "account": "Student"
+              }
+            ]
+          }
+        },
+        {
+          "name": "student_progress",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  117,
+                  100,
+                  101,
+                  110,
+                  116,
+                  95,
+                  112,
+                  114,
+                  111,
+                  103,
+                  114,
+                  101,
+                  115,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "student_account.wallet",
+                "account": "Student"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "new_points_earned",
+          "type": "u8"
+        },
+        {
+          "name": "new_content_index",
+          "type": "u8"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "CourseConfig",
+      "discriminator": [
+        59,
+        76,
+        12,
+        23,
+        164,
+        166,
+        6,
+        178
+      ]
+    },
+    {
+      "name": "Student",
+      "discriminator": [
+        173,
+        194,
+        250,
+        75,
+        154,
+        20,
+        81,
+        57
+      ]
+    },
+    {
+      "name": "StudentPrgress",
+      "discriminator": [
+        41,
+        38,
+        201,
+        108,
+        212,
+        192,
+        85,
+        177
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "CourseNotCompleted",
+      "msg": "Can't reward a student who hasn't completed course yet!"
+    }
+  ],
+  "types": [
+    {
+      "name": "CourseConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "course_id",
+            "type": "u8"
+          },
+          {
+            "name": "last_content_index",
+            "type": "u8"
+          },
+          {
+            "name": "total_questions",
+            "type": "u8"
+          },
+          {
+            "name": "rewards_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "rewards_bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Student",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "full_name",
+            "type": "string"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StudentPrgress",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "course_id",
+            "type": "u8"
+          },
+          {
+            "name": "content_at",
+            "type": "u8"
+          },
+          {
+            "name": "total_points_earned",
+            "type": "u8"
+          },
+          {
+            "name": "course_completed",
+            "type": "bool"
+          },
+          {
+            "name": "last_updated",
+            "type": "i64"
+          },
+          {
+            "name": "registered_at",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ],
+  "name": "dev_loot"
+}
