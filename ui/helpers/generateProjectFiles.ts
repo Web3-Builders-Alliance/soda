@@ -5,8 +5,6 @@ import handleBaseFolder from "./handleBaseFolder";
 
 const generateProjectFiles = (
   name: string,
-  templateFolder: any,
-  setTemplateFolder: Function,
   setBaseFolder: Function,
 ) => {
   return async () => {
